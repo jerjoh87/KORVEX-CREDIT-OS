@@ -13,7 +13,7 @@ import express from 'express';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 import { createClient } from '@supabase/supabase-js';
 
 import aiRoutes from './routes/ai.js';
@@ -22,6 +22,10 @@ import creditApiRoutes from './routes/creditApi.js';
 
 const app  = express();
 const PORT = process.env.PORT || 3001;
+const isVercel = !!process.env.VERCEL;
+const isDirectRun = process.argv[1]
+  ? import.meta.url === pathToFileURL(process.argv[1]).href
+  : false;
 
 // Railway and other production hosts terminate TLS at a trusted reverse proxy.
 // This keeps rate-limit keys and req.ip tied to the real client address.
@@ -197,4 +201,8 @@ function startServer(port) {
   });
 }
 
-startServer(PORT);
+if (isDirectRun && !isVercel) {
+  startServer(PORT);
+}
+
+export default app;
