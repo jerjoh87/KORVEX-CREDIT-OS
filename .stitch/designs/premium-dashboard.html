@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CREDITOS Premium Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#1c2028",
+                        "on-surface-variant": "#bbcabf",
+                        "surface-tint": "#4edea3",
+                        "surface-container-low": "#181c24",
+                        "secondary": "#adc6ff",
+                        "on-tertiary-fixed-variant": "#3e465f",
+                        "primary-fixed-dim": "#4edea3",
+                        "on-primary-fixed": "#002113",
+                        "error": "#ffb4ab",
+                        "surface-container-lowest": "#0a0e16",
+                        "surface-bright": "#353943",
+                        "on-tertiary-fixed": "#131b32",
+                        "background": "#10131c",
+                        "secondary-fixed": "#d8e2ff",
+                        "tertiary-container": "#9ba2c0",
+                        "inverse-on-surface": "#2d303a",
+                        "error-container": "#93000a",
+                        "inverse-primary": "#006c49",
+                        "primary": "#4edea3",
+                        "on-error": "#690005",
+                        "on-secondary-fixed": "#001a42",
+                        "on-primary-fixed-variant": "#005236",
+                        "primary-container": "#10b981",
+                        "surface-container-highest": "#31353e",
+                        "outline-variant": "#3c4a42",
+                        "tertiary-fixed-dim": "#bec5e4",
+                        "on-primary-container": "#00422b",
+                        "surface-container-high": "#262a33",
+                        "outline": "#86948a",
+                        "tertiary-fixed": "#dbe1ff",
+                        "surface-variant": "#31353e",
+                        "on-primary": "#003824",
+                        "on-tertiary-container": "#313851",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "inverse-surface": "#e0e2ee",
+                        "on-error-container": "#ffdad6",
+                        "on-background": "#e0e2ee",
+                        "on-secondary-container": "#e6ecff",
+                        "secondary-container": "#0566d9",
+                        "surface": "#10131c",
+                        "tertiary": "#bec5e4",
+                        "on-tertiary": "#282f48",
+                        "on-secondary-fixed-variant": "#004395",
+                        "on-surface": "#e0e2ee",
+                        "on-secondary": "#002e6a",
+                        "primary-fixed": "#6ffbbe",
+                        "surface-dim": "#10131c"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-lg": "32px",
+                        "max-width-desktop": "1200px",
+                        "base": "8px",
+                        "stack-md": "12px",
+                        "gutter": "16px",
+                        "stack-sm": "4px",
+                        "container-padding": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Geist", "sans-serif"],
+                        "body-lg": ["Geist", "sans-serif"],
+                        "body-md": ["Geist", "sans-serif"],
+                        "label-sm": ["JetBrains Mono", "monospace"],
+                        "display-lg-mobile": ["Geist", "sans-serif"],
+                        "display-lg": ["Geist", "sans-serif"],
+                        "data-numeric": ["Geist", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "display-lg-mobile": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "data-numeric": ["20px", { "lineHeight": "24px", "letterSpacing": "-0.02em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #050810; color: #e0e2ee; font-family: 'Geist', sans-serif; }
+        .glass-card {
+            background: rgba(10, 18, 41, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .ai-glow-border {
+            position: relative;
+        }
+        .ai-glow-border::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(45deg, rgba(59, 130, 246, 0.2), rgba(16, 185, 129, 0.2));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+        .bg-level-0 { background-color: #050810; }
+        .bg-level-1 { background-color: #0A1229; opacity: 0.6; backdrop-filter: blur(20px); }
+        .btn-primary { background-color: #10B981; color: white; border: none; }
+        .btn-primary:hover { background-color: #059669; }
+        
+        .score-ring {
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden bg-level-0">
+<!-- SideNavBar -->
+<aside class="hidden md:flex w-72 h-full flex-col bg-surface-container-lowest border-r border-outline-variant shadow-sm z-50">
+<div class="p-6">
+<div class="flex items-center gap-3 mb-8">
+<img class="w-10 h-10 rounded-lg object-cover" data-alt="A sleek, futuristic logo for a fintech brand called CREDITOS. Dark navy background, glowing emerald green geometric elements, modern corporate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1vJElweDz-GEse0lCYpAl-2q9LCE8hbaPBrBFM_Sy6arrLfhqV-IuLI6uueJmgxGRJLxYOaVQHhYkmhXtTUo0nhla8_m4IwXcY6IydKEuYw3rc_cG-3nzGcBk6mmFE_3PHbT282jbAwOPyqx-GUuQNivJH2kmz1SvFLQgrCzCGBJBYtL0USqBbGKi8YcA5Wta0ccmSfPno_uaRlx0bIZ-AK8RuANXha9in-lOe8o_MGwgYlY4ff62FQVfRt7ZyQemVqK9GzjIrVVg"/>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">CREDITOS</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Premium Tier</p>
+</div>
+</div>
+<nav class="flex-1 overflow-y-auto space-y-1 pr-2">
+<a class="flex items-center gap-3 text-primary font-bold border-l-4 border-primary pl-4 py-2 bg-primary/10 rounded-r-lg mb-1 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant font-medium pl-4 py-2 hover:text-on-surface hover:bg-surface-container-high transition-colors duration-200 rounded-r-lg mb-1" href="#">
+<span class="material-symbols-outlined">monitor_heart</span>
+<span class="font-body-md text-body-md">Monitoring</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant font-medium pl-4 py-2 hover:text-on-surface hover:bg-surface-container-high transition-colors duration-200 rounded-r-lg mb-1" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-body-md text-body-md">Bureau Breakdown</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant font-medium pl-4 py-2 hover:text-on-surface hover:bg-surface-container-high transition-colors duration-200 rounded-r-lg mb-1" href="#">
+<span class="material-symbols-outlined">timeline</span>
+<span class="font-body-md text-body-md">Timeline</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant font-medium pl-4 py-2 hover:text-on-surface hover:bg-surface-container-high transition-colors duration-200 rounded-r-lg mb-1" href="#">
+<span class="material-symbols-outlined">compare_arrows</span>
+<span class="font-body-md text-body-md">Report Diff</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant font-medium pl-4 py-2 hover:text-on-surface hover:bg-surface-container-high transition-colors duration-200 rounded-r-lg mb-1" href="#">
+<span class="material-symbols-outlined">report_problem</span>
+<span class="font-body-md text-body-md">Negative Items</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant font-medium pl-4 py-2 hover:text-on-surface hover:bg-surface-container-high transition-colors duration-200 rounded-r-lg mb-1" href="#">
+<span class="material-symbols-outlined">model_training</span>
+<span class="font-body-md text-body-md">Simulators</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant font-medium pl-4 py-2 hover:text-on-surface hover:bg-surface-container-high transition-colors duration-200 rounded-r-lg mb-1" href="#">
+<span class="material-symbols-outlined">account_balance</span>
+<span class="font-body-md text-body-md">Funding Center</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant font-medium pl-4 py-2 hover:text-on-surface hover:bg-surface-container-high transition-colors duration-200 rounded-r-lg mb-1" href="#">
+<span class="material-symbols-outlined">storefront</span>
+<span class="font-body-md text-body-md">Marketplace</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant font-medium pl-4 py-2 hover:text-on-surface hover:bg-surface-container-high transition-colors duration-200 rounded-r-lg mb-1" href="#">
+<span class="material-symbols-outlined">account_tree</span>
+<span class="font-body-md text-body-md">Unlock Tree</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant font-medium pl-4 py-2 hover:text-on-surface hover:bg-surface-container-high transition-colors duration-200 rounded-r-lg mb-1" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="font-body-md text-body-md">Vault</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant font-medium pl-4 py-2 hover:text-on-surface hover:bg-surface-container-high transition-colors duration-200 rounded-r-lg mb-1" href="#">
+<span class="material-symbols-outlined">business_center</span>
+<span class="font-body-md text-body-md">Business Credit</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant font-medium pl-4 py-2 hover:text-on-surface hover:bg-surface-container-high transition-colors duration-200 rounded-r-lg mb-1" href="#">
+<span class="material-symbols-outlined">mark_as_unread</span>
+<span class="font-body-md text-body-md">Auto Mail Center</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant font-medium pl-4 py-2 hover:text-on-surface hover:bg-surface-container-high transition-colors duration-200 rounded-r-lg mb-1" href="#">
+<span class="material-symbols-outlined">insights</span>
+<span class="font-body-md text-body-md">Weekly Reports</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant font-medium pl-4 py-2 hover:text-on-surface hover:bg-surface-container-high transition-colors duration-200 rounded-r-lg mb-1" href="#">
+<span class="material-symbols-outlined">psychology</span>
+<span class="font-body-md text-body-md">Jordan AI</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant font-medium pl-4 py-2 hover:text-on-surface hover:bg-surface-container-high transition-colors duration-200 rounded-r-lg mb-1" href="#">
+<span class="material-symbols-outlined">ads_click</span>
+<span class="font-body-md text-body-md">Goals</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant font-medium pl-4 py-2 hover:text-on-surface hover:bg-surface-container-high transition-colors duration-200 rounded-r-lg mb-1" href="#">
+<span class="material-symbols-outlined">military_tech</span>
+<span class="font-body-md text-body-md">Badges</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant font-medium pl-4 py-2 hover:text-on-surface hover:bg-surface-container-high transition-colors duration-200 rounded-r-lg mb-1" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-body-md text-body-md">Profile</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant font-medium pl-4 py-2 hover:text-on-surface hover:bg-surface-container-high transition-colors duration-200 rounded-r-lg mb-1" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 border-t border-outline-variant">
+<button class="w-full py-3 px-4 rounded-lg btn-primary font-body-md text-body-md font-semibold flex items-center justify-center gap-2 shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-sm">stars</span>
+                    Upgrade to Elite
+                </button>
+</div>
+</div>
+</aside>
+<!-- Main Content Wrapper -->
+<div class="flex-1 flex flex-col min-w-0 overflow-hidden relative">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-gutter h-16 sticky top-0 z-40 backdrop-blur-xl bg-surface-container/60 shadow-md">
+<div class="flex items-center md:hidden">
+<button class="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<span class="ml-4 font-headline-md text-headline-md font-bold text-primary">CREDITOS</span>
+</div>
+<div class="hidden md:flex items-center flex-1 max-w-md ml-4">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">search</span>
+<input class="w-full bg-[#050810] border border-[#FFFFFF1A] rounded-full py-2 pl-10 pr-4 text-on-surface focus:outline-none focus:border-[#3B82F6] focus:ring-4 focus:ring-[#3B82F6]/20 transition-all font-body-md text-body-md placeholder:text-on-surface-variant/50" placeholder="Search..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4 ml-auto">
+<button class="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full animate-pulse"></span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full">
+<span class="material-symbols-outlined">grade</span>
+</button>
+<div class="h-8 w-px bg-outline-variant mx-2"></div>
+<img class="w-8 h-8 rounded-full border border-outline-variant object-cover cursor-pointer hover:border-primary transition-colors" data-alt="A small, stylized profile avatar of a professional user. High contrast, dark background, subtle emerald rim light." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEz_heaK9UB0ib80MTuzUNNWmxmehDX7uRTmAsGYLPCphKEIltNWMeHgKDp14lFNbbEYuyZBpxjmiNXbxEMAsMbi-ndy2tnkClrtA0GKG8GmAhJh5RpdeU7Z0nP65D4kCTAmifVyWRiHpRoDpyHC2p6hj3m6CI-tbmA96gunNhT4Zd3DEL10bv0CJzsMy7Ft8LbEz-ZTbQnjhwyeu8-D1jksqVmQ7hUfF9TD8n8_rJeulhYWU3QRZcjFSC_k92opDXM31SS5LBjsr7"/>
+</div>
+</header>
+<!-- Main Scrollable Area -->
+<main class="flex-1 overflow-y-auto p-container-padding relative">
+<div class="max-w-[max-width-desktop] mx-auto space-y-stack-lg pb-24">
+<!-- AI Credit Monitoring Alert Card -->
+<div class="glass-card ai-glow-border rounded-xl p-6 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-9xl text-error">warning</span>
+</div>
+<div class="relative z-10 flex items-start gap-4">
+<div class="bg-error/10 p-3 rounded-full shrink-0">
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">error</span>
+</div>
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="font-label-sm text-label-sm text-error uppercase tracking-widest">Urgent AI Alert</span>
+<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-error/20 text-error">High Priority</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-2">Your score dropped 18 points.</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 max-w-2xl">
+                                We detected a new collection account reported by <strong class="text-on-surface">MedAssist Billing</strong>. To prevent further damage and initiate a rapid dispute, pay the negotiated settlement of <strong class="text-on-surface">$242 before Friday</strong>.
+                            </p>
+<div class="flex gap-3">
+<button class="btn-primary px-6 py-2 rounded-lg font-body-md text-body-md font-semibold">Pay $242 Now</button>
+<button class="px-6 py-2 rounded-lg border border-[#3B82F6] text-[#3B82F6] font-body-md text-body-md hover:bg-[#3B82F6]/10 transition-colors">Dispute Item</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-stack-md">
+<!-- 3-Bureau Score Preview (Spans 2 columns) -->
+<div class="md:col-span-2 glass-card rounded-xl p-6 flex flex-col">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-headline-md text-[20px] font-semibold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">analytics</span>
+                                Bureau Breakdown
+                            </h3>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</div>
+<div class="grid grid-cols-3 gap-4 flex-1">
+<!-- Equifax -->
+<div class="bg-surface-container-low/50 rounded-lg p-4 flex flex-col items-center justify-center relative border border-white/5">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase mb-2">Equifax</span>
+<div class="relative w-24 h-24 mb-2">
+<svg class="w-full h-full score-ring" viewbox="0 0 100 100">
+<circle cx="50" cy="50" fill="none" r="45" stroke="#1E293B" stroke-width="6"></circle>
+<circle class="drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]" cx="50" cy="50" fill="none" r="45" stroke="url(#gradient-eq)" stroke-dasharray="282.7" stroke-dashoffset="70.6" stroke-linecap="round" stroke-width="6"></circle>
+<defs>
+<lineargradient id="gradient-eq" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#3B82F6"></stop>
+<stop offset="100%" stop-color="#10B981"></stop>
+</lineargradient>
+</defs>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center flex-col">
+<span class="font-data-numeric text-data-numeric text-on-surface">682</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-primary/20 text-primary">Fair</span>
+</div>
+<!-- TransUnion -->
+<div class="bg-surface-container-low/50 rounded-lg p-4 flex flex-col items-center justify-center relative border border-white/5">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase mb-2">TransUnion</span>
+<div class="relative w-24 h-24 mb-2">
+<svg class="w-full h-full score-ring" viewbox="0 0 100 100">
+<circle cx="50" cy="50" fill="none" r="45" stroke="#1E293B" stroke-width="6"></circle>
+<circle class="drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]" cx="50" cy="50" fill="none" r="45" stroke="url(#gradient-tu)" stroke-dasharray="282.7" stroke-dashoffset="60" stroke-linecap="round" stroke-width="6"></circle>
+<defs>
+<lineargradient id="gradient-tu" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#3B82F6"></stop>
+<stop offset="100%" stop-color="#10B981"></stop>
+</lineargradient>
+</defs>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center flex-col">
+<span class="font-data-numeric text-data-numeric text-on-surface">695</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-primary/20 text-primary">Good</span>
+</div>
+<!-- Experian -->
+<div class="bg-surface-container-low/50 rounded-lg p-4 flex flex-col items-center justify-center relative border border-white/5">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase mb-2">Experian</span>
+<div class="relative w-24 h-24 mb-2">
+<svg class="w-full h-full score-ring" viewbox="0 0 100 100">
+<circle cx="50" cy="50" fill="none" r="45" stroke="#1E293B" stroke-width="6"></circle>
+<circle class="drop-shadow-[0_0_8px_rgba(255,180,171,0.3)]" cx="50" cy="50" fill="none" r="45" stroke="#ffb4ab" stroke-dasharray="282.7" stroke-dashoffset="100" stroke-linecap="round" stroke-width="6"></circle>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center flex-col">
+<span class="font-data-numeric text-data-numeric text-on-surface">640</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-error/20 text-error">Needs Work</span>
+</div>
+</div>
+</div>
+<!-- Funding Unlock Progress -->
+<div class="glass-card rounded-xl p-6 flex flex-col items-center justify-center ai-glow-border relative text-center">
+<span class="material-symbols-outlined text-primary mb-2">account_balance</span>
+<h3 class="font-headline-md text-[18px] font-semibold text-on-surface mb-1">Funding Readiness</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-6">Unlock higher tiers</p>
+<div class="relative w-32 h-32 mb-4">
+<svg class="w-full h-full score-ring" viewbox="0 0 100 100">
+<circle cx="50" cy="50" fill="none" r="45" stroke="#1E293B" stroke-width="8"></circle>
+<circle class="drop-shadow-[0_0_12px_rgba(16,185,129,0.8)]" cx="50" cy="50" fill="none" r="45" stroke="#10B981" stroke-dasharray="282.7" stroke-dashoffset="56.5" stroke-linecap="round" stroke-width="8"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-data-numeric text-3xl font-bold text-on-surface">80%</span>
+</div>
+</div>
+<p class="font-body-md text-[14px] text-on-surface-variant">You are 80% ready for the <strong class="text-[#facc15]">Amex Gold Card</strong></p>
+</div>
+<!-- Credit Timeline Mini Chart -->
+<div class="glass-card rounded-xl p-6 md:col-span-2 relative overflow-hidden">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="font-headline-md text-[20px] font-semibold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">timeline</span>
+                                    Growth Timeline
+                                </h3>
+<p class="font-body-md text-sm text-on-surface-variant">+42 pts over 6 months</p>
+</div>
+<div class="bg-primary/10 text-primary px-3 py-1 rounded-full flex items-center gap-1 font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px]">trending_up</span>
+                                +6.5%
+                            </div>
+</div>
+<!-- Decorative Line Chart Placeholder (Robinhood style) -->
+<div class="h-32 w-full mt-4 relative">
+<svg class="w-full h-full preserve-aspect-ratio-none" viewbox="0 0 400 100">
+<defs>
+<lineargradient id="chart-glow" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#10B981" stop-opacity="0.3"></stop>
+<stop offset="100%" stop-color="#10B981" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<path d="M0,80 Q50,70 100,50 T200,60 T300,30 T400,10 L400,100 L0,100 Z" fill="url(#chart-glow)"></path>
+<path class="drop-shadow-[0_0_6px_rgba(16,185,129,0.8)]" d="M0,80 Q50,70 100,50 T200,60 T300,30 T400,10" fill="none" stroke="#10B981" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+</div>
+</div>
+<!-- Weekly AI Report Preview -->
+<div class="glass-card rounded-xl p-6 flex flex-col">
+<div class="flex items-center gap-3 mb-4">
+<div class="bg-surface-container-highest p-2 rounded-lg">
+<span class="material-symbols-outlined text-[#3B82F6]">insights</span>
+</div>
+<h3 class="font-headline-md text-[18px] font-semibold text-on-surface">Weekly AI Recap</h3>
+</div>
+<div class="space-y-4 flex-1">
+<div class="flex items-center justify-between p-3 bg-surface-container-low/50 rounded-lg border border-white/5">
+<span class="font-body-md text-sm text-on-surface-variant">Score Change</span>
+<span class="font-data-numeric text-primary font-bold">+12 pts</span>
+</div>
+<div class="flex items-center justify-between p-3 bg-surface-container-low/50 rounded-lg border border-white/5">
+<span class="font-body-md text-sm text-on-surface-variant">Negatives Removed</span>
+<span class="font-data-numeric text-primary font-bold">2</span>
+</div>
+<div class="flex items-center justify-between p-3 bg-surface-container-low/50 rounded-lg border border-white/5">
+<span class="font-body-md text-sm text-on-surface-variant">New Inquiries</span>
+<span class="font-data-numeric text-on-surface font-bold">0</span>
+</div>
+</div>
+<button class="w-full mt-4 py-2 text-sm text-primary hover:bg-primary/10 rounded transition-colors">View Full Report</button>
+</div>
+<!-- Auto Mail & Top Negative Row -->
+<div class="md:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-stack-md">
+<!-- Auto Mail Status -->
+<div class="glass-card rounded-xl p-6">
+<h3 class="font-headline-md text-[18px] font-semibold text-on-surface mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">mark_as_unread</span>
+                                Auto Mail Status
+                            </h3>
+<div class="relative pl-8 space-y-6 before:absolute before:inset-y-0 before:left-3.5 before:w-px before:bg-surface-container-highest">
+<div class="relative">
+<span class="absolute -left-8 w-6 h-6 rounded-full bg-primary flex items-center justify-center ring-4 ring-[#050810]">
+<span class="material-symbols-outlined text-[14px] text-white">check</span>
+</span>
+<h4 class="font-body-md text-on-surface font-medium">Dispute Letters Mailed</h4>
+<p class="font-label-sm text-xs text-on-surface-variant">Oct 12, 2023</p>
+</div>
+<div class="relative">
+<span class="absolute -left-[33px] w-7 h-7 rounded-full bg-[#1E293B] flex items-center justify-center ring-4 ring-[#050810] border border-primary text-primary">
+<span class="material-symbols-outlined text-[14px]">local_shipping</span>
+</span>
+<h4 class="font-body-md text-on-surface font-medium">Delivered to Bureau</h4>
+<p class="font-label-sm text-xs text-primary animate-pulse">Processing...</p>
+</div>
+<div class="relative">
+<span class="absolute -left-8 w-6 h-6 rounded-full bg-surface-container-highest flex items-center justify-center ring-4 ring-[#050810]">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant">schedule</span>
+</span>
+<h4 class="font-body-md text-on-surface-variant font-medium">Awaiting Response</h4>
+<p class="font-label-sm text-xs text-on-surface-variant/50">Est. Oct 26</p>
+</div>
+</div>
+</div>
+<!-- Top Negative Item -->
+<div class="glass-card rounded-xl p-6 ai-glow-border">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-headline-md text-[18px] font-semibold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-[#3B82F6]">target</span>
+                                    Recommended Action
+                                </h3>
+<span class="px-2 py-1 rounded bg-primary/20 text-primary font-label-sm text-[10px] uppercase tracking-wider font-bold">High Confidence</span>
+</div>
+<div class="bg-surface-container-low/50 border border-white/5 rounded-lg p-4 mb-4">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-error">local_hospital</span>
+<h4 class="font-body-md text-on-surface font-medium">Medical Bill Collection</h4>
+</div>
+<div class="flex justify-between items-end">
+<span class="font-data-numeric text-2xl font-bold text-on-surface">$450</span>
+<span class="text-sm text-on-surface-variant">Reported by Equifax</span>
+</div>
+</div>
+<p class="font-body-md text-sm text-on-surface-variant mb-4">AI analysis indicates a 92% probability of successful removal via HIPAA dispute protocol.</p>
+<button class="w-full py-3 rounded-lg border border-[#3B82F6] text-[#3B82F6] hover:bg-[#3B82F6]/10 transition-colors font-body-md text-sm font-semibold flex justify-center items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">auto_awesome</span>
+                                Auto-Dispute Now
+                            </button>
+</div>
+</div>
+</div>
+<!-- Main CTA / Upgrade Banner -->
+<div class="relative rounded-2xl overflow-hidden mt-8 p-8 md:p-12 text-center group cursor-pointer border border-[#3B82F6]/30 bg-gradient-to-br from-[#0A1229] to-[#0a0e16]">
+<div class="absolute inset-0 bg-[url('placeholder')] opacity-20 group-hover:opacity-30 transition-opacity bg-cover bg-center mix-blend-overlay" data-alt="Abstract 3D rendering of glowing interconnected nodes and data streams in deep blue and emerald green. High-tech, futuristic, premium financial network concept."></div>
+<div class="relative z-10 max-w-2xl mx-auto">
+<span class="material-symbols-outlined text-5xl text-[#3B82F6] mb-4 drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]">diamond</span>
+<h2 class="font-display-lg-mobile md:font-display-lg text-on-surface mb-4">Ready for the Next Level?</h2>
+<p class="font-body-lg text-on-surface-variant mb-8">Unlock Premium to see exactly what funding you qualify for next, get personalized AI coaching, and accelerate your growth.</p>
+<button class="btn-primary px-8 py-4 rounded-xl font-body-lg font-bold shadow-[0_0_20px_rgba(16,185,129,0.4)] hover:shadow-[0_0_30px_rgba(16,185,129,0.6)] transition-all transform hover:-translate-y-1">
+                            Monitor My Credit &amp; Upgrade
+                        </button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

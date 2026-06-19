@@ -1,0 +1,2120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CREDITOS — Credit & Funding Command Center</title>
+<meta name="description" content="CREDITOS: AI credit repair, dispute tracking, funding readiness, and your personal AI money coach." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+:root{
+  --bg:#050810;--card:#0c1322;--ink:#E6EDF7;--ink2:#C3D0E2;--muted:#94A6C6;--soft:#637393;
+  --line:rgba(255,255,255,.10);--line2:rgba(255,255,255,.16);
+  --em:#10B981;--em-dark:#0B9268;--em-soft:rgba(16,185,129,.14);
+  --navy:#0a0e16;--navy2:#10131c;
+  --gold:#F4C95D;--gold-soft:rgba(244,201,93,.14);--red:#ff6b81;--red-soft:rgba(255,91,123,.14);--amber:#F0A33C;--amber-soft:rgba(240,163,60,.14);--blue:#7CA8FF;--blue-soft:rgba(124,168,255,.14);
+  --r:16px;--shadow:0 8px 30px rgba(0,0,0,.45);
+  --font:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{min-height:100vh;background:radial-gradient(1100px 560px at 12% -8%,rgba(16,185,129,.10),transparent 55%),radial-gradient(1000px 520px at 100% 0%,rgba(59,130,246,.10),transparent 50%),var(--bg);background-attachment:fixed;color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.55}
+a{color:inherit;text-decoration:none} button,input,select,textarea{font:inherit}
+h2,h3,h4{letter-spacing:-.02em}
+.app{display:grid;grid-template-columns:264px 1fr;min-height:100vh}
+
+/* ── Sidebar ── */
+.sidebar{position:sticky;top:0;height:100vh;background:var(--navy);color:#E7EDF6;display:flex;flex-direction:column;overflow:hidden;z-index:60}
+.brand{padding:22px 20px 16px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:11px}
+.logo{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:var(--em);color:#fff;font-weight:800;font-size:18px}
+.brand b{font-size:19px;font-weight:800;letter-spacing:-.02em}.brand b span{color:var(--em)}
+.menuClose{display:none;margin-left:auto;border:1px solid rgba(255,255,255,.18);background:transparent;color:#fff;border-radius:10px;padding:6px 10px;cursor:pointer}
+.nav{padding:14px 12px;overflow:auto;flex:1}
+.navLabel{font-size:10.5px;text-transform:uppercase;letter-spacing:1.4px;color:#7C8DB0;font-weight:700;padding:12px 10px 5px}
+.navBtn{width:100%;border:0;background:transparent;color:#B9C5DB;padding:10px 12px;border-radius:10px;display:flex;align-items:center;gap:10px;cursor:pointer;text-align:left;font-size:14px;font-weight:600;margin:1px 0;transition:.15s}
+.navBtn:hover{color:#fff;background:rgba(255,255,255,.07)}
+.navBtn.active{color:#fff;background:var(--em)}
+.navBtn .ic{width:20px;text-align:center;flex:none}
+.navBadge{margin-left:auto;font-size:10px;padding:2px 7px;border-radius:999px;background:rgba(255,255,255,.14);color:#fff;font-weight:700}
+.navBadge.gold{background:rgba(244,201,93,.22);color:#F4C95D}
+.sidebarBottom{padding:14px 16px;border-top:1px solid rgba(255,255,255,.08);font-size:12px;color:#94A6C6}
+.credits{display:flex;justify-content:space-between;margin-bottom:7px;color:#C8D3E6}.credits b{color:#fff}
+.meter{height:6px;background:rgba(255,255,255,.12);border-radius:999px;overflow:hidden}.meter span{display:block;height:100%;background:var(--em);border-radius:999px}
+.upgrade{width:100%;margin-top:12px;border:0;border-radius:11px;padding:11px 14px;background:var(--em);font-weight:700;color:#fff;cursor:pointer}
+.upgrade:hover{background:var(--em-dark)}
+.trustLine{margin-top:12px;display:flex;gap:7px;align-items:flex-start;line-height:1.4}
+
+/* ── Topbar / content ── */
+.main{min-width:0;display:flex;flex-direction:column}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(10,14,22,.72);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:12px 26px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.crumb{color:var(--muted);font-size:13px;font-weight:600}
+.topActions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.pill{border:1px solid var(--line2);background:rgba(255,255,255,.05);color:var(--ink2);border-radius:999px;padding:7px 12px;font-size:12.5px;font-weight:700}
+.pill.em{border-color:rgba(16,185,129,.35);color:#34d8a0;background:var(--em-soft)}
+.primary{border:0;background:var(--em);color:#fff;font-weight:700;border-radius:11px;padding:10px 16px;cursor:pointer;transition:.15s}
+.primary:hover{background:var(--em-dark)} .primary:disabled{opacity:.6;cursor:not-allowed}
+.ghost{border:1px solid var(--line2);background:rgba(255,255,255,.05);color:var(--ink);font-weight:600;border-radius:11px;padding:10px 14px;cursor:pointer}
+.ghost:hover{border-color:var(--soft)}
+.mobileToggle{display:none}
+.content{padding:28px 30px 96px;max-width:1280px;margin:0 auto;width:100%}
+.page{display:none}.page.active{display:block;animation:fade .22s ease}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.heroHead{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:22px;flex-wrap:wrap}
+.heroHead h2{font-size:clamp(24px,3vw,32px);font-weight:800}
+.heroHead p{color:var(--muted);margin-top:6px;max-width:680px;font-size:14.5px}
+
+/* ── Cards / grids ── */
+.grid{display:grid;gap:16px}
+.grid4{grid-template-columns:repeat(4,minmax(0,1fr))}.grid3{grid-template-columns:repeat(3,minmax(0,1fr))}.grid2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.card{background:rgba(13,20,38,.55);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.08);border-radius:var(--r);padding:22px;box-shadow:var(--shadow)}
+.card h3{font-size:16.5px;font-weight:700;color:var(--ink)}
+.metricLab{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.8px;font-weight:700}
+.metricNum{font-size:30px;font-weight:800;margin-top:6px}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:11.5px;font-weight:700}
+.chip.up{background:var(--em-soft);color:#34d8a0}
+.chip.down{background:var(--red-soft);color:var(--red)}
+.chip.warn{background:var(--amber-soft);color:var(--amber)}
+.chip.info{background:var(--blue-soft);color:var(--blue)}
+.chip.gold{background:var(--gold-soft);color:var(--gold)}
+.sectionTitle{display:flex;align-items:center;justify-content:space-between;margin:26px 0 12px;gap:10px;flex-wrap:wrap}
+.sectionTitle h3{font-size:18px;font-weight:800}
+.sectionTitle span{color:var(--muted);font-size:13px}
+.list{display:grid;gap:10px}
+.item{display:flex;align-items:center;gap:12px;justify-content:space-between;padding:14px 16px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.05);flex-wrap:wrap}
+.item strong{display:block;font-size:14.5px}.item small{color:var(--muted);font-size:12.5px}
+.empty{padding:34px 22px;text-align:center;color:var(--muted);border:1.5px dashed var(--line2);border-radius:14px;background:rgba(255,255,255,.03);font-size:14px}
+.tag{display:inline-flex;padding:4px 9px;border-radius:999px;font-size:11px;font-weight:700;background:var(--em-soft);color:#34d8a0}
+.tag.red{background:var(--red-soft);color:var(--red)} .tag.amber{background:var(--amber-soft);color:var(--amber)} .tag.blue{background:var(--blue-soft);color:var(--blue)} .tag.gray{background:rgba(255,255,255,.07);color:var(--muted)}
+.bigRing{width:158px;height:158px;border-radius:50%;display:grid;place-items:center;margin:6px auto 14px;background:conic-gradient(var(--em) calc(var(--p)*1%),rgba(255,255,255,.08) 0)}
+.bigRing>div{width:122px;height:122px;border-radius:50%;background:#0c1322;display:grid;place-items:center;text-align:center;border:1px solid var(--line)}
+.bigRing b{font-size:34px;font-weight:800;line-height:1}
+.bigRing small{color:var(--muted);font-weight:600}
+.miniRing{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--em) calc(var(--p)*1%),rgba(255,255,255,.08) 0);flex:none}
+.miniRing>div{width:48px;height:48px;border-radius:50%;background:#0c1322;display:grid;place-items:center;font-weight:800;font-size:14px}
+.track{height:8px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden}.track span{display:block;height:100%;border-radius:999px;background:var(--em)}
+.info{cursor:help;color:var(--soft);font-size:12px;border:1px solid var(--line2);border-radius:50%;width:16px;height:16px;display:inline-grid;place-items:center;vertical-align:middle;margin-left:5px}
+
+/* ── Forms ── */
+label{display:grid;gap:6px;color:var(--ink2);font-size:12px;font-weight:700}
+input,select,textarea{background:rgba(255,255,255,.05);border:1px solid var(--line2);border-radius:11px;padding:11px 13px;color:var(--ink);outline:none;font-size:14px}
+input:focus,select:focus,textarea:focus{border-color:var(--em);box-shadow:0 0 0 3px rgba(16,185,129,.13)}
+input::placeholder,textarea::placeholder{color:var(--soft)}
+textarea{min-height:96px;resize:vertical}
+.formGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 18px}
+.tab{border:1px solid var(--line2);background:rgba(255,255,255,.05);color:var(--muted);border-radius:999px;padding:9px 15px;cursor:pointer;font-weight:700;font-size:13px}
+.tab.active{color:#fff;border-color:var(--em);background:var(--em)}
+
+/* ── Stepper (scanner) ── */
+.stepper{display:flex;gap:0;margin:4px 0 20px;overflow-x:auto;padding-bottom:4px}
+.stepNode{flex:1;min-width:96px;text-align:center;position:relative;font-size:11.5px;color:var(--soft);font-weight:700}
+.stepNode:before{content:"";position:absolute;top:13px;left:-50%;width:100%;height:2px;background:var(--line2)}
+.stepNode:first-child:before{display:none}
+.stepNode i{position:relative;z-index:1;display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.05);border:2px solid var(--line2);font-style:normal;font-size:12px;margin-bottom:5px}
+.stepNode.done i{background:var(--em);border-color:var(--em);color:#fff}
+.stepNode.done:before{background:var(--em)}
+.stepNode.now i{border-color:var(--em);color:var(--em-dark)}
+.stepNode.now{color:var(--ink)}
+.stepNode.done{color:var(--em-dark)}
+
+/* ── Dispute timeline ── */
+.dtl{display:flex;margin:14px 0 6px;overflow-x:auto}
+.dtl .stepNode{min-width:84px}
+.countdown{font-size:12px;font-weight:700}
+
+/* ── Chat ── */
+.advisor{display:grid;grid-template-columns:1fr 330px;gap:16px}
+.chat{height:480px;display:flex;flex-direction:column}
+.chatBody{flex:1;overflow:auto;display:grid;gap:10px;padding-right:4px;align-content:start}
+.bubble{max-width:86%;padding:12px 14px;border-radius:15px;line-height:1.5;font-size:14px;white-space:pre-wrap}
+.bot{background:rgba(255,255,255,.06);border:1px solid var(--line);justify-self:start;border-bottom-left-radius:5px}
+.me{background:#16314e;color:#fff;justify-self:end;border-bottom-right-radius:5px}
+.chatChips{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0 8px}
+.chatChips button{border:1px solid var(--line2);background:rgba(255,255,255,.05);border-radius:999px;padding:7px 12px;font-size:12.5px;font-weight:600;color:var(--ink2);cursor:pointer}
+.chatChips button:hover{border-color:var(--em);color:var(--em-dark)}
+.chatInput{display:flex;gap:9px;margin-top:6px}
+.chatInput input{flex:1}
+
+/* ── Onboarding ── */
+.wizard{max-width:620px;margin:0 auto}
+.wizDots{display:flex;gap:7px;justify-content:center;margin-bottom:22px}
+.wizDots i{width:9px;height:9px;border-radius:50%;background:var(--line2);font-style:normal}
+.wizDots i.on{background:var(--em);transform:scale(1.2)}
+.wizard h2{font-size:clamp(22px,3vw,30px);font-weight:800;text-align:center}
+.wizard .sub{color:var(--muted);text-align:center;margin:8px 0 22px;font-size:14.5px}
+.optGrid{display:grid;gap:11px}
+.opt{display:flex;align-items:center;gap:13px;border:1.5px solid var(--line2);background:rgba(255,255,255,.05);border-radius:14px;padding:16px;cursor:pointer;text-align:left;font-weight:600;font-size:15px;transition:.13s;width:100%}
+.opt:hover{border-color:var(--em)}
+.opt.sel{border-color:var(--em);background:var(--em-soft)}
+.opt .em{font-size:22px}
+.opt small{display:block;color:var(--muted);font-weight:500;font-size:12.5px}
+.wizNav{display:flex;gap:10px;margin-top:22px}
+.wizNav .primary{flex:1;padding:13px}
+.wizFoot{text-align:center;color:var(--soft);font-size:11.5px;margin-top:16px;text-transform:uppercase;letter-spacing:.7px;font-weight:700}
+
+/* ── Offers / funding ── */
+.offerGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.offerCard{display:flex;flex-direction:column;gap:10px;border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.05);padding:18px;box-shadow:var(--shadow)}
+.offerCard .amt{font-size:26px;font-weight:800}
+.offerCard ul{list-style:none;display:grid;gap:5px;color:var(--muted);font-size:13px}
+.offerCard ul li:before{content:"· "}
+.offerActions{display:flex;gap:8px;margin-top:auto;flex-wrap:wrap}
+.lockedCard{position:relative;border:1.5px dashed var(--gold);background:var(--gold-soft)}
+
+/* ── Modals / toast ── */
+.modalOverlay{display:none;position:fixed;inset:0;z-index:120;background:rgba(0,0,0,.66);backdrop-filter:blur(4px);place-items:center;padding:18px;overflow:auto}
+.modalOverlay.show{display:grid}
+.modal{width:min(860px,100%);background:#0c1322;border:1px solid var(--line);border-radius:20px;padding:26px;box-shadow:0 30px 90px rgba(0,0,0,.6);margin:auto}
+.modalHead{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:16px}
+.modalHead h2{font-size:24px;font-weight:800}
+.close{border:1px solid var(--line2);background:rgba(255,255,255,.05);color:var(--ink);border-radius:10px;padding:7px 11px;cursor:pointer}
+.planCard{display:flex;flex-direction:column;gap:9px;border:1px solid var(--line);border-radius:15px;padding:18px}
+.planCard.popular{border-color:var(--em);box-shadow:0 0 0 3px rgba(16,185,129,.14)}
+.planCard .pr{font-size:28px;font-weight:800}.planCard .pr small{font-size:13px;color:var(--muted);font-weight:600}
+.planCard ul{list-style:none;display:grid;gap:6px;color:var(--ink2);font-size:13px}
+.planCard ul li:before{content:"✓ ";color:var(--em-dark);font-weight:800}
+#toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(20px);background:#1b2436;color:#fff;padding:12px 18px;border-radius:12px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:.25s;z-index:200;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%)}
+
+/* ── Scanner panels ── */
+.scannerState{padding:24px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.03);color:var(--muted);display:grid;gap:9px;font-size:14px}
+.scannerState strong{color:var(--ink)}
+.scannerState.error{border-color:#F5C2CE;background:var(--red-soft);color:#9F1239}
+.scannerState.success{border-color:#BCE9D9;background:var(--em-soft);color:var(--ink2)}
+.spinner{width:26px;height:26px;border-radius:50%;border:3px solid rgba(255,255,255,.12);border-top-color:var(--em);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.dropZone{display:grid;place-items:center;min-height:140px;border:1.5px dashed var(--line2);border-radius:14px;background:rgba(255,255,255,.03);text-align:center;color:var(--muted);font-size:13.5px;transition:.15s;cursor:pointer;padding:14px}
+.dropZone.activeDrop,.dropZone:hover{border-color:var(--em);background:var(--em-soft)}
+.findRow{border:1px solid var(--line);border-radius:14px;padding:15px;display:grid;gap:8px;background:rgba(255,255,255,.05)}
+.findRow .top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.findRow p{color:var(--muted);font-size:13px}
+
+/* ── Bottom mobile nav ── */
+.bottomNav{display:none;position:fixed;left:0;right:0;bottom:0;z-index:90;background:#0a0e16;border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom));grid-template-columns:repeat(5,1fr)}
+.bottomNav button{border:0;background:none;display:grid;place-items:center;gap:2px;font-size:10.5px;font-weight:700;color:var(--muted);cursor:pointer;padding:5px 2px;border-radius:10px}
+.bottomNav button .ic{font-size:19px}
+.bottomNav button.active{color:#34d8a0}
+
+.menuOverlay{position:fixed;inset:0;background:rgba(0,0,0,.66);opacity:0;visibility:hidden;pointer-events:none;transition:.2s;z-index:55}
+.menu-open .menuOverlay{opacity:1;visibility:visible;pointer-events:auto}
+.hidden{display:none!important}
+.disclaimer{color:var(--soft);font-size:11.5px;line-height:1.55;margin-top:26px;border-top:1px solid var(--line);padding-top:14px}
+
+@media(max-width:1180px){
+  .app{grid-template-columns:1fr}
+  .sidebar{position:fixed;top:0;left:0;width:280px;height:100vh;transform:translateX(-103%);transition:transform .22s ease;box-shadow:14px 0 50px rgba(11,31,59,.18)}
+  .menu-open .sidebar{transform:translateX(0)}
+  .menuClose{display:inline-flex}
+  .mobileToggle{display:inline-flex}
+  .grid4{grid-template-columns:repeat(2,1fr)}
+  .advisor{grid-template-columns:1fr}
+  .offerGrid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:760px){
+  .grid4,.grid3,.grid2,.formGrid,.offerGrid{grid-template-columns:1fr}
+  .content{padding:20px 14px 110px}
+  .topbar{padding:10px 14px}
+  .topActions .pill{display:none}
+  .bottomNav{display:grid}
+  .heroHead h2{font-size:23px}
+  .card{padding:17px}
+  .chat{height:60vh}
+}
+
+/* Stitch source: Creditos Premium Fintech OS — Luminous Authority */
+:root{
+  --bg:#050810;--card:#0A1229;--ink:#E0E2EE;--ink2:#D4D9E5;--muted:#BBCABF;--soft:#86948A;
+  --line:rgba(255,255,255,.10);--line2:rgba(255,255,255,.17);--em:#10B981;--em-dark:#0B9268;
+  --em-soft:rgba(16,185,129,.12);--navy:#0A0E16;--navy2:#10131C;--blue:#3B82F6;
+  --blue-soft:rgba(59,130,246,.12);--red:#FF9E9A;--red-soft:rgba(255,158,154,.11);
+  --r:14px;--shadow:0 18px 48px rgba(0,0,0,.28);--font:'Geist',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;
+}
+body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),transparent 62%),var(--bg);font-family:var(--font);color:var(--ink)}
+.app{grid-template-columns:288px 1fr}.sidebar{background:#0A0E16;border-right:1px solid var(--line)}
+.brand{min-height:112px;padding:21px 22px;border-color:var(--line);align-items:center}.brand .logo{width:43px;height:43px;border-radius:11px;background:radial-gradient(circle at 50% 32%,rgba(78,222,163,.3),rgba(5,8,16,.96));border:1px solid rgba(78,222,163,.3);box-shadow:inset 0 0 18px rgba(16,185,129,.15),0 0 18px rgba(16,185,129,.1);font-size:0}.brand .logo:after{content:'';width:13px;height:13px;border:2px solid #4EDEA3;transform:rotate(45deg);box-shadow:0 0 9px #10B981}.brand b{color:#4EDEA3;font-size:21px;line-height:1.05}.brand b span{color:inherit}.brand small{display:block;margin-top:7px;color:var(--muted);font:500 9px/1 var(--mono);text-transform:uppercase;letter-spacing:.15em}.nav{padding:16px 12px}.navLabel{font:600 9px/1 var(--mono);letter-spacing:.13em;color:#66766f;padding:14px 13px 6px}.navBtn{position:relative;border-radius:8px;color:#AFBDB6;padding:10px 13px;font-size:13.5px;font-weight:500}.navBtn .material-symbols-outlined{font-size:20px;font-variation-settings:'wght' 350}.navBtn:hover{background:rgba(255,255,255,.045);color:var(--ink)}.navBtn.active{color:#4EDEA3;background:rgba(16,185,129,.12)}.navBtn.active:before{content:'';position:absolute;left:-1px;top:0;bottom:0;width:3px;background:#4EDEA3;box-shadow:0 0 12px rgba(78,222,163,.45)}.sidebarBottom{border-color:var(--line);padding:16px 18px;color:var(--muted)}.upgrade{background:var(--em);border-radius:10px}.trustLine{font:500 9px/1.45 var(--mono);text-transform:uppercase;letter-spacing:.04em}.nav{scrollbar-width:thin;scrollbar-color:#26342f transparent}.nav::-webkit-scrollbar{width:6px}.nav::-webkit-scrollbar-thumb{background:#26342f;border-radius:999px}.nav::-webkit-scrollbar-track{background:transparent}
+.topbar{height:68px;padding:10px 26px;background:rgba(28,32,40,.68);border-color:var(--line);backdrop-filter:blur(20px)}.topbarLeft{display:flex;align-items:center;gap:12px;flex:1}.appSearch{position:relative;width:min(440px,42vw)}.appSearch .material-symbols-outlined{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:20px}.appSearch input{width:100%;border-radius:999px;padding:10px 16px 10px 43px;background:#050810;border:1px solid var(--line);font-size:13px}.appSearch input:focus{border-color:var(--blue);box-shadow:0 0 0 4px var(--blue-soft)}.crumb{display:none}.topActions .pill{font-family:var(--mono);font-size:10px;letter-spacing:.03em}.topIcon{width:38px;height:38px;padding:0;display:grid;place-items:center;border-radius:50%}.topIcon .material-symbols-outlined{font-size:20px}.content{max-width:1300px;padding:30px 30px 105px}.card{background:rgba(10,18,41,.62);border:1px solid var(--line);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:var(--shadow)}.metricLab,.kickerMono{font-family:var(--mono);letter-spacing:.1em;color:var(--muted)}.heroHead h2{font-size:31px}.heroHead p{color:var(--muted)}.ghost{background:rgba(255,255,255,.025)}
+.stitchAlert{position:relative;overflow:hidden;padding:24px;margin-bottom:18px;border-color:rgba(59,130,246,.18)}.stitchAlert:before{content:'';position:absolute;inset:-1px;border-radius:inherit;padding:1px;background:linear-gradient(110deg,rgba(59,130,246,.2),rgba(16,185,129,.18),transparent 65%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}.stitchAlert:after{content:'!';position:absolute;right:28px;top:-32px;font-size:150px;font-weight:800;color:rgba(255,158,154,.055)}.alertBody{position:relative;z-index:1;display:flex;align-items:flex-start;gap:17px}.alertOrb{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;flex:none;background:var(--red-soft);color:var(--red);font-size:22px;font-weight:700}.alertCopy{flex:1}.alertCopy .kickerMono{font-size:10px;text-transform:uppercase;color:var(--red);margin-bottom:4px}.alertCopy h3{font-size:25px;margin-bottom:6px}.alertCopy p{color:var(--muted);max-width:780px}.alertActions{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}
+.stitchDashGrid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(280px,.7fr);gap:16px}.bureauPanel,.readinessPanel,.growthPanel,.recapPanel{padding:22px}.stitchCardHead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}.stitchCardHead h3{font-size:18px}.bureauRings{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.bureauCell{padding:18px 10px;text-align:center;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.025)}.bureauCell .kickerMono{font-size:9px}.bureauGauge{--p:70;width:106px;height:106px;margin:14px auto 9px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#4EDEA3 calc(var(--p)*1%),#3B82F6 calc(var(--p)*1% + 14%),#1A2637 0);filter:drop-shadow(0 0 10px rgba(16,185,129,.16))}.bureauGauge>div{width:87px;height:87px;border-radius:50%;background:#0B1424;display:grid;place-items:center;border:1px solid var(--line);font-size:22px;font-weight:800}.bureauCell .tag{margin-top:3px}.readinessPanel{text-align:center;border-color:rgba(78,222,163,.28)}.readinessPanel .bureauGauge{width:144px;height:144px;margin-top:24px}.readinessPanel .bureauGauge>div{width:115px;height:115px}.readinessPanel .metricNum{font-size:31px;margin:0}.readinessPanel p{color:var(--muted);font-size:13px;margin-top:12px}.readinessPanel .chip{margin-top:10px}.stitchLower{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(280px,.7fr);gap:16px;margin-top:16px}.growthPanel{min-height:264px}.growthPanel svg{width:100%;height:178px;overflow:visible}.recapPanel{display:grid;align-content:start;gap:11px}.recapStat{border:1px solid var(--line);background:rgba(255,255,255,.025);padding:14px;border-radius:11px}.recapTop{display:flex;justify-content:space-between;gap:12px;align-items:baseline}.recapTop .metricNum{font-size:21px;color:#4EDEA3;margin:0}.recapStat p{color:var(--muted);font-size:11.5px;margin-top:7px}.recapStat .track{margin-top:10px}.sectionTitle h3{letter-spacing:-.02em}
+@media(max-width:1180px){.app{grid-template-columns:1fr}.appSearch{width:min(420px,45vw)}}
+@media(max-width:900px){.stitchDashGrid,.stitchLower{grid-template-columns:1fr}.readinessPanel{display:grid;grid-template-columns:1fr 1fr;align-items:center}.readinessPanel .stitchCardHead{grid-column:1/-1}.readinessPanel .bureauGauge{margin:0 auto}}
+@media(max-width:760px){.topbar{height:60px;padding:9px 13px}.appSearch{width:auto;flex:1}.appSearch input{padding-block:8px}.topActions .topIcon{display:none}.content{padding:18px 13px 110px}.alertBody{flex-wrap:wrap}.alertCopy h3{font-size:21px}.bureauRings{gap:7px}.bureauCell{padding:13px 3px}.bureauGauge{width:82px;height:82px}.bureauGauge>div{width:67px;height:67px;font-size:18px}.readinessPanel{display:block}.heroHead h2{font-size:26px}}
+@media(max-width:420px){.bureauGauge{width:72px;height:72px}.bureauGauge>div{width:58px;height:58px;font-size:16px}.bureauCell .tag{font-size:9px;padding:3px 6px}.appSearch input{font-size:12px}}
+</style>
+</head>
+<body class="menu-closed">
+<div class="app">
+  <div class="menuOverlay" id="menuOverlay"></div>
+
+  <!-- ════════ SIDEBAR ════════ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><div class="logo"></div><div><b>CREDITOS</b><small>Premium financial OS</small></div><button class="menuClose" id="menuCloseBtn" type="button" aria-label="Close menu">✕</button></div>
+    <nav class="nav" id="nav">
+      <div class="navLabel">Command center</div>
+      <button class="navBtn active" data-page="home"><span class="material-symbols-outlined ic">dashboard</span> Dashboard</button>
+      <button class="navBtn" data-page="onboarding" id="navOnboarding"><span class="material-symbols-outlined ic">ads_click</span> Goals & Plan <span class="navBadge" id="planBadge">5 min</span></button>
+      <button class="navBtn" data-page="scanner"><span class="material-symbols-outlined ic">monitor_heart</span> Monitoring</button>
+      <button class="navBtn" data-page="disputes"><span class="material-symbols-outlined ic">timeline</span> Dispute Timeline <span class="navBadge" id="disputeCount"></span></button>
+      <button class="navBtn" data-page="letters"><span class="material-symbols-outlined ic">report_problem</span> Negative Items</button>
+      <button class="navBtn" data-page="simulator"><span class="material-symbols-outlined ic">model_training</span> Simulators</button>
+      <div class="navLabel">Funding</div>
+      <button class="navBtn" data-page="funding"><span class="material-symbols-outlined ic">account_balance</span> Funding Center</button>
+      <button class="navBtn" data-page="business"><span class="material-symbols-outlined ic">business_center</span> Business Credit</button>
+      <div class="navLabel">Intelligence</div>
+      <button class="navBtn" data-page="jordan"><span class="material-symbols-outlined ic">psychology</span> Jordan AI</button>
+      <div class="navLabel">Business tools <span class="navBadge gold">Elite</span></div>
+      <button class="navBtn" data-page="crm"><span class="material-symbols-outlined ic">group</span> Client CRM</button>
+      <button class="navBtn" data-page="vendors"><span class="material-symbols-outlined ic">inventory_2</span> Vendor Tracker</button>
+      <div class="navLabel">Account</div>
+      <button class="navBtn" data-page="settings"><span class="material-symbols-outlined ic">settings</span> Settings</button>
+    </nav>
+    <div class="sidebarBottom">
+      <div class="credits"><span>Credits</span><b id="sideCredits">—</b></div>
+      <div class="meter"><span id="sideMeter" style="width:0%"></span></div>
+      <button class="upgrade" onclick="openUpgrade()">✦ Upgrade to Elite</button>
+      <div class="trustLine">🔒 <span>256-bit encryption<br>Your data is never sold</span></div>
+    </div>
+  </aside>
+
+  <!-- ════════ MAIN ════════ -->
+  <main class="main">
+    <header class="topbar">
+      <div class="topbarLeft">
+        <button class="ghost mobileToggle" onclick="toggleMenu()">☰</button>
+        <label class="appSearch"><span class="material-symbols-outlined">search</span><input aria-label="Search navigation" placeholder="Search your financial OS..." oninput="filterNavigation(this.value)"></label>
+        <span class="crumb" id="crumb">Home</span>
+      </div>
+      <div class="topActions">
+        <span class="pill em" id="streakPill" title="Days in a row you've worked on your credit">🔥 — day streak</span>
+        <span class="pill" id="creditPill">— credits</span>
+        <button class="ghost topIcon" type="button" aria-label="Notifications"><span class="material-symbols-outlined">notifications</span></button>
+        <button class="ghost" id="authBtn" onclick="openAuthModal()">Sign in</button>
+      </div>
+    </header>
+
+    <section class="content">
+
+      <!-- ════════ HOME ════════ -->
+      <div class="page active" id="home">
+        <div id="homeNoPlan" class="hidden">
+          <div class="card" style="text-align:center;padding:44px 22px">
+            <div style="font-size:40px">✨</div>
+            <h2 style="font-size:26px;font-weight:800;margin:10px 0 6px">Let's build your money plan</h2>
+            <p style="color:var(--muted);max-width:440px;margin:0 auto 18px">Answer 8 quick questions and we'll create your Credit Health Score, Funding Readiness Score, and a step-by-step 30 / 90 / 180-day plan. Takes under 5 minutes.</p>
+            <button class="primary" style="padding:13px 26px" onclick="showPage('onboarding')">Get my free plan →</button>
+            <p style="color:var(--soft);font-size:12px;margin-top:12px">No card required · Your answers stay private</p>
+          </div>
+        </div>
+        <div id="homeMain" class="hidden">
+          <div class="heroHead"><div><div class="kickerMono" style="font-size:10px;text-transform:uppercase;margin-bottom:5px">Financial command center</div><h2 id="homeGreeting">Welcome back</h2><p id="homeGoalLine"></p></div>
+            <div style="display:flex;gap:9px;flex-wrap:wrap"><button class="primary" onclick="showPage('scanner')">Run monitoring scan</button><button class="ghost" onclick="showPage('jordan')">Ask Jordan AI</button></div>
+          </div>
+
+          <div class="card stitchAlert">
+            <div class="alertBody"><div class="alertOrb">!</div><div class="alertCopy"><div class="kickerMono">Jordan AI · Priority intelligence</div><h3 id="aiAlertTitle">Your next best move is ready.</h3><p id="aiAlertCopy">Review the highest-impact action for your current profile, then let CREDITOS track the result.</p><div class="alertActions"><button class="primary" onclick="showPage('scanner')">Review my report</button><button class="ghost" onclick="showPage('jordan')">Explain this to me</button></div></div></div>
+          </div>
+
+          <div class="stitchDashGrid">
+            <div class="card bureauPanel">
+              <div class="stitchCardHead"><h3>▥ &nbsp; Bureau Breakdown</h3><span class="kickerMono" style="font-size:9px">Report scores where available</span></div>
+              <div class="bureauRings">
+                <div class="bureauCell"><div class="kickerMono" id="bureauEqLabel">Profile estimate</div><div class="bureauGauge" id="scoreRing" style="--p:50"><div id="homeScore">—</div></div><span class="tag" id="homeScoreBand">Estimated</span></div>
+                <div class="bureauCell"><div class="kickerMono">TransUnion</div><div class="bureauGauge" id="bureauTuRing" style="--p:0"><div id="bureauTu">—</div></div><span class="tag blue" id="bureauTuTag">Add report</span></div>
+                <div class="bureauCell"><div class="kickerMono">Experian</div><div class="bureauGauge" id="bureauExRing" style="--p:0"><div id="bureauEx">—</div></div><span class="tag gray" id="bureauExTag">Add report</span></div>
+              </div>
+              <p style="color:var(--soft);font-size:11px;margin-top:12px">A bureau name appears with a score only when that bureau's score was explicitly found in the uploaded report.</p>
+            </div>
+            <div class="card readinessPanel">
+            <div class="stitchCardHead"><h3>⌂ &nbsp; Estimated Funding Readiness</h3><span class="kickerMono" style="font-size:9px">Profile projection</span></div>
+              <div class="bureauGauge" id="readyRing" style="--p:50"><div><span class="metricNum" id="homeReady">—</span></div></div>
+              <span class="chip info" id="homeReadyChip">Building</span>
+              <p>This projection combines the information you provided, utilization, negatives, and profile strength. It is not a lender decision.</p>
+            </div>
+          </div>
+
+          <div class="stitchLower">
+            <div class="card growthPanel"><div class="stitchCardHead"><div><h3>⌁ &nbsp; Growth Timeline</h3><p style="color:var(--muted);font-size:12px;margin-top:4px">Your credit trajectory and completed progress</p></div><span class="chip up" id="growthDelta">↗ Building</span></div>
+              <svg viewBox="0 0 760 180" preserveAspectRatio="none" aria-label="Credit growth trend"><defs><linearGradient id="growthFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#10B981" stop-opacity=".32"/><stop offset="1" stop-color="#10B981" stop-opacity="0"/></linearGradient></defs><path d="M0 148 C90 129 160 86 238 100 S370 169 456 107 S565 23 650 69 S720 47 760 30 L760 180 L0 180Z" fill="url(#growthFill)"/><path d="M0 148 C90 129 160 86 238 100 S370 169 456 107 S565 23 650 69 S720 47 760 30" fill="none" stroke="#10B981" stroke-width="6" stroke-linecap="round"/></svg>
+            </div>
+            <div class="card recapPanel"><div class="stitchCardHead"><h3>✦ &nbsp; Weekly AI Recap</h3></div>
+              <div class="recapStat"><div class="recapTop"><span>Credit health</span><span class="metricNum" id="homeHealth">—</span></div><span class="chip up" id="homeHealthChip">—</span></div>
+              <div class="recapStat"><div class="recapTop"><span>Utilization</span><b id="homeUtil">—</b></div><div class="track"><span id="homeUtilBar" style="width:0%"></span></div><p id="homeUtilTip"></p></div>
+              <div class="recapStat"><div class="recapTop"><span>Negative items</span><b id="homeNeg">—</b></div><p id="homeNegTip">Run a scan to see the items affecting your profile.</p></div>
+            </div>
+          </div>
+
+          <div class="sectionTitle"><h3>✦ &nbsp; Action Center</h3><span>Your highest-impact next moves</span></div>
+          <div class="card"><div class="list" id="actionCenter"></div></div>
+
+          <div class="grid grid2" style="margin-top:16px">
+            <div class="card"><div class="sectionTitle" style="margin:0 0 12px"><h3>🏆 Recent wins</h3></div><div class="list" id="winsList"><div class="empty">Wins land here — finished actions, removed items, new badges.</div></div></div>
+            <div class="card"><div class="sectionTitle" style="margin:0 0 12px"><h3>🗺️ Your roadmap</h3><span id="roadmapMeta"></span></div>
+              <div class="tabs" style="margin:0 0 12px"><button class="tab active" onclick="showPlan(30,this)">30 days</button><button class="tab" onclick="showPlan(90,this)">90 days</button><button class="tab" onclick="showPlan(180,this)">180 days</button></div>
+              <div class="list" id="roadmapList"></div>
+            </div>
+          </div>
+
+          <div class="sectionTitle"><h3>▤ &nbsp; Funding opportunities</h3><span>Educational estimates — not offers of credit</span></div>
+          <div class="offerGrid" id="homeOffers"></div>
+        </div>
+        <div class="disclaimer">CREDITOS is self-help software — not a credit repair organization, lender, or financial advisor. These are projections based on the information available and are not guaranteed credit score or funding outcomes. You may dispute inaccurate items yourself for free under FCRA §611. 🔒 Reports are analyzed and never sold.</div>
+      </div>
+
+      <!-- ════════ ONBOARDING WIZARD ════════ -->
+      <div class="page" id="onboarding">
+        <div class="wizard">
+          <div class="wizDots" id="wizDots"></div>
+          <p id="wizProgress" style="text-align:center;color:var(--muted);font-size:12px;margin:-14px 0 20px">Step 1 of 8</p>
+          <div id="wizBody"></div>
+        </div>
+      </div>
+
+      <!-- ════════ SCANNER ════════ -->
+      <div class="page" id="scanner">
+        <div class="heroHead"><div><h2>Scan my report</h2><p>Upload your credit report. The AI finds every problem, explains it in plain English, and writes the dispute letters for you.</p></div></div>
+        <div class="stepper" id="scanStepper"></div>
+        <div class="grid grid2">
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:13px"><div><h3>1 · Upload your report</h3><p style="color:var(--muted);font-size:13px;margin-top:5px">PDF, TXT, PNG, or JPG · maximum 10 MB. Scanned files use OCR.</p></div><span class="chip gold">1 credit per scan</span></div>
+            <div class="dropZone" id="reportDropZone"><div><div style="font-size:30px">⬆️</div><b>Drop your report here</b><br><small>or choose a PDF, TXT, PNG, or JPG</small></div></div>
+            <input id="reportFileInput" type="file" accept=".txt,.pdf,.png,.jpg,.jpeg,text/plain,application/pdf,image/png,image/jpeg" class="hidden">
+            <p style="color:var(--muted);font-size:12.5px;margin:10px 0 6px" id="uploadStatus">No file selected yet.</p>
+            <label style="margin-top:8px">Or paste report text<textarea id="reportText" placeholder="Paste your credit report text here..." style="min-height:140px"></textarea></label>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:12px;flex-wrap:wrap">
+              <button class="primary" id="runAnalysisBtn" onclick="runCreditAnalysis()">Run AI analysis</button>
+              <span class="chip info" id="scannerCreditBadge">— credits</span>
+            </div>
+            <p style="color:var(--soft);font-size:11.5px;margin-top:10px">🔒 Your report is encrypted in transit, analyzed, and not stored.</p>
+          </div>
+          <div class="card" id="scanResults">
+            <h3>2 · AI results</h3>
+            <div class="empty" style="margin-top:12px">Findings appear here with report-quality context, priority levels, non-guaranteed estimates, and review-first dispute actions.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════ LETTERS ════════ -->
+      <div class="page" id="letters">
+        <div class="heroHead"><div><h2>Letters</h2><p>AI-written dispute, escalation, and goodwill letters — cited to the exact law (FCRA §611, §604, §605).</p></div></div>
+        <div class="tabs">
+          <button class="tab active" data-ltab="dispute" onclick="switchLetterTab('dispute',this)">Dispute</button>
+          <button class="tab" data-ltab="escalation" onclick="switchLetterTab('escalation',this)">Round 2 escalation</button>
+          <button class="tab" data-ltab="goodwill" onclick="switchLetterTab('goodwill',this)">Goodwill</button>
+          <button class="tab" data-ltab="bulk" onclick="switchLetterTab('bulk',this)">Bulk</button>
+        </div>
+        <div id="letterTab-dispute" class="grid grid2">
+          <div class="card"><div class="formGrid"><label>Bureau<select id="lBureau"><option>Experian</option><option>Equifax</option><option>TransUnion</option></select></label><label>Item type<select id="lType"><option>Collection</option><option>Late Payment</option><option>Charge-off</option><option>Inquiry</option></select></label></div>
+            <label style="margin-top:13px">Strategy <span class="info" title="FCRA Validation = make them prove it. Metro 2 = reporting-format errors. Goodwill = polite ask. Round 2 = they ignored you.">i</span><select id="lStrategy"><option>FCRA Validation</option><option>Metro 2 Inaccuracy</option><option>Goodwill Adjustment</option><option>Round 2 Escalation</option></select></label>
+            <label style="margin-top:13px">Your full name<input id="letterClientName" placeholder="e.g. Jordan Carter"></label>
+            <label style="margin-top:13px">Creditor / account (optional)<input id="lCreditor" placeholder="e.g. Midland Credit"></label>
+            <button id="letterGenBtn" class="primary" style="margin-top:15px;width:100%" onclick="generateLetter()">Generate letter — 1 credit</button>
+          </div>
+          <div class="card"><h3>Letter preview</h3><pre id="letterPreview" style="white-space:pre-wrap;color:var(--ink2);margin-top:12px;font-family:var(--font);font-size:13px;line-height:1.6;max-height:430px;overflow:auto;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:14px">Your letter will stream here as it's written...</pre>
+            <div style="display:flex;gap:8px;margin-top:11px;flex-wrap:wrap"><button class="ghost" style="flex:1" onclick="copyText('letterPreview')">Copy</button><button class="ghost" style="flex:1" onclick="downloadText('letterPreview','creditos-dispute-letter')">Download .txt</button><button class="ghost" style="flex:1" onclick="downloadLetterPdf('letterPreview','Dispute Letter','creditos-dispute-letter')">Download PDF</button><button class="primary" style="flex:1" onclick="shipCurrentLetter()">Ship letter</button><button class="ghost" style="flex:1" onclick="trackCurrentLetter()">Track only</button></div>
+          </div>
+        </div>
+        <div id="letterTab-escalation" class="grid grid2 hidden">
+          <div class="card"><label>Your full name<input id="escName" placeholder="e.g. Jordan Carter"></label><label style="margin-top:13px">Bureau<select id="escBureau"><option>Experian</option><option>Equifax</option><option>TransUnion</option></select></label><label style="margin-top:13px">Creditor (optional)<input id="escCreditor" placeholder="e.g. Midland Credit"></label><label style="margin-top:13px">What did the bureau say?<textarea id="escResponse" placeholder="e.g. 'verified as accurate' with no proof"></textarea></label><button id="escBtn" class="primary" style="margin-top:15px;width:100%" onclick="generateEscalation()">Generate escalation — 1 credit</button></div>
+          <div class="card"><h3>Escalation letter</h3><pre id="escPreview" style="white-space:pre-wrap;color:var(--ink2);margin-top:12px;font-family:var(--font);font-size:13px;line-height:1.6;max-height:430px;overflow:auto;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:14px">Escalation letter appears here...</pre><div style="display:flex;gap:8px;margin-top:11px;flex-wrap:wrap"><button class="ghost" style="flex:1" onclick="copyText('escPreview')">Copy</button><button class="ghost" style="flex:1" onclick="downloadText('escPreview','creditos-escalation-letter')">Download .txt</button><button class="ghost" style="flex:1" onclick="downloadLetterPdf('escPreview','Round 2 Escalation Letter','creditos-escalation-letter')">Download PDF</button></div></div>
+        </div>
+        <div id="letterTab-goodwill" class="grid grid2 hidden">
+          <div class="card"><label>Your full name<input id="gwName" placeholder="e.g. Jordan Carter"></label><label style="margin-top:13px">Creditor<input id="gwCreditor" placeholder="e.g. Capital One"></label><label style="margin-top:13px">Account number (optional)<input id="gwAccount" placeholder="e.g. ****1234"></label><label style="margin-top:13px">How many late payments?<input id="gwMonths" placeholder="e.g. 1-2 late payments"></label><label style="margin-top:13px">What happened?<textarea id="gwHardship" placeholder="Brief, honest explanation — job loss, medical, family emergency..."></textarea></label><button id="gwBtn" class="primary" style="margin-top:15px;width:100%" onclick="generateGoodwill()">Generate goodwill — 1 credit</button></div>
+          <div class="card"><h3>Goodwill letter</h3><pre id="gwPreview" style="white-space:pre-wrap;color:var(--ink2);margin-top:12px;font-family:var(--font);font-size:13px;line-height:1.6;max-height:430px;overflow:auto;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:14px">Goodwill letter appears here...</pre><div style="display:flex;gap:8px;margin-top:11px;flex-wrap:wrap"><button class="ghost" style="flex:1" onclick="copyText('gwPreview')">Copy</button><button class="ghost" style="flex:1" onclick="downloadText('gwPreview','creditos-goodwill-letter')">Download .txt</button><button class="ghost" style="flex:1" onclick="downloadLetterPdf('gwPreview','Goodwill Letter','creditos-goodwill-letter')">Download PDF</button></div></div>
+        </div>
+        <div id="letterTab-bulk" class="hidden">
+          <div class="card" style="margin-bottom:13px"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap"><div><h3>Bulk letters</h3><p style="color:var(--muted);font-size:13px;margin-top:5px">Up to 20 letters at once · 1 credit each. <span class="chip gold">Pro</span></p></div><button class="ghost" onclick="addBulkRow()">+ Add row</button></div><div id="bulkRows" style="display:grid;gap:10px;margin-top:13px"></div><button id="bulkBtn" class="primary" style="margin-top:15px" onclick="runBulkGenerate()">Generate all letters</button></div>
+          <div id="bulkResults" style="display:grid;gap:12px"></div>
+        </div>
+        <div class="sectionTitle" style="margin-top:26px"><h3>Letter history</h3><span id="letterHistoryCount"></span></div>
+        <div id="letterHistory" class="list"><div class="empty">Sign in to see your letter history.</div></div>
+      </div>
+
+      <!-- ════════ DISPUTE CENTER ════════ -->
+      <div class="page" id="disputes">
+        <div class="heroHead"><div><h2>Dispute Center</h2><p>Track every dispute like a package — from letter created to resolved. Bureaus must respond within 30 days (FCRA §611).</p></div><button class="primary" onclick="showPage('scanner')">Find items to dispute</button></div>
+        <div class="grid grid3">
+          <div class="card"><div class="metricLab">Open</div><div class="metricNum" id="dOpen">0</div></div>
+          <div class="card"><div class="metricLab">Waiting on bureau</div><div class="metricNum" id="dSent">0</div></div>
+          <div class="card"><div class="metricLab">Resolved</div><div class="metricNum" id="dResolved" style="color:var(--em-dark)">0</div></div>
+        </div>
+        <div class="tabs" style="margin-top:18px">
+          <button class="tab active" data-dtab="all" onclick="filterDisputes('all',this)">All</button>
+          <button class="tab" data-dtab="open" onclick="filterDisputes('open',this)">Open</button>
+          <button class="tab" data-dtab="sent" onclick="filterDisputes('sent',this)">Sent</button>
+          <button class="tab" data-dtab="resolved" onclick="filterDisputes('resolved',this)">Resolved</button>
+        </div>
+        <div class="list" id="disputeList"><div class="empty">No disputes yet. Scan your report, generate a letter, then track it here.</div></div>
+        <div class="disclaimer">CREDITOS tracks your timeline and prepares documents. The new Ship letter button prepares a printable packet and records the mailed date in your timeline; physical mailing still requires your printer or a connected mail-fulfillment integration.</div>
+      </div>
+
+      <!-- ════════ SIMULATORS ════════ -->
+      <div class="page" id="simulator">
+        <div class="heroHead"><div><h2>Simulators</h2><p>Play with "what if" before you spend a dollar. Estimates, not guarantees.</p></div></div>
+        <div class="grid grid2">
+          <div class="card">
+            <h3>Credit simulator</h3>
+            <p style="color:var(--muted);font-size:13px;margin:5px 0 14px">What happens to my score if I…</p>
+            <div class="bigRing" id="simRing" style="--p:55"><div><b id="simScore">—</b><small>projected</small></div></div>
+            <div class="list">
+              <label class="item" style="cursor:pointer"><span>Remove 1 collection</span><span style="display:flex;gap:9px;align-items:center"><span class="tag">~+34 projected</span><input type="checkbox" onchange="calcScore()" data-points="34" style="width:18px;height:18px"></span></label>
+              <label class="item" style="cursor:pointer"><span>Drop utilization under 10%</span><span style="display:flex;gap:9px;align-items:center"><span class="tag">~+22 projected</span><input type="checkbox" onchange="calcScore()" data-points="22" style="width:18px;height:18px"></span></label>
+              <label class="item" style="cursor:pointer"><span>Remove hard inquiries</span><span style="display:flex;gap:9px;align-items:center"><span class="tag">~+14 projected</span><input type="checkbox" onchange="calcScore()" data-points="14" style="width:18px;height:18px"></span></label>
+              <label class="item" style="cursor:pointer"><span>Add a positive tradeline</span><span style="display:flex;gap:9px;align-items:center"><span class="tag">~+17 projected</span><input type="checkbox" onchange="calcScore()" data-points="17" style="width:18px;height:18px"></span></label>
+            </div>
+            <p style="color:var(--soft);font-size:11.5px;margin-top:10px">Illustrative projections only. Actual scoring models and outcomes vary.</p>
+          </div>
+          <div style="display:grid;gap:16px;align-content:start">
+            <div class="card">
+              <h3>Funding simulator</h3>
+              <p style="color:var(--muted);font-size:13px;margin:5px 0 13px">What unlocks if my score increases?</p>
+              <input type="range" min="580" max="800" value="680" id="fundSlider" style="width:100%" oninput="calcFunding()">
+              <div style="display:flex;justify-content:space-between;color:var(--muted);font-size:12px;margin-top:4px"><span>580</span><span>800</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-top:13px"><div><div class="metricLab">At projected score</div><b id="fundScore" style="font-size:25px">680</b></div><div style="text-align:right"><div class="metricLab">Illustrative range</div><b id="fundAmt" style="font-size:25px;color:var(--em-dark)">$25K</b></div></div>
+              <div class="track" style="margin-top:11px"><span id="fundBar" style="width:40%"></span></div>
+              <p style="color:var(--muted);font-size:12px;margin-top:9px" id="fundNote"></p>
+            </div>
+            <div class="card">
+              <h3>Debt payoff helper</h3>
+              <p style="color:var(--muted);font-size:13px;margin:5px 0 13px">"What happens if I pay down this card?"</p>
+              <div class="formGrid"><label>Card balance ($)<input id="payBal" type="number" placeholder="e.g. 1800" oninput="calcPayoff()"></label><label>Card limit ($)<input id="payLim" type="number" placeholder="e.g. 3000" oninput="calcPayoff()"></label></div>
+              <div id="payoffOut" style="margin-top:13px;color:var(--muted);font-size:13.5px">Enter your balance and limit to see your payoff target.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════ FUNDING CENTER ════════ -->
+      <div class="page" id="funding">
+        <div class="heroHead"><div><h2>Funding Center</h2><p>See your estimated readiness, what may be blocking you, and which educational funding paths fit your profile.</p></div><span class="chip warn">Lender links not connected yet</span></div>
+        <div class="grid grid2">
+          <div class="card" style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+            <div class="bigRing" id="fundReadyRing" style="--p:50;margin:0"><div><b id="fundReadyNum">—</b><small id="fundReadyLab">readiness</small></div></div>
+            <div style="flex:1;min-width:180px">
+              <h3>Estimated funding readiness</h3>
+              <div class="list" style="margin-top:10px" id="blockerList"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap"><div><h3>AI Funding Roadmap</h3><p style="color:var(--muted);font-size:13px;margin-top:5px">Personal plan: blockers, monthly steps, and matched products.</p></div><span class="chip gold">3 credits</span></div>
+            <div class="formGrid" style="margin:13px 0"><label>Funding goal<select id="fundingGoal"><option>$5,000 - $10,000</option><option>$10,000 - $25,000</option><option>$25,000 - $50,000</option><option>$50,000 - $100,000</option><option>$100,000+</option></select></label><label>Current credit score<input id="fundingScore" type="number" placeholder="e.g. 680" min="300" max="850"></label></div>
+            <label>Report text (optional, sharper results)<textarea id="fundingReportText" style="min-height:64px" placeholder="Paste report text for more accurate blockers..."></textarea></label>
+            <button class="primary" id="fundingRoadmapBtn" style="margin-top:13px;width:100%" onclick="runFundingRoadmap()">Build my roadmap — 3 credits</button>
+          </div>
+        </div>
+        <div id="fundingRoadmapResults" style="margin-top:16px"></div>
+        <div class="tabs" style="margin-top:22px" id="fundTabs">
+          <button class="tab active" onclick="showFundCat('personal',this)">Personal loans</button>
+          <button class="tab" onclick="showFundCat('business',this)">Business funding</button>
+          <button class="tab" onclick="showFundCat('cards',this)">Credit cards</button>
+          <button class="tab" onclick="showFundCat('loc',this)">Lines of credit</button>
+          <button class="tab" onclick="showFundCat('vehicle',this)">Vehicle</button>
+          <button class="tab" onclick="showFundCat('equipment',this)">Equipment</button>
+        </div>
+        <div class="offerGrid" id="fundCatGrid"></div>
+        <div class="sectionTitle"><h3>🗄️ My funding vault</h3><span>Offers you saved</span></div>
+        <div class="offerGrid" id="vaultGrid"><div class="empty" style="grid-column:1/-1">Save offers you like and compare them here.</div></div>
+        <div class="disclaimer">These are projections based on the information available and are not guaranteed credit score or funding outcomes. CREDITOS does not submit applications; lender links are not connected yet.</div>
+        <div class="sectionTitle"><h3>Roadmap integrations</h3><span>Clearly labeled placeholders for post-launch</span></div>
+        <div class="grid grid3">
+          <div class="card"><span class="chip info">Coming soon</span><h3 style="margin-top:10px">Credit monitoring</h3><p style="color:var(--muted);font-size:13px;margin-top:6px">Array/CRS bureau monitoring is not connected yet.</p></div>
+          <div class="card"><span class="chip info">Coming soon</span><h3 style="margin-top:10px">Mail fulfillment</h3><p style="color:var(--muted);font-size:13px;margin-top:6px">Lob or Click2Mail fulfillment is not connected yet.</p></div>
+          <div class="card"><span class="chip info">Coming soon</span><h3 style="margin-top:10px">Live lender links</h3><p style="color:var(--muted);font-size:13px;margin-top:6px">Applications and affiliate tracking are not connected yet.</p></div>
+          <div class="card"><span class="chip info">Coming soon</span><h3 style="margin-top:10px">Email & dispute alerts</h3><p style="color:var(--muted);font-size:13px;margin-top:6px">Weekly email and push notifications are not active yet.</p></div>
+          <div class="card"><span class="chip info">Coming soon</span><h3 style="margin-top:10px">Debt payoff planner</h3><p style="color:var(--muted);font-size:13px;margin-top:6px">Full avalanche and snowball planning will follow the beta.</p></div>
+          <div class="card"><span class="chip info">Coming soon</span><h3 style="margin-top:10px">Credit aging trackers</h3><p style="color:var(--muted);font-size:13px;margin-top:6px">Inquiry aging and personal tradeline tracking are not active yet.</p></div>
+        </div>
+      </div>
+
+      <!-- ════════ BUSINESS CREDIT ════════ -->
+      <div class="page" id="business">
+        <div class="heroHead"><div><h2>Business Credit</h2><p>Build a fundable business profile step by step — entity, EIN, DUNS, vendor tradelines, then real funding.</p></div></div>
+        <div class="grid grid3">
+          <div class="card"><h3>Business profile</h3>
+            <div class="track" style="margin:13px 0 7px"><span id="bizMeter" style="width:0%"></span></div>
+            <p style="color:var(--muted);font-size:12.5px;margin-bottom:12px"><b id="bizPct">0%</b> complete</p>
+            <div class="list" id="bizChecklist"></div>
+          </div>
+          <div class="card"><h3>Business details</h3>
+            <div style="display:grid;gap:11px;margin-top:12px">
+              <label>Business name<input id="bizName" placeholder="e.g. Carter Logistics LLC" onchange="saveBiz()"></label>
+              <label>Monthly revenue ($)<input id="bizRevenue" type="number" placeholder="e.g. 12000" onchange="saveBiz()"></label>
+              <label>Months in business<input id="bizMonths" type="number" placeholder="e.g. 14" onchange="saveBiz()"></label>
+            </div>
+          </div>
+          <div class="card"><h3>Tradelines reporting</h3>
+            <p style="color:var(--muted);font-size:13px;margin:8px 0 12px">Business bureaus want to see 3–5 vendor accounts reporting before approving real credit.</p>
+            <div style="display:flex;align-items:center;gap:13px"><div class="miniRing" id="tradeRing" style="--p:0"><div id="tradeNum">0</div></div><div><b>of 5 target tradelines</b><br><small style="color:var(--muted)">Track them in the Vendor Tracker</small></div></div>
+            <button class="ghost" style="margin-top:13px;width:100%" onclick="showPage('vendors')">Open vendor tracker →</button>
+          </div>
+        </div>
+        <div class="sectionTitle"><h3>Your business credit path</h3></div>
+        <div class="list">
+          <div class="item"><div><strong>1 · Form your entity + get an EIN</strong><small>Free at irs.gov — never pay for an EIN. Check it off in the profile card.</small></div><span class="tag blue">Foundation</span></div>
+          <div class="item"><div><strong>2 · Get your DUNS number</strong><small>Free at dnb.com — unlocks your D&B business credit file.</small></div><span class="tag blue">Foundation</span></div>
+          <div class="item"><div><strong>3 · Open 3 Net-30 vendor accounts</strong><small>Uline, Quill, Grainger-style starter vendors that report to business bureaus.</small></div><span class="tag">Build</span></div>
+          <div class="item"><div><strong>4 · Let tradelines report 30–60 days</strong><small>Then check your Paydex score before applying for cards.</small></div><span class="tag">Build</span></div>
+          <div class="item"><div><strong>5 · Apply for business cards & lines</strong><small>Use the Funding Center business tab once readiness is 70%+.</small></div><span class="tag amber">Fund</span></div>
+        </div>
+      </div>
+
+      <!-- ════════ JORDAN ════════ -->
+      <div class="page" id="jordan">
+        <div class="heroHead"><div><h2>Jordan — your AI money coach</h2><p>Ask anything about your credit, disputes, or funding. Jordan knows your goal and plan.</p></div></div>
+        <div class="advisor">
+          <div class="card chat">
+            <div id="jordanGoalCard" style="border:1px solid var(--line);border-radius:12px;padding:11px 14px;margin-bottom:11px;background:rgba(255,255,255,.03);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><small style="color:var(--muted)">🎯 <b id="jordanGoal" style="color:var(--ink)">Set your goal in onboarding</b></small><span class="tag" id="jordanReadyTag">—</span></div>
+            <div class="chatBody" id="chatBody"><div class="bubble bot">Hey, I'm Jordan 👋 — your AI credit coach. Ask me what to fix first, how disputes work, or when you could realistically get funded.</div></div>
+            <div class="chatChips"><button onclick="chipChat('What should I fix first?')">What do I fix first?</button><button onclick="chipChat('When can I realistically get funded, and for how much?')">When can I get funded?</button><button onclick="chipChat('Explain what hurts my credit score the most.')">Explain my score</button><button onclick="chipChat('Give me a simple plan for this week.')">Plan my week</button></div>
+            <div class="chatInput"><input id="chatText" placeholder="Ask Jordan anything…"/><button class="primary" onclick="sendChat()">Send</button></div>
+          </div>
+          <div style="display:grid;gap:14px;align-content:start">
+            <div class="card"><h3>📅 Weekly check-in</h3><p style="color:var(--muted);font-size:13px;margin:7px 0 11px" id="checkinText">Check in once a week — Jordan reviews your progress and resets your top 3 moves.</p><button class="primary" style="width:100%" onclick="weeklyCheckin()">Start check-in</button></div>
+            <div class="card"><h3>🎯 Goal tracking</h3><div class="list" style="margin-top:11px" id="goalTrack"></div></div>
+            <div class="card"><h3>🏅 Badges</h3><div id="badgeGrid" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:11px"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════ CRM (Business plan) ════════ -->
+      <div class="page" id="crm">
+        <div class="heroHead"><div><h2>Client CRM <span class="chip gold">Business plan</span></h2><p>For credit coaches and agencies: manage client profiles, scores, and progress.</p></div><button class="primary" onclick="openAddClient()">+ Add client</button></div>
+        <div id="crmGrid" class="grid grid3"><div class="empty" style="grid-column:1/-1">Sign in to manage clients.</div></div>
+      </div>
+
+      <!-- ════════ VENDORS (Business plan) ════════ -->
+      <div class="page" id="vendors">
+        <div class="heroHead"><div><h2>Vendor Tracker <span class="chip gold">Business plan</span></h2><p>Track Net-30 vendor accounts from application to bureau reporting.</p></div></div>
+        <div class="grid grid4" id="vendorBoard"></div>
+      </div>
+
+      <!-- ════════ SETTINGS ════════ -->
+      <div class="page" id="settings">
+        <div class="heroHead"><div><h2>Settings</h2><p>Everything about your account, in plain English.</p></div></div>
+        <div class="grid grid2">
+          <div class="card"><h3>👤 My profile</h3>
+            <div style="display:grid;gap:11px;margin-top:13px">
+              <label>First name<input id="setName" placeholder="Your first name" onchange="saveSettings()"></label>
+              <label>Main goal<select id="setGoal" onchange="saveSettings()"><option value="house">🏠 Buy a house</option><option value="car">🚗 Buy a car</option><option value="funding">💰 Get funding</option><option value="repair">🛠 Repair my credit</option><option value="business">🚀 Start a business</option></select></label>
+              <p style="color:var(--muted);font-size:12.5px">Signed in as <b id="setEmail">—</b></p>
+            </div>
+          </div>
+          <div class="card"><h3>💳 My plan</h3>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin:13px 0"><div><b id="setPlan" style="font-size:19px">Free</b><br><small style="color:var(--muted)" id="setPlanSub">Limited credits</small></div><button class="primary" onclick="openUpgrade()">Change plan</button></div>
+            <p style="color:var(--muted);font-size:12.5px">Cancel anytime. Payments are processed by Stripe — we never see your card number.</p>
+          </div>
+          <div class="card"><h3>🔔 Notifications</h3>
+            <div class="list" style="margin-top:13px">
+              <label class="item" style="cursor:pointer"><span>Dispute deadline reminders</span><input type="checkbox" checked id="notifDeadlines" onchange="saveSettings()" style="width:18px;height:18px"></label>
+              <label class="item" style="cursor:pointer"><span>Weekly Jordan check-in nudge</span><input type="checkbox" checked id="notifCheckin" onchange="saveSettings()" style="width:18px;height:18px"></label>
+            </div>
+          </div>
+          <div class="card"><h3>🩺 Live service status</h3>
+            <div class="list" id="serviceStatusList" style="margin-top:13px"></div>
+            <p id="serviceStatusNote" style="color:var(--muted);font-size:12.5px;margin-top:10px">Checking which live services are connected…</p>
+          </div>
+          <div class="card"><h3>🔒 Data & privacy</h3>
+            <p style="color:var(--muted);font-size:13px;margin:10px 0 7px">Credit report contents are analyzed and never stored or sold. Scan metadata, your plan, and progress sync to your account.</p>
+            <p id="cloudSyncStatus" style="color:var(--muted);font-size:12px;margin-bottom:13px">Sign in to enable cross-device sync.</p>
+            <div style="display:flex;gap:9px;flex-wrap:wrap"><button class="ghost" onclick="clearLocalData()">Clear my device data</button><button class="ghost" id="signOutBtn" onclick="doSignOut()">Sign out</button></div>
+          </div>
+        </div>
+        <div class="disclaimer">CREDITOS is self-help software, not a credit repair organization (CROA), lender, or financial advisor. You can dispute inaccurate information yourself for free — CREDITOS makes it faster and easier. Results vary; nothing here is a guarantee of score change or credit approval.</div>
+      </div>
+
+    </section>
+  </main>
+</div>
+
+<!-- ════════ BOTTOM NAV (mobile) ════════ -->
+<nav class="bottomNav" id="bottomNav">
+  <button data-page="home" class="active"><span class="ic">🏠</span>Home</button>
+  <button data-page="scanner"><span class="ic">🔍</span>Scan</button>
+  <button data-page="disputes"><span class="ic">📨</span>Disputes</button>
+  <button data-page="funding"><span class="ic">💰</span>Funding</button>
+  <button data-page="jordan"><span class="ic">🤝</span>Jordan</button>
+</nav>
+
+<!-- ════════ MODALS ════════ -->
+<div class="modalOverlay" id="upgradeModal"><div class="modal">
+  <div class="modalHead"><div><h2>Choose your plan</h2><p style="color:var(--muted);margin-top:5px">7-day free trial on paid plans · Cancel anytime · Secured by Stripe 🔒</p></div><button class="close" onclick="closeUpgrade()">✕</button></div>
+  <div class="grid grid3" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+    <div class="planCard"><b>Free</b><div class="pr">$0</div><ul><li>3 credits to try AI</li><li>Score & funding simulators</li><li>Personal plan (30/90/180)</li></ul><button class="ghost" style="margin-top:auto">Current plan</button></div>
+    <div class="planCard"><b>Starter</b><div class="pr">$19<small>/mo</small></div><ul><li>25 AI credits / month</li><li>All letter types</li><li>Dispute tracking</li></ul><button class="primary" style="margin-top:auto" onclick="startCheckout('starter')">Start free trial</button></div>
+    <div class="planCard popular"><b>Pro <span class="chip up">Most popular</span></b><div class="pr">$49<small>/mo</small></div><ul><li>Unlimited AI scans & letters</li><li>Jordan AI coach unlimited</li><li>AI funding roadmaps</li><li>Bulk letters (20 at once)</li></ul><button class="primary" style="margin-top:auto" onclick="startCheckout('pro')">Start free trial</button></div>
+    <div class="planCard"><b>Premium</b><div class="pr">$99<small>/mo</small></div><ul><li>Everything in Pro</li><li>Advanced dispute workflows</li><li>Live lender matching (coming soon)</li><li>Priority AI guidance</li></ul><button class="primary" style="margin-top:auto" onclick="startCheckout('premium')">Start free trial</button></div>
+    <div class="planCard"><b>Business</b><div class="pr">$199<small>/mo</small></div><ul><li>Everything in Premium</li><li>Client CRM & vendor tracker</li><li>Business credit suite</li><li>White-label (coming soon)</li></ul><button class="primary" style="margin-top:auto" onclick="startCheckout('business')">Start free trial</button></div>
+  </div>
+  <p style="color:var(--soft);font-size:11.5px;margin-top:14px">Prices in USD. Subscriptions renew monthly until canceled in Settings. CREDITOS never charges per-deletion fees.</p>
+</div></div>
+
+<div class="modalOverlay" id="authModal"><div class="modal" style="max-width:420px">
+  <div class="modalHead"><div><h2 id="authTitle">Sign in / Sign up</h2><p id="authSubtitle" style="color:var(--muted);margin-top:5px">Your plan, disputes, and letters — saved securely.</p></div><button class="close" onclick="closeAuthModal()">✕</button></div>
+  <div id="authStandard" style="display:grid;gap:11px">
+    <label>Email<input id="authEmail" type="email" placeholder="you@example.com"></label>
+    <label>Password<input id="authPass" type="password" placeholder="Min 8 characters"></label>
+    <p id="authMsg" style="color:var(--muted);font-size:13px;min-height:18px"></p>
+    <button class="primary" style="width:100%" onclick="submitAuth('signin')">Sign in</button>
+    <button class="ghost" style="width:100%" onclick="submitAuth('signup')">Create free account</button>
+    <button class="ghost" style="width:100%" onclick="sendMagicLink()">Email me a magic sign-in link</button>
+    <button style="border:0;background:none;color:var(--muted);font-size:12.5px;cursor:pointer;text-decoration:underline" onclick="forgotPassword()">Forgot password?</button>
+    <p style="color:var(--soft);font-size:11px;text-align:center">🔒 Protected with bank-level encryption</p>
+  </div>
+  <div id="authRecovery" class="hidden" style="display:grid;gap:11px">
+    <label>New password<input id="recoveryPass" type="password" placeholder="At least 8 characters" autocomplete="new-password"></label>
+    <label>Confirm new password<input id="recoveryPassConfirm" type="password" placeholder="Type it again" autocomplete="new-password"></label>
+    <p id="recoveryMsg" style="color:var(--muted);font-size:13px;min-height:18px"></p>
+    <button class="primary" style="width:100%" onclick="completePasswordReset()">Update password</button>
+  </div>
+</div></div>
+
+<div class="modalOverlay" id="tourModal"><div class="modal" style="max-width:520px">
+  <div class="modalHead"><div><h2 id="tourTitle">Your CREDITOS home base</h2><p id="tourSubtitle" style="color:var(--muted);margin-top:5px">A 30-second tour, in plain English.</p></div><button class="close" onclick="finishProductTour()">✕</button></div>
+  <div id="tourBody" class="scannerState success"></div>
+  <div style="display:flex;justify-content:space-between;gap:10px;margin-top:16px"><button class="ghost" onclick="finishProductTour()">Skip tour</button><button class="primary" id="tourNextBtn" onclick="nextProductTour()">Next →</button></div>
+</div></div>
+
+<div class="modalOverlay" id="addClientModal"><div class="modal" style="max-width:480px">
+  <div class="modalHead"><div><h2>Add client</h2></div><button class="close" onclick="closeAddClient()">✕</button></div>
+  <div style="display:grid;gap:11px">
+    <div class="formGrid"><label>Full name<input id="newClientName" placeholder="e.g. Marcus Thompson"></label><label>Email<input id="newClientEmail" type="email" placeholder="client@email.com"></label></div>
+    <label>Current credit score<input id="newClientScore" type="number" placeholder="e.g. 620"></label>
+    <label>Notes<textarea id="newClientNotes" placeholder="Goals, situation, next steps..."></textarea></label>
+    <p id="addClientMsg" style="color:var(--muted);font-size:13px;min-height:18px"></p>
+    <button class="primary" style="width:100%" onclick="saveClient()">Save client</button>
+  </div>
+</div></div>
+
+<div id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   CREDITOS app — single-file frontend
+   Sections: config → helpers → auth → stores → gamification →
+   onboarding → dashboard → scanner → letters → disputes →
+   simulators → funding → business → jordan → crm/vendors →
+   settings → boot
+   ═══════════════════════════════════════════════════════════════ */
+
+// ── Config ─────────────────────────────────────────────────────
+const SUPABASE_URL  = 'https://cgqpcnymvczjyxwxjjwh.supabase.co';
+// Public anon key (safe to expose — RLS protects all data). Never put the service_role key here.
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNncXBjbnltdmN6anl4d3hqandoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0ODY2NjIsImV4cCI6MjA5MzA2MjY2Mn0.aCzDja6DAn8JpkSTrMM6y-Z3ML_bR05YTic6YT9qAvg';
+
+let _supabase = null;
+let _session  = null;
+let _plan     = { plan: 'free', credits: null, unlimited: false };
+let _runtimeStatus = null;
+
+// ── Tiny helpers ───────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+function escapeHtml(v){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2600)}
+const CLOUD_STATE_KEYS=['onboarding','onboardingDraft','actionsDone','wins','badges','streak','lastScan','vault','business','checkin','prefs','vendors','tourSeen','disputes'];
+let _cloudSyncTimer=null,_cloudRetryTimer=null,_hydratingCloud=false,_lastHydratedUser=null,_cloudSyncFailed=false;
+function store(key, val){
+  if(val===undefined){ try{return JSON.parse(localStorage.getItem('creditos.'+key))}catch{return null} }
+  localStorage.setItem('creditos.'+key, JSON.stringify(val));
+  if(!_hydratingCloud&&CLOUD_STATE_KEYS.includes(key))scheduleCloudStateSync();
+  return val;
+}
+function clearStore(key){ localStorage.removeItem('creditos.'+key); if(CLOUD_STATE_KEYS.includes(key))scheduleCloudStateSync(); }
+function daysBetween(a,b){ return Math.round((b-a)/86400000); }
+function getAuthToken(){ return _session?.access_token || null; }
+function scheduleCloudStateSync(){
+  if(!_supabase||!_session)return;
+  clearTimeout(_cloudSyncTimer);
+  _cloudSyncTimer=setTimeout(syncCloudState,650);
+}
+function setCloudStatus(message,isError=false){
+  const el=$('cloudSyncStatus');
+  if(el){el.textContent=message;el.style.color=isError?'var(--red)':'var(--muted)';}
+}
+function serviceRow(label, status, detail, tone='gray'){
+  return `<div class="item"><div><strong>${escapeHtml(label)}</strong><small>${escapeHtml(detail)}</small></div><span class="tag ${tone}">${escapeHtml(status)}</span></div>`;
+}
+function renderServiceStatus(){
+  const list=$('serviceStatusList');
+  const note=$('serviceStatusNote');
+  if(!list||!note)return;
+  const s=_runtimeStatus||{};
+  const connected=label=>serviceRow(label,'Connected','Ready for live use.','up');
+  const setup=label=>serviceRow(label,'Setup needed','This service is not connected yet. The app stays usable locally.','warn');
+  const browser=label=>serviceRow(label,'Browser-powered','Runs locally in your browser; no server key is required.','gray');
+  list.innerHTML=[
+    s.supabase===true?connected('Supabase'):(s.supabase===false?setup('Supabase'):serviceRow('Supabase','Checking','Loading service status…','gray')),
+    s.stripe===true?connected('Stripe'):(s.stripe===false?setup('Stripe'):serviceRow('Stripe','Checking','Loading service status…','gray')),
+    s.gemini===true?connected('Gemini'):(s.gemini===false?setup('Gemini'):serviceRow('Gemini','Checking','Loading service status…','gray')),
+    browser('OCR'),
+    browser('PDF export')
+  ].join('');
+  note.textContent = s.supabase===false || s.stripe===false || s.gemini===false
+    ? 'Live services are still in setup mode. Local features continue to work, and API calls show a clean status message instead of crashing.'
+    : 'All configured live services report ready status, and browser-powered OCR / PDF export stay available locally.';
+}
+async function syncCloudState(){
+  if(!_supabase||!_session||_hydratingCloud)return;
+  const state={};
+  CLOUD_STATE_KEYS.forEach(key=>{const value=store(key);if(value!==null)state[key]=value});
+  state._updatedAt=Date.now();
+  setCloudStatus('Syncing progress…');
+  try{
+    const {error}=await _supabase.from('user_state').upsert({user_id:_session.user.id,state,updated_at:new Date().toISOString()},{onConflict:'user_id'});
+    if(error)throw error;
+    _cloudSyncFailed=false;clearTimeout(_cloudRetryTimer);setCloudStatus('Progress synced across devices ✓');
+  }catch(e){
+    setCloudStatus('Could not sync. Your progress is safe on this device; retrying…',true);
+    if(!_cloudSyncFailed)toast('Cloud sync paused — retrying automatically.');
+    _cloudSyncFailed=true;clearTimeout(_cloudRetryTimer);_cloudRetryTimer=setTimeout(syncCloudState,5000);
+  }
+}
+async function hydrateCloudState(session){
+  if(!_supabase||!session||_lastHydratedUser===session.user.id)return;
+  _lastHydratedUser=session.user.id;
+  try{
+    setCloudStatus('Loading your saved progress…');
+    const {data,error}=await _supabase.from('user_state').select('state').eq('user_id',session.user.id).maybeSingle();
+    if(error)throw error;
+    if(data?.state){
+      _hydratingCloud=true;
+      const localState={};CLOUD_STATE_KEYS.forEach(key=>{const value=store(key);if(value!==null)localState[key]=value});
+      const merged={...localState,...data.state};
+      Object.entries(merged).forEach(([key,value])=>{if(CLOUD_STATE_KEYS.includes(key))localStorage.setItem('creditos.'+key,JSON.stringify(value))});
+      _hydratingCloud=false;
+      const draft=store('onboardingDraft');if(draft?.a)wiz=draft;
+      renderDashboard();renderJordanSide();renderFundingPage();renderVendors();
+      setCloudStatus('Progress synced across devices ✓');
+      if(Object.keys(localState).some(key=>!(key in data.state)))scheduleCloudStateSync();
+    }else{setCloudStatus('Saving this device to your account…');scheduleCloudStateSync();}
+  }catch(e){setCloudStatus('Could not load cloud progress. Using this device for now.',true);toast('Cloud progress could not load. Tap Settings to retry.');}
+  finally{_hydratingCloud=false}
+}
+
+const api = {
+  headers(){ const h={'Content-Type':'application/json'}; const t=getAuthToken(); if(t)h['Authorization']=`Bearer ${t}`; return h; },
+  async post(path,body){ const res=await fetch(path,{method:'POST',headers:this.headers(),body:JSON.stringify(body)}); const data=await res.json().catch(()=>({error:'Invalid server response.'})); if(!res.ok){const e=new Error(data.error||'Request failed.');e.status=res.status;throw e;} return data; },
+  async get(path){ const res=await fetch(path,{headers:this.headers()}); const data=await res.json().catch(()=>({error:'Invalid server response.'})); if(!res.ok){const e=new Error(data.error||'Request failed.');e.status=res.status;throw e;} return data; }
+};
+
+// ── Auth ───────────────────────────────────────────────────────
+function updateAuthUI(session){
+  const btn=$('authBtn');
+  if(session){ btn.textContent='Sign out'; btn.onclick=doSignOut; $('setEmail').textContent=session.user?.email||'—';setCloudStatus('Loading your saved progress…'); }
+  else { btn.textContent='Sign in'; btn.onclick=openAuthModal; $('setEmail').textContent='not signed in';setCloudStatus('Sign in to enable cross-device sync.'); }
+  loadDashboardMetrics(); loadCRMClients(); loadLetterHistory(); renderDisputes();
+  if(session)hydrateCloudState(session);
+}
+let _manualSignOut=false,_hadSession=false;
+try{
+  _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  _supabase.auth.onAuthStateChange((event,session)=>{
+    const expired=event==='SIGNED_OUT'&&_hadSession&&!_manualSignOut;
+    _session=session;_hadSession=!!session;updateAuthUI(session);
+    if(event==='PASSWORD_RECOVERY')showPasswordRecovery();
+    if(event==='SIGNED_IN'&&session){toast('Signed in — your progress is syncing ✓');closeAuthModal();}
+    if(expired){toast('Your session expired. Your device progress is safe — sign in again to sync.');showPage('home');}
+    if(event==='SIGNED_OUT')_manualSignOut=false;
+  });
+  _supabase.auth.getSession().then(({data})=>{ _session=data.session;_hadSession=!!data.session;updateAuthUI(data.session);handleAuthCallback(); });
+}catch(e){ console.warn('Supabase not configured — auth disabled.', e.message); }
+
+let _passwordRecovery=false;
+function setAuthMode(recovery=false){
+  _passwordRecovery=recovery;
+  $('authStandard').classList.toggle('hidden',recovery);
+  $('authRecovery').classList.toggle('hidden',!recovery);
+  $('authTitle').textContent=recovery?'Choose a new password':'Sign in / Sign up';
+  $('authSubtitle').textContent=recovery?'Create a new password for your CREDITOS account.':'Your plan, disputes, and letters — saved securely.';
+}
+function openAuthModal(){ if(!_passwordRecovery)setAuthMode(false); $('authModal').classList.add('show'); }
+function closeAuthModal(){ $('authModal').classList.remove('show'); }
+function showPasswordRecovery(){setAuthMode(true);$('authModal').classList.add('show');}
+function friendlyAuthError(error){
+  const raw=String(error?.message||error||'').toLowerCase();
+  if(raw.includes('expired')||raw.includes('otp_expired'))return 'This link has expired. Request a fresh email and try again.';
+  if(raw.includes('invalid')||raw.includes('token'))return 'This sign-in link is invalid or was already used. Request a new one.';
+  if(raw.includes('email not confirmed'))return 'Confirm your email first, then sign in.';
+  if(raw.includes('invalid login credentials'))return 'That email or password does not match. Try again or reset your password.';
+  if(raw.includes('rate limit'))return 'Too many attempts. Wait a minute, then try again.';
+  if(raw.includes('failed to fetch'))return 'Could not reach the secure sign-in service. Check your connection and retry.';
+  return error?.message||'Sign-in could not be completed. Please try again.';
+}
+function handleAuthCallback(){
+  const query=new URLSearchParams(location.search),hash=new URLSearchParams(location.hash.replace(/^#/,''));
+  const error=query.get('error_description')||hash.get('error_description')||query.get('error')||hash.get('error');
+  const type=query.get('type')||hash.get('type');
+  if(error){setAuthMode(false);openAuthModal();$('authMsg').textContent=friendlyAuthError(error);}
+  else if(type==='recovery')showPasswordRecovery();
+  else if(type==='signup'||type==='email_change')toast('Email verified — you can continue securely.');
+  if(error||type||query.has('code')||hash.has('access_token'))history.replaceState({},document.title,location.pathname);
+}
+async function doSignOut(){
+  _manualSignOut=true;
+  await syncCloudState();
+  const {error}=await (_supabase?.auth.signOut()||Promise.resolve({}));
+  if(error){_manualSignOut=false;toast(friendlyAuthError(error));return}
+  _lastHydratedUser=null;toast('Signed out. Device progress remains available.');
+}
+async function submitAuth(mode){
+  const email=$('authEmail').value.trim(), pass=$('authPass').value, msg=$('authMsg');
+  if(!email||!pass){msg.textContent='Email and password are required.';return}
+  if(mode==='signup'&&pass.length<8){msg.textContent='Create a password with at least 8 characters.';return}
+  if(!_supabase){msg.textContent='Auth not configured.';return}
+  msg.textContent='Working…';
+  const fn = mode==='signup' ? _supabase.auth.signUp({email,password:pass,options:{emailRedirectTo:`${location.origin}/app.html`}}) : _supabase.auth.signInWithPassword({email,password:pass});
+  const {error}=await fn;
+  if(error){msg.textContent=friendlyAuthError(error)}
+  else{msg.textContent= mode==='signup'?'Check your email to confirm your account.':'Signed in!'; setTimeout(closeAuthModal,1100)}
+}
+async function sendMagicLink(){
+  const email=$('authEmail').value.trim(),msg=$('authMsg');
+  if(!email){msg.textContent='Enter your email first, then request the magic link.';return}
+  if(!_supabase){msg.textContent='Auth is not configured.';return}
+  msg.textContent='Sending secure sign-in link…';
+  const {error}=await _supabase.auth.signInWithOtp({email,options:{emailRedirectTo:`${location.origin}/app.html`,shouldCreateUser:true}});
+  msg.textContent=error?friendlyAuthError(error):'Magic link sent. Open it on this device to sign in.';
+}
+async function forgotPassword(){
+  const email=$('authEmail').value.trim(), msg=$('authMsg');
+  if(!email){msg.textContent='Type your email above first, then tap "Forgot password".';return}
+  if(!_supabase){msg.textContent='Auth is not configured.';return}
+  const {error}=await _supabase.auth.resetPasswordForEmail(email,{redirectTo:`${location.origin}/app.html`});
+  msg.textContent=error?friendlyAuthError(error):'Reset link sent — check your email. It expires for your protection.';
+}
+async function completePasswordReset(){
+  const pass=$('recoveryPass').value,confirm=$('recoveryPassConfirm').value,msg=$('recoveryMsg');
+  if(pass.length<8){msg.textContent='Use at least 8 characters.';return}
+  if(pass!==confirm){msg.textContent='The passwords do not match.';return}
+  if(!_supabase){msg.textContent='Auth is not configured.';return}
+  msg.textContent='Updating password…';
+  const {error}=await _supabase.auth.updateUser({password:pass});
+  if(error){msg.textContent=friendlyAuthError(error);return}
+  msg.textContent='Password updated. You are signed in.';_passwordRecovery=false;
+  setTimeout(()=>{setAuthMode(false);closeAuthModal();},1100);
+}
+
+// ── Navigation ─────────────────────────────────────────────────
+const PAGE_TITLES={home:'Dashboard',onboarding:'Goals & Plan',scanner:'Monitoring',letters:'Negative Items',disputes:'Dispute Timeline',simulator:'Simulators',funding:'Funding Center',business:'Business Credit',jordan:'Jordan AI',crm:'Client CRM',vendors:'Vendor Tracker',settings:'Settings'};
+function openMenu(){document.body.classList.add('menu-open')}
+function closeMenu(){document.body.classList.remove('menu-open')}
+function toggleMenu(){document.body.classList.contains('menu-open')?closeMenu():openMenu()}
+function filterNavigation(value){
+  const q=String(value||'').trim().toLowerCase();
+  document.querySelectorAll('.navBtn').forEach(btn=>{btn.style.display=!q||btn.textContent.toLowerCase().includes(q)?'flex':'none'});
+  document.querySelectorAll('.navLabel').forEach(label=>{label.style.display=q?'none':''});
+}
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  $(id)?.classList.add('active');
+  document.querySelectorAll('.navBtn').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+  document.querySelectorAll('.bottomNav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+  $('crumb').textContent=PAGE_TITLES[id]||id;
+  closeMenu(); window.scrollTo(0,0);
+  if(id==='onboarding') renderWizard();
+  if(id==='home') renderDashboard();
+  if(id==='disputes') renderDisputes();
+  if(id==='funding') renderFundingPage();
+  if(id==='business') renderBusiness();
+  if(id==='jordan') renderJordanSide();
+  if(id==='settings') renderSettings();
+  if(id==='vendors') renderVendors();
+}
+$('menuCloseBtn').addEventListener('click',closeMenu);
+$('menuOverlay').addEventListener('click',closeMenu);
+$('nav').addEventListener('click',e=>{const b=e.target.closest('.navBtn');if(b)showPage(b.dataset.page)});
+$('bottomNav').addEventListener('click',e=>{const b=e.target.closest('button');if(b)showPage(b.dataset.page)});
+window.addEventListener('keydown',e=>{if(e.key==='Escape'){closeUpgrade();closeAuthModal();closeAddClient();closeMenu()}});
+
+// ── Modals ─────────────────────────────────────────────────────
+function openUpgrade(){$('upgradeModal').classList.add('show')}
+function closeUpgrade(){$('upgradeModal').classList.remove('show')}
+function openAddClient(){$('addClientModal').classList.add('show')}
+function closeAddClient(){$('addClientModal').classList.remove('show')}
+
+async function startCheckout(plan){
+  if(!getAuthToken()){ closeUpgrade(); openAuthModal(); $('authMsg').textContent='Create a free account first, then pick your plan.'; return; }
+  try{
+    const data=await api.post('/api/credits/checkout',{plan});
+    if(data.url) window.location.href=data.url;
+    else toast('Checkout could not start. Try again.');
+  }catch(e){
+    toast(e.status===503?'Payments are not configured yet on this server.':('Checkout error: '+e.message));
+  }
+}
+
+// ── Profile / blueprint store ──────────────────────────────────
+function getProfile(){ return store('onboarding') || null; }
+const SCORE_BAND_MID={'under500':470,'500-579':540,'580-639':610,'640-699':670,'700+':735,'unsure':615};
+const GOAL_LABELS={house:'🏠 Buy a house',car:'🚗 Buy a car',funding:'💰 Get funding',repair:'🛠 Repair my credit',business:'🚀 Start a business'};
+const UTIL_PCT={low:8,mid:25,high:50,max:80,unsure:35};
+
+function computeBlueprint(a){
+  const mid=SCORE_BAND_MID[a.scoreBand]||615;
+  const negs=(a.negatives||[]).filter(n=>n!=='none');
+  // Credit Health 0–100
+  let health=Math.round(((mid-300)/550)*62);
+  health+= a.negatives?.includes('none') ? 22 : Math.max(0, 18-negs.length*6);
+  const u=a.utilization; health += u==='low'?14 : u==='mid'?7 : u==='high'?2 : 0;
+  health=Math.max(5,Math.min(98,health));
+  // Funding Readiness 0–100
+  let ready=Math.round(((mid-300)/550)*50);
+  ready += u==='low'?14 : u==='mid'?7 : 0;
+  ready += a.negatives?.includes('none') ? 14 : Math.max(0,10-negs.length*4);
+  ready += a.income==='high'?12 : a.income==='mid'?8 : a.income==='low'?4 : 0;
+  ready += a.hasBusiness==='yes' ? 8 : 0;
+  ready=Math.max(5,Math.min(98,ready));
+  // Plans
+  const p30=[],p90=[],p180=[];
+  if(negs.length){ p30.push('Scan your report and dispute your highest-impact negative item'); p30.push('Mail Round 1 dispute letters (certified mail, keep receipts)'); }
+  else{ p30.push('Scan your report to confirm it\'s clean and catch hidden errors'); }
+  if(u!=='low') p30.push('Pay your card balances down toward 10% of their limits');
+  p30.push('Set up autopay so nothing is ever late again');
+  p90.push(negs.length?'Send Round 2 escalations for anything "verified" without proof':'Add one positive tradeline (secured card or credit-builder loan)');
+  p90.push('Keep utilization under 10% for two full statement cycles');
+  if(a.goal==='business'||a.hasBusiness==='yes'){ p90.push('Get your EIN + DUNS and open 3 Net-30 vendor accounts'); }
+  else{ p90.push('Avoid new hard inquiries while disputes are open'); }
+  p180.push('Re-scan your report and measure your score change');
+  if(a.goal==='funding'||a.goal==='business') p180.push('Run the AI Funding Roadmap and apply to your top match');
+  if(a.goal==='house') p180.push('Get pre-qualified with a mortgage lender (soft pull first)');
+  if(a.goal==='car') p180.push('Get pre-approved with a credit union before visiting a dealer');
+  p180.push('Review your plan with Jordan and set the next 6-month goal');
+  return {health,ready,score:mid,plans:{30:p30,90:p90,180:p180},createdAt:Date.now()};
+}
+
+// ── Gamification ───────────────────────────────────────────────
+const BADGES={plan:['✨','Made a plan'],scan:['🔍','First scan'],letter:['✍️','First letter'],dispute:['📨','First dispute'],resolved:['🏆','First removal'],streak7:['🔥','7-day streak'],util:['🎯','Utilization goal'],ready80:['🚀','80% funding ready']};
+function awardBadge(id){
+  const owned=store('badges')||[];
+  if(owned.includes(id))return;
+  owned.push(id); store('badges',owned);
+  const b=BADGES[id]; if(b) toast(`${b[0]} Badge earned: ${b[1]}!`);
+  addWin(`${b?b[0]:'🏅'} Badge earned — ${b?b[1]:id}`);
+  renderJordanSide();
+}
+function addWin(text){
+  const wins=store('wins')||[];
+  wins.unshift({text,ts:Date.now()}); store('wins',wins.slice(0,12));
+}
+function tickStreak(){
+  const s=store('streak')||{count:0,last:0};
+  const today=new Date().toDateString();
+  const lastDay=s.last?new Date(s.last).toDateString():null;
+  if(lastDay!==today){
+    const yesterday=new Date(Date.now()-86400000).toDateString();
+    s.count = (lastDay===yesterday) ? s.count+1 : 1;
+    s.last=Date.now(); store('streak',s);
+  }
+  $('streakPill').textContent=`🔥 ${s.count}-day streak`;
+  if(s.count>=7) awardBadge('streak7');
+}
+
+// ── Onboarding wizard ──────────────────────────────────────────
+let wiz=store('onboardingDraft')||{step:0,a:{}};
+if(!wiz?.a||!Number.isInteger(wiz.step))wiz={step:0,a:{}};
+const WIZ_STEPS=8;
+function saveWizardDraft(){store('onboardingDraft',{step:wiz.step,a:wiz.a,_prefilled:!!wiz._prefilled});}
+function wizardValidationMessage(){
+  const a=wiz.a;
+  if(wiz.step===0&&!String(a.name||'').trim())return 'Enter your first name to continue.';
+  if(wiz.step===1&&!a.goal)return 'Choose the goal you want CREDITOS to build around.';
+  if(wiz.step===2&&!a.scoreBand)return 'Choose your closest credit-score range.';
+  if(wiz.step===2&&!(a.negatives||[]).length)return 'Select any negative items you have, or choose “None of these.”';
+  if(wiz.step===3&&!a.utilization)return 'Choose your closest utilization range.';
+  if(wiz.step===4&&!a.fundingGoal)return 'Choose a funding target, or select “Not after funding.”';
+  if(wiz.step===5&&!a.income)return 'Choose an income range, or select “Prefer not to say.”';
+  if(wiz.step===6&&!a.hasBusiness)return 'Choose an option, or use “Skip for now.”';
+  return '';
+}
+function wizOpt(key,val,emoji,label,sub,multi){
+  const cur=wiz.a[key];
+  const sel = multi ? (cur||[]).includes(val) : cur===val;
+  return `<button class="opt ${sel?'sel':''}" onclick="wizPick('${key}','${val}',${!!multi})"><span class="em">${emoji}</span><span>${label}${sub?`<small>${sub}</small>`:''}</span>${sel?'<span style="margin-left:auto;color:var(--em-dark);font-weight:800">✓</span>':''}</button>`;
+}
+function wizPick(key,val,multi){
+  if(multi){
+    let arr=wiz.a[key]||[];
+    if(val==='none') arr= arr.includes('none')?[]:['none'];
+    else { arr=arr.filter(x=>x!=='none'); arr= arr.includes(val)? arr.filter(x=>x!==val) : [...arr,val]; }
+    wiz.a[key]=arr;
+  } else { wiz.a[key]=val; }
+  saveWizardDraft();
+  renderWizard();
+}
+function wizNext(skipValidation=false){
+  if(skipValidation&&wiz.step===6)wiz.a.hasBusiness='skip';
+  const message=skipValidation?'':wizardValidationMessage();
+  if(message){toast(message);return}
+  if(wiz.step<WIZ_STEPS-1){wiz.step++;saveWizardDraft();renderWizard()}
+}
+function wizBack(){ if(wiz.step>0){wiz.step--;saveWizardDraft();renderWizard()} }
+function renderWizard(){
+  // prefill from landing-page quiz if present
+  const quiz=store('quiz');
+  if(quiz && !wiz._prefilled){ wiz._prefilled=true; if(quiz.scoreBand)wiz.a.scoreBand=quiz.scoreBand; if(quiz.goal)wiz.a.goal=quiz.goal; if(quiz.fundingGoal)wiz.a.fundingGoal=quiz.fundingGoal; saveWizardDraft(); }
+  $('wizDots').innerHTML=Array.from({length:WIZ_STEPS},(_,i)=>`<i class="${i<=wiz.step?'on':''}"></i>`).join('');
+  $('wizProgress').textContent=`Step ${wiz.step+1} of ${WIZ_STEPS} · saved automatically`;
+  const B=$('wizBody'); const a=wiz.a;
+  const nav=(nextLabel='Continue',canSkip=false)=>`<div class="wizNav">${wiz.step>0?'<button class="ghost" onclick="wizBack()">Back</button>':''}<button class="primary" onclick="wizNext()">${nextLabel}</button></div>${canSkip?'<p style="text-align:center;margin-top:10px"><button style="border:0;background:none;color:var(--muted);cursor:pointer;text-decoration:underline" onclick="wizNext(true)">Skip for now</button></p>':''}<div class="wizFoot">Progress saves automatically · Your answers are private</div>`;
+  switch(wiz.step){
+    case 0: B.innerHTML=`<div style="text-align:center;font-size:44px">👋</div><h2>Welcome to CREDITOS</h2><p class="sub">8 quick questions. Then we build your personal money plan — free.</p><label style="max-width:380px;margin:0 auto">What's your first name?<input id="wizName" value="${escapeHtml(a.name||'')}" placeholder="e.g. Jordan" onchange="wiz.a.name=this.value"></label><div class="wizNav" style="max-width:380px;margin:22px auto 0"><button class="primary" onclick="wiz.a.name=document.getElementById('wizName').value;wizNext()">Let's go →</button></div><div class="wizFoot">Takes under 5 minutes · Your answers are private</div>`; break;
+    case 1: B.innerHTML=`<h2>What's your #1 money goal?</h2><p class="sub">We'll build your plan around it.</p><div class="optGrid">${wizOpt('goal','house','🏠','Buy a house')}${wizOpt('goal','car','🚗','Buy a car')}${wizOpt('goal','funding','💰','Get funding','Personal or business money')}${wizOpt('goal','repair','🛠','Repair my credit')}${wizOpt('goal','business','🚀','Start a business')}</div>${nav()}`; break;
+    case 2: B.innerHTML=`<h2>Where's your credit right now?</h2><p class="sub">Best guess is fine — we'll confirm with a real scan later.</p><div class="optGrid">${wizOpt('scoreBand','under500','🔴','Under 500')}${wizOpt('scoreBand','500-579','🟠','500–579')}${wizOpt('scoreBand','580-639','🟡','580–639')}${wizOpt('scoreBand','640-699','🟢','640–699')}${wizOpt('scoreBand','700+','💚','700+')}${wizOpt('scoreBand','unsure','🤷','Not sure')}</div><h2 style="font-size:18px;margin-top:22px">Any of these on your report?</h2><p class="sub" style="margin-bottom:12px">Tap all that apply.</p><div class="optGrid" style="grid-template-columns:repeat(2,1fr)">${wizOpt('negatives','collections','📉','Collections','',true)}${wizOpt('negatives','late','⏰','Late payments','',true)}${wizOpt('negatives','chargeoff','❌','Charge-offs','',true)}${wizOpt('negatives','inquiries','👀','Lots of inquiries','',true)}${wizOpt('negatives','bankruptcy','⚖️','Bankruptcy','',true)}${wizOpt('negatives','none','✅','None of these','',true)}</div>${nav()}`; break;
+    case 3: B.innerHTML=`<h2>How full are your credit cards?</h2><p class="sub">Utilization = balance ÷ limit. It's 30% of your score.</p><div class="optGrid">${wizOpt('utilization','low','🟢','Under 10% used','The sweet spot')}${wizOpt('utilization','mid','🟡','10–30% used')}${wizOpt('utilization','high','🟠','30–60% used')}${wizOpt('utilization','max','🔴','Over 60% / maxed out')}${wizOpt('utilization','unsure','🤷','Not sure')}</div>${nav()}`; break;
+    case 4: B.innerHTML=`<h2>How much funding do you want?</h2><p class="sub">Loans, cards, or business capital — your target.</p><div class="optGrid">${wizOpt('fundingGoal','5-10k','💵','$5K – $10K')}${wizOpt('fundingGoal','10-25k','💰','$10K – $25K')}${wizOpt('fundingGoal','25-50k','🏦','$25K – $50K')}${wizOpt('fundingGoal','50-100k','🚀','$50K – $100K')}${wizOpt('fundingGoal','100k+','🌟','$100K+')}${wizOpt('fundingGoal','none','🙅','Not after funding right now')}</div>${nav()}`; break;
+    case 5: B.innerHTML=`<h2>What's your monthly income?</h2><p class="sub">Lenders care about this — it shapes your readiness score. Private, never shared.</p><div class="optGrid">${wizOpt('income','low','💼','Under $2,500/mo')}${wizOpt('income','mid','💼','$2,500 – $6,000/mo')}${wizOpt('income','high','💼','Over $6,000/mo')}${wizOpt('income','skip','🤐','Prefer not to say')}</div>${nav()}`; break;
+    case 6: B.innerHTML=`<h2>Do you have a business?</h2><p class="sub">Optional — unlocks the business credit path.</p><div class="optGrid">${wizOpt('hasBusiness','yes','🏢','Yes, I have a business')}${wizOpt('hasBusiness','starting','🌱','Starting one soon')}${wizOpt('hasBusiness','no','🙋','No, just personal')}</div>${nav('Continue',true)}`; break;
+    case 7: {
+      const bp=computeBlueprint(a);
+      B.innerHTML=`<h2>Want to add your credit report?</h2><p class="sub">The AI scan finds the exact items to dispute. You can also do this later.</p>
+      <div class="optGrid"><button class="opt" onclick="finishOnboarding(true)"><span class="em">📄</span><span>Upload my report now<small>Goes to the scanner after your plan is ready</small></span></button>
+      <button class="opt" onclick="finishOnboarding(false)"><span class="em">⏭️</span><span>Skip — show me my plan<small>You can scan anytime from Home</small></span></button></div>
+      <div class="card" style="margin-top:20px;background:rgba(255,255,255,.03)"><b>Your blueprint preview</b><div style="display:flex;gap:22px;margin-top:12px;flex-wrap:wrap"><div style="display:flex;gap:10px;align-items:center"><div class="miniRing" style="--p:${bp.health}"><div>${bp.health}</div></div><small style="color:var(--muted)">Credit<br>Health</small></div><div style="display:flex;gap:10px;align-items:center"><div class="miniRing" style="--p:${bp.ready}"><div>${bp.ready}</div></div><small style="color:var(--muted)">Funding<br>Readiness</small></div><div style="display:flex;gap:10px;align-items:center"><div class="miniRing" style="--p:34"><div>3</div></div><small style="color:var(--muted)">Plans<br>30/90/180</small></div></div></div>
+      <div class="wizFoot">Takes under 5 minutes · Your answers are private</div>`;
+      break;
+    }
+  }
+}
+const PRODUCT_TOUR=[
+  ['Start with Dashboard','Your estimated scores, readiness, and next actions live here. Report-based scores are labeled separately from projections.'],
+  ['Scan, then review','Upload a report to find possible issues. CREDITOS never files a dispute automatically—you review every finding first.'],
+  ['Track the real-world work','Use Dispute Timeline for mail dates, bureau deadlines, and Round 2 prompts. Use Funding Center for readiness steps, not applications.']
+];
+let _tourStep=0;
+function renderProductTour(){
+  const [title,copy]=PRODUCT_TOUR[_tourStep];
+  $('tourTitle').textContent=title;$('tourBody').innerHTML=`<strong>${_tourStep+1} of ${PRODUCT_TOUR.length}</strong><span>${escapeHtml(copy)}</span>`;
+  $('tourNextBtn').textContent=_tourStep===PRODUCT_TOUR.length-1?'Finish tour ✓':'Next →';
+}
+function openProductTour(){if(store('tourSeen'))return;_tourStep=0;renderProductTour();$('tourModal').classList.add('show');}
+function nextProductTour(){if(_tourStep<PRODUCT_TOUR.length-1){_tourStep++;renderProductTour();}else finishProductTour();}
+function finishProductTour(){store('tourSeen',true);$('tourModal').classList.remove('show');}
+function finishOnboarding(goScan){
+  const a=wiz.a;
+  a.blueprint=computeBlueprint(a);
+  store('onboarding',a);
+  if(['yes','starting'].includes(a.hasBusiness)&&!store('business'))store('business',{checks:{},name:'',revenue:'',months:'',tradelines:0,setupStage:a.hasBusiness});
+  clearStore('onboardingDraft');
+  wiz={step:0,a:{}};
+  awardBadge('plan');
+  addWin('✨ Created your AI Financial Blueprint');
+  if(a.blueprint.ready>=80) awardBadge('ready80');
+  // best-effort cloud save
+  if(_supabase && _session){ _supabase.from('onboarding_profiles').upsert({user_id:_session.user.id,answers:a,health_score:a.blueprint.health,readiness_score:a.blueprint.ready,updated_at:new Date().toISOString()},{onConflict:'user_id'}).then(()=>{}).catch?.(()=>{}); }
+  toast('🎉 Your plan is ready!');
+  renderDashboard();
+  showPage(goScan?'scanner':'home');
+  if(!store('tourSeen'))setTimeout(openProductTour,350);
+}
+
+// ── Dashboard ──────────────────────────────────────────────────
+let _planTab=30;
+function showPlan(days,btn){ _planTab=days; if(btn){btn.parentElement.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');} renderRoadmap(); }
+function renderRoadmap(){
+  const p=getProfile(); const el=$('roadmapList'); if(!el)return;
+  if(!p?.blueprint){ el.innerHTML='<div class="empty">Finish onboarding to get your roadmap.</div>'; return; }
+  const done=store('actionsDone')||{};
+  el.innerHTML=(p.blueprint.plans[_planTab]||[]).map((step,i)=>{
+    const key=`${_planTab}-${i}`;
+    return `<label class="item" style="cursor:pointer"><span style="${done[key]?'text-decoration:line-through;color:var(--soft)':''}">${escapeHtml(step)}</span><input type="checkbox" ${done[key]?'checked':''} onchange="toggleAction('${key}',this.checked,'${escapeHtml(step).replace(/'/g,"\\'")}')" style="width:18px;height:18px"></label>`;
+  }).join('');
+  $('roadmapMeta').textContent=`${(p.blueprint.plans[_planTab]||[]).length} steps`;
+}
+function toggleAction(key,checked,label){
+  const done=store('actionsDone')||{};
+  if(checked){ done[key]=Date.now(); addWin('✅ '+label); toast('Nice. Win logged 🏆'); } else delete done[key];
+  store('actionsDone',done); renderRoadmap(); renderWins(); renderActionCenter();
+}
+function renderWins(){
+  const el=$('winsList'); if(!el)return;
+  const wins=store('wins')||[];
+  el.innerHTML = wins.length ? wins.slice(0,6).map(w=>`<div class="item"><div><strong>${escapeHtml(w.text)}</strong><small>${new Date(w.ts).toLocaleDateString()}</small></div></div>`).join('') : '<div class="empty">Wins land here — finished actions, removed items, new badges.</div>';
+}
+function renderActionCenter(){
+  const el=$('actionCenter'); if(!el)return;
+  const p=getProfile(); const scan=store('lastScan');
+  const done=store('actionsDone')||{};
+  const items=[];
+  if(scan?.disputes?.length){
+    const top=scan.disputes.filter(d=>d.priority==='high').slice(0,2);
+    top.forEach(d=>items.push({t:`Review ${d.creditor||'a negative item'} (${d.type||'item'})`,s:`High-priority report finding · model-estimated impact ${d.estimated_impact||'not available'}`,act:`<button class="primary" style="padding:8px 13px;font-size:13px" onclick="disputeFromScan(${scan.disputes.indexOf(d)})">Generate letter</button>`}));
+  }
+  if(p?.blueprint){
+    (p.blueprint.plans[30]||[]).forEach((step,i)=>{ if(!done['30-'+i]&&items.length<4) items.push({t:step,s:'From your 30-day plan',act:`<span class="tag">30-day plan</span>`}); });
+  }
+  if(!items.length) items.push({t:'Scan your credit report',s:'The fastest way to find what to fix first',act:`<button class="primary" style="padding:8px 13px;font-size:13px" onclick="showPage('scanner')">Scan now</button>`});
+  el.innerHTML=items.slice(0,4).map(i=>`<div class="item"><div><strong>${escapeHtml(i.t)}</strong><small>${escapeHtml(i.s)}</small></div>${i.act}</div>`).join('');
+}
+function renderHomeOffers(){
+  const el=$('homeOffers'); if(!el)return;
+  const p=getProfile(); const ready=p?.blueprint?.ready??50;
+  el.innerHTML=FUND_CATALOG.personal.slice(0,3).map(o=>offerCardHtml(o,ready)).join('');
+}
+function renderDashboard(){
+  const p=getProfile();
+  $('homeNoPlan').classList.toggle('hidden',!!p);
+  $('homeMain').classList.toggle('hidden',!p);
+  const draft=store('onboardingDraft');
+  $('planBadge').textContent=p?'✓ done':draft?.step>0?'resume':'5 min';
+  if(!p) return;
+  const bp=p.blueprint||computeBlueprint(p);
+  const scan=store('lastScan');
+  $('homeGreeting').textContent=`Hey${p.name?' '+p.name:''} 👋`;
+  $('homeGoalLine').textContent=`Goal: ${GOAL_LABELS[p.goal]||'Build great credit'} · Plan created ${new Date(bp.createdAt).toLocaleDateString()}`;
+  const reportedScores=scan?.summary?.bureau_scores||{};
+  const reportScore=name=>{const n=Number(reportedScores[name]??reportedScores[name.toLowerCase()]);return n>=300&&n<=850?n:null};
+  const bureauScores={equifax:reportScore('Equifax'),transunion:reportScore('TransUnion'),experian:reportScore('Experian')};
+  const primaryScore=bureauScores.equifax??bp.score;
+  const scoreToPercent=score=>score?Math.round(((score-300)/550)*100):0;
+  $('homeScore').textContent=primaryScore;
+  $('scoreRing').style.setProperty('--p',scoreToPercent(primaryScore));
+  $('bureauEqLabel').textContent=bureauScores.equifax?'Equifax':'Profile estimate';
+  $('homeScoreBand').textContent=bureauScores.equifax?'Report score':'Estimated';
+  $('homeHealth').textContent=bp.health+'/100';
+  $('homeHealthChip').textContent=bp.health>=70?'Healthy':'Improving';
+  $('homeHealthChip').className='chip '+(bp.health>=70?'up':'warn');
+  $('homeReady').textContent=bp.ready+'/100';
+  $('homeReadyChip').textContent=bp.ready>=80?'Ready':bp.ready>=55?'Almost there':'Building';
+  $('readyRing')?.style.setProperty('--p',bp.ready);
+  $('bureauTu').textContent=bureauScores.transunion??'—';
+  $('bureauEx').textContent=bureauScores.experian??'—';
+  $('bureauTuTag').textContent=bureauScores.transunion?'Report score':'Add report';
+  $('bureauExTag').textContent=bureauScores.experian?'Report score':'Add report';
+  $('bureauTuRing')?.style.setProperty('--p',scoreToPercent(bureauScores.transunion));
+  $('bureauExRing')?.style.setProperty('--p',scoreToPercent(bureauScores.experian));
+  const growth=$('growthDelta');if(growth)growth.textContent=bp.health>=70?'↗ Strong trajectory':'↗ Building momentum';
+  const util=UTIL_PCT[p.utilization]??35;
+  $('homeUtil').textContent=p.utilization==='unsure'?'~'+util+'%':util+'%';
+  $('homeUtilBar').style.width=Math.min(100,util)+'%';
+  $('homeUtilBar').style.background=util<=10?'var(--em)':util<=30?'#D97706':'var(--red)';
+  $('homeUtilTip').textContent=util<=10?'Excellent — keep it under 10%.':`Paying down to under 10% could add ~${util>30?22:12} points.`;
+  const negCount=scan?.summary?(scan.summary.total_items??(scan.disputes||[]).length):((p.negatives||[]).filter(n=>n!=='none').length||0);
+  $('homeNeg').textContent=negCount;
+  $('homeNegTip').textContent=scan?`From your last scan on ${new Date(scan.ts).toLocaleDateString()}.`:'Scan your report to find every item dragging your score down.';
+  const alertTitle=$('aiAlertTitle'),alertCopy=$('aiAlertCopy');
+  if(alertTitle)alertTitle.textContent=negCount?`${negCount} item${negCount===1?' deserves':'s deserve'} your attention.`:'Your next best move is ready.';
+  if(alertCopy)alertCopy.textContent=scan?'Jordan reviewed your latest scan and ranked the actions most likely to improve your profile.':'Run your first monitoring scan to replace estimates with report-based priorities and a clearer funding path.';
+  renderActionCenter(); renderWins(); renderRoadmap(); renderHomeOffers();
+}
+
+// ── Scanner ────────────────────────────────────────────────────
+const SCAN_STEPS=['Upload','AI analysis','Problems','Actions','Disputes','Track'];
+let _scanStep=0;
+function setScanStep(n){
+  _scanStep=n;
+  $('scanStepper').innerHTML=SCAN_STEPS.map((s,i)=>`<div class="stepNode ${i<n?'done':i===n?'now':''}"><i>${i<n?'✓':i+1}</i><br>${s}</div>`).join('');
+}
+let _scannerCredits=null,_scannerUnlimited=false;
+function updateScannerCreditUI(credits,unlimited){
+  _scannerCredits=unlimited?null:credits; _scannerUnlimited=!!unlimited;
+  const badge=$('scannerCreditBadge'), runBtn=$('runAnalysisBtn');
+  if(unlimited){ badge.textContent='∞ credits'; runBtn.disabled=false; }
+  else{
+    const n=Number(credits)||0;
+    badge.textContent=`${n} credit${n===1?'':'s'} left`;
+    if(n<=0){ runBtn.disabled=true; runBtn.textContent='Out of credits — upgrade'; runBtn.onclick=openUpgrade; }
+    else if(runBtn.textContent.startsWith('Out of credits')){ runBtn.disabled=false; runBtn.textContent='Run AI analysis'; runBtn.onclick=runCreditAnalysis; }
+  }
+  // sidebar + topbar
+  $('creditPill').style.display='inline-flex';
+  $('creditPill').textContent=unlimited?'∞ credits':`${credits??'—'} credits`;
+  $('sideCredits').textContent=unlimited?'∞':(credits??'—');
+  $('sideMeter').style.width=unlimited?'100%':`${Math.min(100,((credits||0)/25)*100)}%`;
+}
+function setScannerLoading(title,detail){ $('scanResults').innerHTML=`<h3>2 · AI results</h3><div class="scannerState" style="margin-top:12px"><div class="spinner"></div><strong>${escapeHtml(title)}</strong><span>${escapeHtml(detail)}</span></div>`; }
+let _lastScanRetry=null,_pendingScanMeta=null;
+function setScannerError(msg,retryFn=null){
+  _lastScanRetry=retryFn;
+  $('scanResults').innerHTML=`<h3>2 · AI results</h3><div class="scannerState error" style="margin-top:12px"><strong>Analysis could not be completed</strong><span>${escapeHtml(msg)}</span>${retryFn?'<button class="ghost" style="justify-self:start;margin-top:5px" onclick="retryScanner()">Try again</button>':'<button class="ghost" style="justify-self:start;margin-top:5px" onclick="document.getElementById(\'reportFileInput\').click()">Choose another file</button>'}</div>`;
+  setScanStep(Math.min(_scanStep,1));
+}
+function retryScanner(){const fn=_lastScanRetry;if(fn)fn();}
+function setUploadStatus(m){ $('uploadStatus').textContent=m; }
+function reviewPriority(item){ return item.priority==='high'?'High review priority':item.priority==='medium'?'Medium review priority':'Lower review priority'; }
+function markTouchedField(el){
+  if(!el) return;
+  el.dataset.touched = '1';
+}
+function wireAutofillTracking(){
+  ['lBureau','lType','lStrategy','letterClientName','lCreditor','escName','escBureau','escCreditor','escResponse','gwName','gwCreditor','gwAccount','gwMonths','fundingReportText','fundingScore']
+    .forEach(id=>{
+      const el=$(id);
+      if(!el||el.dataset.autofillWired==='1')return;
+      el.dataset.autofillWired='1';
+      el.addEventListener('input',()=>markTouchedField(el));
+      el.addEventListener('change',()=>markTouchedField(el));
+    });
+}
+function maybeFillField(id,value,force=false){
+  const el=$(id);
+  if(!el) return false;
+  const next=String(value??'').trim();
+  if(!next) return false;
+  const current=String(el.value??'').trim();
+  const pristine=!el.dataset.touched;
+  const isSelect=el.tagName==='SELECT';
+  const looksDefault=isSelect ? (current==='' || el.selectedIndex<=0) : current==='';
+  if(force || (pristine && looksDefault)){
+    el.value=next;
+    return true;
+  }
+  return false;
+}
+function mapScanType(type){
+  const t=String(type||'').toLowerCase();
+  if(t==='collection') return 'Collection';
+  if(t==='late_payment') return 'Late Payment';
+  if(t==='charge_off') return 'Charge-off';
+  if(t==='inquiry') return 'Inquiry';
+  if(t==='identity') return 'Identity';
+  if(t==='duplicate') return 'Duplicate';
+  if(t==='outdated') return 'Outdated';
+  if(t==='balance_error') return 'Balance Error';
+  return 'Collection';
+}
+function scanMainItem(analysis){
+  const items=analysis?.disputes||analysis?.items||[];
+  if(!items.length) return null;
+  const preferred=items.find(i=>String(i?.priority||'').toLowerCase()==='high')
+    || items.find(i=>String(i?.priority||'').toLowerCase()==='medium')
+    || items[0];
+  return preferred || null;
+}
+function summarizeScanForFunding(analysis, meta={}){
+  const items=analysis?.disputes||analysis?.items||[];
+  const summary=analysis?.summary||{};
+  const top=items.slice(0,3).map(it=>`${it.creditor||'Unknown creditor'}${it.bureau?` (${it.bureau})`:''}${it.type?` · ${it.type}`:''}`).join('; ');
+  const scoreBits=Object.entries(summary.bureau_scores||{}).filter(([,v])=>Number(v)>=300&&Number(v)<=850).map(([k,v])=>`${k}: ${v}`).join(', ');
+  const actions=(analysis?.action_plan||[]).slice(0,3).map(step=>`- ${step}`).join('\n');
+  return [
+    `Scan summary: ${top || 'No dispute items detected'}.`,
+    scoreBits ? `Explicit bureau scores: ${scoreBits}.` : '',
+    actions ? `Action plan:\n${actions}` : '',
+    meta.filename ? `Source file: ${meta.filename}.` : ''
+  ].filter(Boolean).join('\n\n');
+}
+function applyScanAutofill(analysis, meta={}){
+  wireAutofillTracking();
+  const item=scanMainItem(analysis);
+  const profile=getProfile()||{};
+  const bureau=['Experian','Equifax','TransUnion'].includes(item?.bureau) ? item.bureau : 'Experian';
+  const type=mapScanType(item?.type);
+  const strategy=String(item?.strategy||'').trim() || (String(item?.type||'').toLowerCase()==='late_payment' ? 'Goodwill Adjustment' : 'FCRA Validation');
+  maybeFillField('letterClientName', profile.name || '');
+  maybeFillField('lBureau', bureau);
+  maybeFillField('lType', type);
+  maybeFillField('lStrategy', strategy);
+  maybeFillField('lCreditor', item?.creditor || '');
+  maybeFillField('escName', profile.name || '');
+  maybeFillField('escBureau', bureau);
+  maybeFillField('escCreditor', item?.creditor || '');
+  maybeFillField('gwName', profile.name || '');
+  if(String(item?.type||'').toLowerCase()==='late_payment' || String(item?.type||'').toLowerCase()==='charge_off'){
+    maybeFillField('gwCreditor', item?.creditor || '');
+    maybeFillField('gwMonths', '1-2 late payments');
+  }
+  const fundingScore=Object.values(analysis?.summary?.bureau_scores||{})
+    .map(v=>Number(v))
+    .filter(v=>v>=300&&v<=850);
+  if(fundingScore.length) maybeFillField('fundingScore', String(Math.round(fundingScore.reduce((a,b)=>a+b,0)/fundingScore.length)));
+  maybeFillField('fundingReportText', summarizeScanForFunding(analysis, meta));
+  if(item){
+    window._pendingDispute=window._pendingDispute||{creditor:item.creditor||'Unknown',bureau, item_type:type};
+  }
+}
+function scanQuality(analysis,meta={}){
+  const items=analysis?.disputes||analysis?.items||[],chars=Number(meta.characters)||0;
+  const evidence=items.filter(i=>i.creditor&&i.bureau&&i.violation).length;
+  let points=chars>=3000?3:chars>=800?2:chars>=200?1:0;
+  if(items.length&&evidence/items.length>=.7)points+=2;else if(evidence)points+=1;
+  if(meta.extractionMethod==='ocr')points-=1;
+  if(meta.truncated)points-=1;
+  const level=points>=4?'high':points>=2?'medium':'low';
+  const reason=level==='high'?'Readable report text with specific account evidence.':level==='medium'?'Some report evidence was readable; review every detail before acting.':'Limited or OCR-derived evidence. Confirm details against the original report before creating a dispute.';
+  return {level,reason};
+}
+function renderScanFindings(analysis,meta=_pendingScanMeta||{}){
+  const items=analysis?.disputes||analysis?.items||[];
+  const summary=analysis?.summary||{};
+  const hasScores=Object.values(summary.bureau_scores||{}).some(v=>Number(v)>=300&&Number(v)<=850);
+  if(!items.length&&!hasScores&&!(analysis?.positive_items||[]).length){setScannerError('No credit data was detected. Try a clearer export, OCR the scanned pages again, or paste report text.',_lastScanRetry);return;}
+  const quality=scanQuality(analysis,meta);
+  store('lastScan',{summary,disputes:items,action_plan:analysis?.action_plan||[],quality,metadata:{filename:meta.filename||null,fileType:meta.fileType||null,extractionMethod:meta.extractionMethod||'pasted-text',characters:Number(meta.characters)||0,scannedAt:new Date().toISOString()},ts:Date.now()});
+  applyScanAutofill(analysis,meta);
+  awardBadge('scan');
+  setScanStep(3);
+  const stat=(lab,val)=>`<div style="flex:1;min-width:110px;border:1px solid var(--line);border-radius:12px;padding:12px;background:rgba(255,255,255,.03)"><div class="metricLab">${lab}</div><b style="font-size:20px">${escapeHtml(val)}</b></div>`;
+  const rows=items.map((it,idx)=>`<div class="findRow"><div class="top"><div><strong>${escapeHtml(it.creditor||'Unknown creditor')}</strong> <span class="tag ${it.priority==='high'?'red':it.priority==='medium'?'amber':'gray'}">${escapeHtml(it.type||'item')}</span><br><small style="color:var(--muted)">${escapeHtml(it.bureau||'All bureaus')} · ${escapeHtml(it.law||'FCRA')}</small></div><div style="text-align:right"><span class="chip ${it.priority==='high'?'down':it.priority==='medium'?'warn':'info'}">${reviewPriority(it)}</span><br><span class="chip up" style="margin-top:5px">Model estimate: ${escapeHtml(it.estimated_impact||'not available')}</span></div></div><p>${escapeHtml(it.violation||it.strategy||'This item may be inaccurate or unverifiable — you have the right to make the bureau prove it.')}</p><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="primary" style="padding:8px 14px;font-size:13px" onclick="disputeFromScan(${idx})">Generate dispute letter</button><button class="ghost" style="padding:8px 14px;font-size:13px" onclick="trackFromScan(${idx})">Track only</button></div></div>`).join('');
+  $('scanResults').innerHTML=`<h3>2 · AI results</h3>
+  <div class="scannerState success" style="margin:12px 0"><strong>We found ${items.length} item${items.length===1?'':'s'} that may need review</strong><span>Report quality: ${escapeHtml(quality.level)} — ${escapeHtml(quality.reason)}</span><span>Non-guaranteed model estimate: ${escapeHtml(summary.estimated_score_impact||'not available')}</span></div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">${stat('Issues found',items.length)}${stat('Potential impact',summary.estimated_score_impact||'—')}${stat('High priority',summary.high_priority??items.filter(i=>i.priority==='high').length)}</div>
+  <div style="display:grid;gap:11px">${rows||'<div class="empty">No obvious dispute items — that\'s good news! Keep utilization low and monitor monthly.</div>'}</div>`;
+  renderDashboard();
+}
+function disputeFromScan(idx){
+  const scan=store('lastScan'); const it=scan?.disputes?.[idx]; if(!it)return;
+  if(scan?.quality?.level==='low'&&!window.confirm('This finding came from limited or OCR-derived evidence. Compare the creditor, bureau, account, and dates with your original report before generating a letter. Continue?'))return;
+  setScanStep(4);
+  // prefill letter form
+  showPage('letters');
+  switchLetterTab('dispute',document.querySelector('[data-ltab="dispute"]'));
+  const type=mapScanType(it.type);
+  const bureau=['Experian','Equifax','TransUnion'].includes(it.bureau)?it.bureau:'Equifax';
+  maybeFillField('lCreditor',it.creditor||'',true);
+  maybeFillField('lBureau',bureau,true);
+  maybeFillField('lType',type,true);
+  maybeFillField('lStrategy',String(it.strategy||'').trim() || (String(it.type||'').toLowerCase()==='late_payment' ? 'Goodwill Adjustment' : 'FCRA Validation'),true);
+  maybeFillField('letterClientName',getProfile()?.name || '',true);
+  maybeFillField('escName',getProfile()?.name || '',true);
+  maybeFillField('escBureau',bureau,true);
+  maybeFillField('escCreditor',it.creditor||'',true);
+  if(String(it.type||'').toLowerCase()==='late_payment' || String(it.type||'').toLowerCase()==='charge_off'){
+    maybeFillField('gwName',getProfile()?.name || '',true);
+    maybeFillField('gwCreditor',it.creditor||'',true);
+    maybeFillField('gwMonths','1-2 late payments',true);
+  }
+  window._pendingDispute={creditor:it.creditor||'Unknown',bureau,item_type:type};
+  toast('Letter form pre-filled from your scan ✓');
+}
+async function trackFromScan(idx){
+  const scan=store('lastScan'); const it=scan?.disputes?.[idx]; if(!it)return;
+  if(scan?.quality?.level==='low'&&!window.confirm('This finding has limited report evidence. Confirm it against the original report before adding it to your dispute timeline. Continue?'))return;
+  await DisputeStore.add({creditor:it.creditor||'Unknown',bureau:['Experian','Equifax','TransUnion'].includes(it.bureau)?it.bureau:'Equifax',item_type:it.type||'item',status:'draft'});
+  setScanStep(5);
+  toast('Added to your Dispute Center 📨');
+  renderDisputes();
+}
+function readFileAsText(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result||''));r.onerror=()=>rej(new Error('Could not read TXT file.'));r.readAsText(file)})}
+function readFileAsDataUrl(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result||''));r.onerror=()=>rej(new Error('Could not read PDF file.'));r.readAsDataURL(file)})}
+const MAX_REPORT_FILE_BYTES=10*1024*1024;
+const MAX_REPORT_TEXT_CHARS=100000;
+const MAX_OCR_PAGES=12;
+const _scriptLoads={};
+function loadExternalScript(src,ready){
+  if(ready())return Promise.resolve();
+  if(_scriptLoads[src])return _scriptLoads[src];
+  _scriptLoads[src]=new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.async=true;s.onload=()=>ready()?resolve():reject(new Error('OCR library did not initialize.'));s.onerror=()=>reject(new Error('OCR library could not load. Check your connection and try again.'));document.head.appendChild(s)});
+  return _scriptLoads[src];
+}
+async function recognizeOcrSource(source,label){
+  await loadExternalScript('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js',()=>!!window.Tesseract);
+  const result=await window.Tesseract.recognize(source,'eng',{logger:m=>{if(m.status==='recognizing text')setUploadStatus(`${label}: OCR ${Math.round((m.progress||0)*100)}%`)}});
+  return String(result?.data?.text||'').trim();
+}
+async function ocrReportFile(file){
+  const lower=(file.name||'').toLowerCase(),isPdf=file.type==='application/pdf'||lower.endsWith('.pdf');
+  setScannerLoading('Running OCR…','Reading text from scanned pages. This can take a few minutes.');
+  if(!isPdf){
+    const text=await recognizeOcrSource(file,'Reading image');
+    return {text,truncated:false,pages:1};
+  }
+  const pdfjs=await import('https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.min.mjs');
+  pdfjs.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.worker.min.mjs';
+  const pdf=await pdfjs.getDocument({data:await file.arrayBuffer()}).promise;
+  const pageCount=Math.min(pdf.numPages,MAX_OCR_PAGES),parts=[];
+  for(let i=1;i<=pageCount;i++){
+    setUploadStatus(`OCR page ${i} of ${pageCount}…`);
+    const page=await pdf.getPage(i),viewport=page.getViewport({scale:1.35}),canvas=document.createElement('canvas');
+    canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
+    await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
+    parts.push(await recognizeOcrSource(canvas,`Page ${i} of ${pageCount}`));
+    page.cleanup?.();
+  }
+  await pdf.destroy?.();
+  return {text:parts.join('\n\n').trim(),truncated:pdf.numPages>MAX_OCR_PAGES,pages:pageCount};
+}
+function friendlyScanError(error){
+  const raw=String(error?.message||error||'').toLowerCase();
+  if(raw.includes('unsupported')||raw.includes('txt or pdf'))return 'Unsupported file. Use PDF, TXT, PNG, or JPG.';
+  if(raw.includes('too large')||raw.includes('10 mb'))return 'File too large. Choose a report smaller than 10 MB.';
+  if(raw.includes('ocr'))return 'OCR failed. Try a clearer image, a searchable PDF export, or paste the report text.';
+  if(raw.includes('no readable')||raw.includes('enough report text'))return 'The report is unreadable. Try a clearer scan or paste the report text.';
+  if(raw.includes('no credit data'))return 'No credit data was detected. Confirm this is a complete credit report and try again.';
+  if(raw.includes('api')||raw.includes('analysis')||raw.includes('unexpected response'))return 'AI analysis failed. Your report was not saved; retry when the service is available.';
+  return error?.message||'The report could not be processed. Try again.';
+}
+async function analyzeText(text){
+  if(!getAuthToken()){openAuthModal();return}
+  if(_scannerCredits!==null&&!_scannerUnlimited&&_scannerCredits<1){openUpgrade();return}
+  if(text.length>MAX_REPORT_TEXT_CHARS){setScannerError('This report is too large to analyze safely. Upload a report under 100,000 characters.');return}
+  setScanStep(2);
+  setScannerLoading('Analyzing your report…','Finding negative items, errors, and dispute angles. ~20 seconds.');
+  _lastScanRetry=()=>analyzeText(text);
+  try{
+    const data=await api.post('/api/analyze-credit',{text});
+    if(data.credits_remaining!=null)updateScannerCreditUI(data.credits_remaining,false);
+    const meta={...(_pendingScanMeta||{}),characters:text.length};
+    renderScanFindings(data.analysis,meta);
+    setUploadStatus('Analysis complete ✓');
+  }catch(e){
+    if(e.status===402){updateScannerCreditUI(0,false);openUpgrade();setScannerError('You\'re out of credits. Upgrade to keep scanning.');}
+    else setScannerError(friendlyScanError(e),()=>analyzeText(text));
+    setUploadStatus('Analysis failed.');
+  }
+}
+async function handleReportFile(file){
+  if(!file)return;
+  const name=file.name||'credit-report', lower=name.toLowerCase();
+  const isTxt=file.type==='text/plain'||lower.endsWith('.txt');
+  const isPdf=file.type==='application/pdf'||lower.endsWith('.pdf');
+  const isImage=['image/png','image/jpeg'].includes(file.type)||/\.(png|jpe?g)$/.test(lower);
+  if(!isTxt&&!isPdf&&!isImage){setUploadStatus('Unsupported file.');setScannerError('Use a PDF, TXT, PNG, or JPG credit report.');return}
+  if(!file.size){setUploadStatus('That file is empty. Choose another report.');setScannerError('The selected file is empty.');return}
+  if(file.size>MAX_REPORT_FILE_BYTES){setUploadStatus('File is too large.');setScannerError('Choose a report smaller than 10 MB. For larger reports, export a text-only copy first.');return}
+  setScanStep(1);
+  _lastScanRetry=()=>handleReportFile(file);
+  try{
+    if(isTxt){
+      setUploadStatus('Reading TXT…');
+      const text=(await readFileAsText(file)).trim();
+      if(text.length<20)throw new Error('That file doesn\'t contain enough report text.');
+      if(text.length>MAX_REPORT_TEXT_CHARS)throw new Error('This text report is over 100,000 characters. Export a smaller report or split it by bureau.');
+      _pendingScanMeta={filename:name,fileType:file.type||'text/plain',extractionMethod:'text',characters:text.length};
+      $('reportText').value=text; setUploadStatus(`Loaded ${name} ✓`);
+      await analyzeText(text); return;
+    }
+    if(isImage){
+      setUploadStatus('Starting image OCR…');
+      const ocr=await ocrReportFile(file),text=ocr.text;
+      if(text.length<20)throw new Error('OCR failed to find readable credit report text.');
+      if(text.length>MAX_REPORT_TEXT_CHARS)throw new Error('OCR text is over 100,000 characters. Use a smaller report.');
+      _pendingScanMeta={filename:name,fileType:file.type||'image/jpeg',extractionMethod:'ocr',characters:text.length,truncated:false,pages:1};
+      $('reportText').value=text;setUploadStatus(`OCR complete: ${name} ✓`);await analyzeText(text);return;
+    }
+    setUploadStatus('Extracting PDF text…');
+    setScannerLoading('Extracting PDF text…','Reading your PDF before analysis.');
+    const fileData=await readFileAsDataUrl(file);
+    let text='',method='pdf-text',ocrInfo=null;
+    try{const data=await api.post('/api/upload-credit-report',{filename:name,fileType:file.type||'application/pdf',fileData});text=String(data.extractedText||'').trim();}catch(extractError){
+      if(extractError.status!==422)throw extractError;
+      setUploadStatus('No text layer found — switching to OCR…');ocrInfo=await ocrReportFile(file);text=ocrInfo.text;method='ocr';
+    }
+    if(text.length<20)throw new Error(method==='ocr'?'OCR failed to find readable credit report text.':'No readable text was found.');
+    _pendingScanMeta={filename:name,fileType:file.type||'application/pdf',extractionMethod:method,characters:text.length,truncated:!!ocrInfo?.truncated,pages:ocrInfo?.pages||null};
+    $('reportText').value=text; setUploadStatus(`${method==='ocr'?'OCR complete':'Extracted'} ${name}${ocrInfo?.truncated?' (first 12 pages)':''} ✓`);
+    await analyzeText(text);
+  }catch(e){ setUploadStatus('Upload failed.'); setScannerError(friendlyScanError(e),()=>handleReportFile(file)); }
+}
+function initReportUpload(){
+  const dz=$('reportDropZone'),input=$('reportFileInput');
+  dz.addEventListener('click',()=>input.click());
+  input.addEventListener('change',e=>handleReportFile(e.target.files?.[0]));
+  ['dragenter','dragover','dragleave','drop'].forEach(t=>dz.addEventListener(t,e=>{e.preventDefault();e.stopPropagation()}));
+  ['dragenter','dragover'].forEach(t=>dz.addEventListener(t,()=>dz.classList.add('activeDrop')));
+  dz.addEventListener('dragleave',()=>dz.classList.remove('activeDrop'));
+  dz.addEventListener('drop',e=>{dz.classList.remove('activeDrop');handleReportFile(e.dataTransfer?.files?.[0])});
+}
+async function runCreditAnalysis(){
+  const text=$('reportText').value.trim();
+  if(text.length<20){setScannerError('Paste at least 20 characters of report text (or upload a file) first.');return}
+  if(text.length>MAX_REPORT_TEXT_CHARS){setScannerError('Report text must be under 100,000 characters. Split very large reports by bureau.');return}
+  if(!getAuthToken()){openAuthModal();return}
+  _pendingScanMeta={filename:null,fileType:'text/plain',extractionMethod:'pasted-text',characters:text.length};
+  const btn=$('runAnalysisBtn'); btn.disabled=true; btn.textContent='Analyzing…';
+  await analyzeText(text);
+  btn.disabled=_scannerCredits!==null&&!_scannerUnlimited&&_scannerCredits<1;
+  if(btn.textContent==='Analyzing…')btn.textContent='Run AI analysis';
+}
+
+// ── Letters ────────────────────────────────────────────────────
+function switchLetterTab(name,btn){
+  ['dispute','escalation','goodwill','bulk'].forEach(t=>$(`letterTab-${t}`)?.classList.toggle('hidden',t!==name));
+  document.querySelectorAll('#letters .tabs .tab').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+}
+function copyText(id){
+  const el=$(id); if(!el)return;
+  navigator.clipboard.writeText(el.textContent).then(()=>toast('Copied to clipboard ✓')).catch(()=>toast('Copy failed — select and copy manually.'));
+}
+function downloadText(id,filename){
+  const el=$(id); if(!el)return;
+  const blob=new Blob([el.textContent],{type:'text/plain'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename+'.txt'; a.click(); URL.revokeObjectURL(a.href);
+}
+function printLetter(id,title='CREDITOS Letter'){
+  const el=$(id),text=el?.textContent?.trim();
+  if(!text||/appears here|stream here/i.test(text)){toast('Generate the letter before printing.');return}
+  const printWindow=window.open('','_blank','width=820,height=900');
+  if(!printWindow){toast('Allow pop-ups to print or save this letter as a PDF.');return}
+  printWindow.opener=null;
+  printWindow.document.title=title;
+  printWindow.document.body.innerHTML=`<main style="max-width:720px;margin:48px auto;padding:0 28px;color:#111;font-family:Arial,sans-serif"><header style="display:flex;justify-content:space-between;border-bottom:2px solid #10B981;padding-bottom:14px;margin-bottom:28px"><strong style="font-size:20px">CREDITOS</strong><span style="color:#555">${escapeHtml(title)}</span></header><pre style="white-space:pre-wrap;font:15px/1.65 Georgia,serif">${escapeHtml(text)}</pre><footer style="border-top:1px solid #ccc;margin-top:36px;padding-top:12px;color:#666;font-size:11px">Generated with CREDITOS self-help software. Review all details before mailing.</footer></main>`;
+  setTimeout(()=>{printWindow.focus();printWindow.print();},250);
+}
+async function downloadLetterPdf(id,title='CREDITOS Letter',filename='creditos-letter'){
+  const el=$(id),text=el?.textContent?.trim();
+  if(!text||/appears here|stream here/i.test(text)){toast('Generate the letter before downloading.');return}
+  try{
+    toast('Preparing your PDF…');
+    await loadExternalScript('https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js',()=>!!window.jspdf?.jsPDF);
+    const {jsPDF}=window.jspdf,doc=new jsPDF({unit:'pt',format:'letter'}),margin=54,pageHeight=792;
+    doc.setFont('helvetica','bold');doc.setFontSize(18);doc.setTextColor(16,185,129);doc.text('CREDITOS',margin,52);
+    doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(90);doc.text(title,558-margin,52,{align:'right'});
+    doc.setDrawColor(16,185,129);doc.line(margin,66,558-margin,66);
+    doc.setFont('times','normal');doc.setFontSize(11);doc.setTextColor(25);
+    const lines=doc.splitTextToSize(text,558-(margin*2));let y=92;
+    for(const line of lines){if(y>pageHeight-58){doc.addPage();y=58;}doc.text(line,margin,y);y+=16;}
+    doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(100);doc.text('Generated with CREDITOS self-help software. Review every detail before mailing.',margin,pageHeight-28);
+    doc.save(`${filename.replace(/[^a-z0-9-]/gi,'-')}.pdf`);toast('PDF downloaded ✓');
+  }catch(e){toast('PDF download failed. Use Print / Save PDF from your browser instead.');}
+}
+async function saveLetterToHistory(type,text,creditor=''){
+  if(!_supabase||!_session||!text)return;
+  try{ await _supabase.from('letters').insert({user_id:_session.user.id,type,creditor,content:text,created_at:new Date().toISOString()}); }catch{}
+}
+async function loadLetterHistory(){
+  const el=$('letterHistory'),count=$('letterHistoryCount');
+  if(!_supabase||!_session){ el.innerHTML='<div class="empty">Sign in to see your letter history.</div>'; count.textContent=''; return; }
+  const {data,error}=await _supabase.from('letters').select('*').eq('user_id',_session.user.id).order('created_at',{ascending:false}).limit(20);
+  if(error||!data?.length){ el.innerHTML='<div class="empty">No letters yet — generate your first above.</div>'; count.textContent='0 letters'; return; }
+  count.textContent=`${data.length} letter${data.length===1?'':'s'}`;
+  el.innerHTML=data.map(l=>`<div class="item"><div><strong>${escapeHtml(l.type||'Letter')}${l.creditor?' — '+escapeHtml(l.creditor):''}</strong><small>${new Date(l.created_at).toLocaleDateString()}</small></div><button class="ghost" style="font-size:12px;padding:7px 10px" onclick='navigator.clipboard.writeText(${JSON.stringify(l.content||"")});toast("Copied ✓")'>Copy</button></div>`).join('');
+}
+async function generateLetter(){
+  if(!getAuthToken()){openAuthModal();return}
+  const bureau=$('lBureau').value, dispute_type=$('lType').value, strategy=$('lStrategy').value;
+  const client_name=$('letterClientName').value.trim()||getProfile()?.name||'Client';
+  const creditor=$('lCreditor').value.trim();
+  const preview=$('letterPreview'), btn=$('letterGenBtn');
+  btn.disabled=true; btn.textContent='Writing your letter…'; preview.textContent='';
+  try{
+    const res=await fetch('/api/ai/generate',{method:'POST',headers:api.headers(),body:JSON.stringify({dispute_type,bureau,client_name,creditor,reason:strategy})});
+    if(!res.ok){const err=await res.json().catch(()=>({}));throw Object.assign(new Error(err.error||'Letter generation failed.'),{status:res.status});}
+    const reader=res.body.getReader(),decoder=new TextDecoder(); let buffer='';
+    while(true){
+      const {done,value}=await reader.read(); if(done)break;
+      buffer+=decoder.decode(value,{stream:true});
+      const lines=buffer.split('\n'); buffer=lines.pop();
+      for(const line of lines){
+        if(!line.startsWith('data: '))continue;
+        const raw=line.slice(6).trim(); if(raw==='[DONE]')continue;
+        try{ const p=JSON.parse(raw); const d=p?.delta?.text||''; if(d)preview.textContent+=d; }catch{}
+      }
+    }
+    if(!preview.textContent)preview.textContent='Letter generated — but the stream came back empty. Try again.';
+    else{
+      awardBadge('letter');
+      await saveLetterToHistory(dispute_type,preview.textContent,creditor);
+      await loadLetterHistory();
+      window._pendingDispute=window._pendingDispute||{creditor:creditor||'Unknown',bureau,item_type:dispute_type};
+      toast('Letter ready ✓ — tap "Track this dispute" to follow it');
+    }
+  }catch(e){
+    if(e.status===402){preview.textContent='You\'re out of credits — upgrade to generate more letters.';openUpgrade();}
+    else preview.textContent=`Error: ${e.message}`;
+  }finally{ btn.disabled=false; btn.textContent='Generate letter — 1 credit'; }
+}
+async function trackCurrentLetter(){
+  const p=window._pendingDispute;
+  if(!p){ toast('Generate a letter first, then track it.'); return; }
+  await DisputeStore.add({...p,status:'draft'});
+  window._pendingDispute=null;
+  awardBadge('dispute');
+  toast('Dispute is now tracked 📨');
+  showPage('disputes');
+}
+async function shipCurrentLetter(){
+  const text=$('letterPreview')?.textContent?.trim();
+  if(!text||/appears here|stream here/i.test(text)){ toast('Generate the dispute letter first.'); return; }
+  if(!getAuthToken()){ openAuthModal(); return; }
+  const p=window._pendingDispute || {creditor:$('lCreditor').value.trim()||'Unknown',bureau:$('lBureau').value,bureauName:$('lBureau').value,item_type:$('lType').value};
+  const next={...p,status:'mailed',mailed_at:new Date().toISOString()};
+  await DisputeStore.add(next);
+  await saveLetterToHistory(p.item_type||'dispute',text,p.creditor||'');
+  window._pendingDispute=null;
+  awardBadge('dispute');
+  toast('Dispute marked as mailed and ready to print ✓');
+  showPage('disputes');
+  setTimeout(()=>printLetter('letterPreview','Dispute Letter'),120);
+}
+Object.assign(window,{
+  wireAutofillTracking,
+  maybeFillField,
+  mapScanType,
+  scanMainItem,
+  summarizeScanForFunding,
+  applyScanAutofill,
+  shipCurrentLetter
+});
+async function generateEscalation(){
+  if(!getAuthToken()){openAuthModal();return}
+  const btn=$('escBtn'),preview=$('escPreview');
+  btn.disabled=true;btn.textContent='Writing…';preview.textContent='Writing your escalation letter…';
+  try{
+    const data=await api.post('/api/ai/escalation',{client_name:$('escName').value.trim()||getProfile()?.name||'Client',bureau:$('escBureau').value,creditor:$('escCreditor').value.trim(),original_response:$('escResponse').value.trim()});
+    preview.textContent=data.letter||'No letter returned.';
+    await saveLetterToHistory('escalation',preview.textContent,$('escCreditor').value.trim());
+    await loadLetterHistory();
+  }catch(e){ if(e.status===402)openUpgrade(); preview.textContent=`Error: ${e.message}`; }
+  finally{ btn.disabled=false;btn.textContent='Generate escalation — 1 credit'; }
+}
+async function generateGoodwill(){
+  if(!getAuthToken()){openAuthModal();return}
+  const btn=$('gwBtn'),preview=$('gwPreview');
+  btn.disabled=true;btn.textContent='Writing…';preview.textContent='Writing your goodwill letter…';
+  try{
+    const data=await api.post('/api/ai/goodwill',{client_name:$('gwName').value.trim()||getProfile()?.name||'Client',creditor:$('gwCreditor').value.trim(),account_number:$('gwAccount').value.trim(),months_late:$('gwMonths').value.trim(),hardship_reason:$('gwHardship').value.trim()});
+    preview.textContent=data.letter||'No letter returned.';
+    await saveLetterToHistory('goodwill',preview.textContent,$('gwCreditor').value.trim());
+    await loadLetterHistory();
+  }catch(e){ if(e.status===402)openUpgrade(); preview.textContent=`Error: ${e.message}`; }
+  finally{ btn.disabled=false;btn.textContent='Generate goodwill — 1 credit'; }
+}
+let bulkRowCount=0;
+function addBulkRow(){
+  if(bulkRowCount>=20){toast('Maximum 20 letters per batch.');return}
+  bulkRowCount++;
+  const row=document.createElement('div');
+  row.className='formGrid';
+  row.style.cssText='border:1px solid var(--line);border-radius:12px;padding:12px;gap:10px';
+  row.innerHTML=`<label>Name<input placeholder="Client name"></label><label>Bureau<select><option>Experian</option><option>Equifax</option><option>TransUnion</option></select></label><label>Type<select><option>Collection</option><option>Late Payment</option><option>Charge-off</option><option>Inquiry</option></select></label><label>Creditor<input placeholder="Creditor name"></label>`;
+  $('bulkRows').appendChild(row);
+}
+async function runBulkGenerate(){
+  if(!getAuthToken()){openAuthModal();return}
+  const rows=document.querySelectorAll('#bulkRows .formGrid');
+  if(!rows.length){toast('Add at least one row first.');return}
+  const letters=Array.from(rows).map(r=>{const i=r.querySelectorAll('input,select');return{name:i[0].value||'Client',bureau:i[1].value,dispute_type:i[2].value,creditor:i[3].value}});
+  const btn=$('bulkBtn'); btn.disabled=true; btn.textContent=`Generating ${letters.length} letters…`;
+  $('bulkResults').innerHTML='<div class="scannerState"><div class="spinner"></div><strong>Generating bulk letters…</strong><span>This can take a minute for large batches.</span></div>';
+  try{
+    const data=await api.post('/api/ai/bulk',{letters});
+    $('bulkResults').innerHTML=(data.results||[]).map((r,i)=>`<div class="card"><div style="display:flex;justify-content:space-between;gap:10px"><h3>Letter ${i+1} — ${escapeHtml(r.creditor||r.bureau)}</h3><span class="tag ${r.status==='done'?'':'red'}">${r.status==='done'?'Done':'Error'}</span></div><pre style="white-space:pre-wrap;color:var(--ink2);font-family:var(--font);font-size:13px;line-height:1.6;max-height:260px;overflow:auto;margin-top:10px;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:10px;padding:12px">${escapeHtml(r.text||'No output.')}</pre><button class="ghost" style="margin-top:10px" onclick="navigator.clipboard.writeText(this.previousElementSibling.textContent);toast('Copied ✓')">Copy</button></div>`).join('');
+    for(const r of data.results||[]) if(r.status==='done'&&r.text) await saveLetterToHistory('bulk-dispute',r.text,r.creditor);
+    await loadLetterHistory();
+  }catch(e){
+    if(e.status===402)openUpgrade();
+    $('bulkResults').innerHTML=`<div class="scannerState error"><strong>Bulk generation failed</strong><span>${escapeHtml(e.message)}</span></div>`;
+  }
+  finally{ btn.disabled=false; btn.textContent='Generate all letters'; }
+}
+
+// ── Disputes ───────────────────────────────────────────────────
+const DISPUTE_FLOW=['draft','mailed','investigating','resolved'];
+const DISPUTE_LABELS={draft:'Letter created',mailed:'Mailed',investigating:'Bureau investigating',resolved:'Corrected / resolved',deleted:'Deleted',verified:'Verified (kept)',escalated:'Round 2 ready'};
+const DisputeStore={
+  cloud(){ return _supabase&&_session; },
+  async list(){
+    if(this.cloud()){
+      const local=store('disputes')||[];
+      if(local.length){
+        const rows=local.map(({id,...d})=>({...d,user_id:_session.user.id}));
+        const {error:migrationError}=await _supabase.from('disputes').insert(rows);
+        if(!migrationError){clearStore('disputes');toast('Device dispute progress synced to your account ✓');}
+      }
+      const {data,error}=await _supabase.from('disputes').select('*').eq('user_id',_session.user.id).order('created_at',{ascending:false});
+      if(!error&&data) return data;
+      if(error){setCloudStatus('Dispute sync needs attention. Using device fallback.',true);toast('Could not load cloud disputes. Showing this device for now.');}
+    }
+    return store('disputes')||[];
+  },
+  async add(d){
+    const row={...d,round:d.round||1,created_at:new Date().toISOString()};
+    if(this.cloud()){
+      const {error}=await _supabase.from('disputes').insert({...row,user_id:_session.user.id});
+      if(!error){ renderDisputes(); return true; }
+      toast('Could not sync this dispute. It was saved on this device for retry.');
+    }
+    const local=store('disputes')||[];
+    local.unshift({...row,id:'loc-'+Date.now()});
+    store('disputes',local); renderDisputes();return false;
+  },
+  async update(id,fields){
+    if(this.cloud()&&!String(id).startsWith('loc-')){
+      const {error}=await _supabase.from('disputes').update(fields).eq('id',id).eq('user_id',_session.user.id);
+      if(error){toast('Status was not changed because cloud sync failed. Please retry.');return false;}
+    }else{
+      const local=(store('disputes')||[]).map(d=>d.id===id?{...d,...fields}:d);
+      store('disputes',local);
+    }
+    renderDisputes();return true;
+  }
+};
+let _dFilter='all';
+function filterDisputes(f,btn){ _dFilter=f; document.querySelectorAll('#disputes .tabs .tab').forEach(t=>t.classList.remove('active')); if(btn)btn.classList.add('active'); renderDisputes(); }
+function disputeTimelineHtml(d){
+  const stages=['draft','mailed','investigating','resolved'];
+  const labels=['Created','Mailed','Investigating','Resolved'];
+  const idx=['resolved','deleted'].includes(d.status)?3:d.status==='verified'?2:d.status==='escalated'?0:stages.indexOf(d.status);
+  return `<div class="dtl">${stages.map((s,i)=>`<div class="stepNode ${i<idx?'done':i===idx?(['resolved','deleted'].includes(d.status)?'done':'now'):''}"><i>${i<idx||(i===idx&&['resolved','deleted'].includes(d.status))?'✓':i+1}</i><br>${labels[i]}</div>`).join('')}</div>`;
+}
+async function advanceDispute(id,status){
+  const fields={status};
+  if(status==='escalated'){
+    const current=(await DisputeStore.list()).find(d=>String(d.id)===String(id));
+    fields.round=(Number(current?.round)||1)+1;fields.mailed_at=null;
+  }
+  if(status==='mailed')fields.mailed_at=new Date().toISOString();
+  if(status==='resolved'){fields.resolved_at=new Date().toISOString(); awardBadge('resolved'); addWin('✅ Dispute corrected or resolved'); toast('Resolution recorded ✓');}
+  if(status==='deleted'){fields.resolved_at=new Date().toISOString(); awardBadge('resolved'); addWin('🏆 Negative item deleted'); toast('Deletion recorded 🏆');}
+  if(status==='verified'){fields.resolved_at=new Date().toISOString(); toast('Marked verified — time for Round 2. Letter form is ready.');}
+  const saved=await DisputeStore.update(id,fields);if(saved===false)return;
+  if(['verified','escalated'].includes(status)){ showPage('letters'); switchLetterTab('escalation',document.querySelector('[data-ltab="escalation"]')); }
+}
+function confirmAdvanceDispute(id,status){
+  const messages={
+    mailed:'Confirm that you mailed this letter. This starts the 30-day response countdown.',
+    investigating:'Confirm the bureau received the dispute and is investigating it.',
+    resolved:'Confirm the bureau corrected or otherwise resolved this item. This will close the timeline.',
+    deleted:'Confirm the negative item no longer appears on the report. This records a deletion win.',
+    verified:'Confirm the bureau kept or verified this item. CREDITOS will show the Round 2 path.',
+    escalated:'Start Round 2? CREDITOS will increase the dispute round and prepare an escalation letter. You still need to review and mail it yourself.'
+  };
+  if(window.confirm(messages[status]||'Confirm this status change?'))advanceDispute(id,status);
+}
+async function renderDisputes(){
+  const el=$('disputeList'); if(!el)return;
+  const all=await DisputeStore.list();
+  const open=all.filter(d=>['draft','escalated'].includes(d.status)).length;
+  const sent=all.filter(d=>['mailed','investigating'].includes(d.status)).length;
+  const resolved=all.filter(d=>['resolved','deleted'].includes(d.status)).length;
+  $('dOpen').textContent=open; $('dSent').textContent=sent; $('dResolved').textContent=resolved;
+  $('disputeCount').textContent=open+sent||'';
+  let rows=all;
+  if(_dFilter==='open')rows=all.filter(d=>['draft','escalated'].includes(d.status));
+  if(_dFilter==='sent')rows=all.filter(d=>['mailed','investigating'].includes(d.status));
+  if(_dFilter==='resolved')rows=all.filter(d=>['resolved','deleted','verified'].includes(d.status));
+  if(!rows.length){ el.innerHTML='<div class="empty">No disputes here yet. Scan your report, generate a letter, then track it.</div>'; return; }
+  el.innerHTML=rows.map(d=>{
+    let countdown='';
+    let overdue=false,dueDate='';
+    if(d.mailed_at&&!['resolved','deleted','verified'].includes(d.status)){
+      const left=30-daysBetween(new Date(d.mailed_at).getTime(),Date.now());
+      overdue=left<0;dueDate=new Date(new Date(d.mailed_at).getTime()+30*86400000).toLocaleDateString();
+      countdown= left>=0 ? `<span class="chip ${left<=7?'warn':'info'} countdown">⏳ ${escapeHtml(d.bureau||'Bureau')} due ${dueDate} · ${left} day${left===1?'':'s'}</span>` : `<span class="chip down countdown">⚠️ ${escapeHtml(d.bureau||'Bureau')} deadline passed ${dueDate}</span>`;
+    }
+    const nextStep={draft:'Review the letter, mail it with tracking, then record the mail date.',mailed:`Keep your receipt and wait for ${escapeHtml(d.bureau||'the bureau')} through ${dueDate||'the response date'}.`,investigating:'Review the bureau response before choosing corrected, deleted, or verified.',verified:'Review the response and start Round 2 if the investigation was incomplete.',escalated:'Review and mail the Round 2 letter, then record the new mail date.',resolved:'Keep the written result and verify the correction on a fresh report.',deleted:'Keep proof and verify the deletion across every relevant bureau.'}[d.status]||'Review the record and choose the next accurate status.';
+    const actions={
+      draft:`<button class="primary" style="padding:8px 13px;font-size:13px" onclick="confirmAdvanceDispute('${d.id}','mailed')">I mailed it ✉️</button>`,
+      mailed:`<button class="ghost" style="padding:8px 13px;font-size:13px" onclick="confirmAdvanceDispute('${d.id}','investigating')">Bureau received it</button>`,
+      investigating:`<button class="primary" style="padding:8px 13px;font-size:13px" onclick="confirmAdvanceDispute('${d.id}','deleted')">Deleted ✅</button><button class="ghost" style="padding:8px 13px;font-size:13px" onclick="confirmAdvanceDispute('${d.id}','resolved')">Corrected / resolved</button><button class="ghost" style="padding:8px 13px;font-size:13px" onclick="confirmAdvanceDispute('${d.id}','verified')">They kept it</button>`,
+      verified:`<button class="primary" style="padding:8px 13px;font-size:13px" onclick="confirmAdvanceDispute('${d.id}','escalated')">Start Round 2 →</button>`,
+      escalated:`<button class="primary" style="padding:8px 13px;font-size:13px" onclick="confirmAdvanceDispute('${d.id}','mailed')">I mailed Round ${d.round||2} ✉️</button>`,
+    }[d.status]||'';
+    const overdueAction=overdue?`<button class="primary" style="padding:8px 13px;font-size:13px" onclick="confirmAdvanceDispute('${d.id}','escalated')">Start Round 2 →</button>`:'';
+    return `<div class="card" style="padding:18px"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><div><strong>${escapeHtml(d.creditor||'Unknown')} — ${escapeHtml(d.item_type||d.type||'item')}</strong><br><small style="color:var(--muted)">${escapeHtml(d.bureau||'Bureau')} · Round ${d.round||1} · started ${new Date(d.created_at).toLocaleDateString()}</small></div><div style="display:flex;gap:7px;align-items:flex-start;flex-wrap:wrap">${countdown}<span class="tag ${['resolved','deleted'].includes(d.status)?'':d.status==='verified'?'red':'blue'}">${DISPUTE_LABELS[d.status]||d.status}</span></div></div>${disputeTimelineHtml(d)}<div class="scannerState" style="padding:11px 13px;margin:10px 0"><strong>Suggested next step</strong><span>${nextStep}</span></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">${actions}${overdueAction}</div></div>`;
+  }).join('');
+}
+
+// ── Simulators ─────────────────────────────────────────────────
+function baseScore(){ return getProfile()?.blueprint?.score||680; }
+function calcScore(){
+  let score=baseScore();
+  document.querySelectorAll('#simulator input[type=checkbox]:checked').forEach(c=>score+=Number(c.dataset.points));
+  score=Math.min(850,score);
+  $('simScore').textContent=score;
+  $('simRing').style.setProperty('--p',Math.round(((score-300)/550)*100));
+}
+function fundingForScore(s){ return s>=760?'$150K+':s>=740?'$100K':s>=720?'$75K':s>=700?'$50K':s>=680?'$25K':s>=640?'$10K':s>=600?'$5K':'Secured products'; }
+function calcFunding(){
+  const s=Number($('fundSlider').value);
+  $('fundScore').textContent=s;
+  $('fundAmt').textContent=fundingForScore(s);
+  $('fundBar').style.width=Math.round(((s-580)/220)*100)+'%';
+  $('fundNote').textContent= s>=720 ? 'Illustrative only: this score may match more prime requirements, but income, debt, and lender rules still decide.' : s>=680 ? 'Illustrative only: some baseline lender requirements may fit; this is not an approval or offer.' : 'Illustrative only: focus on report accuracy and utilization before considering an application.';
+}
+function calcPayoff(){
+  const bal=Number($('payBal').value)||0, lim=Number($('payLim').value)||0, out=$('payoffOut');
+  if(!bal||!lim){out.textContent='Enter your balance and limit to see your payoff target.';return}
+  const util=Math.round((bal/lim)*100);
+  const target=Math.floor(lim*0.09);
+  const payDown=Math.max(0,bal-target);
+  out.innerHTML= util<=10
+    ? `You're at <b>${util}% utilization</b> — already in the sweet spot. 🎯`
+    : `You're at <b style="color:${util>30?'var(--red)':'var(--amber)'}">${util}% utilization</b>. Pay down <b>$${payDown.toLocaleString()}</b> to get under 10% — estimated gain: <b style="color:var(--em-dark)">+${util>60?28:util>30?22:12} points</b>.`;
+  if(util<=10)awardBadge('util');
+}
+
+// ── Funding Center ─────────────────────────────────────────────
+const FUND_CATALOG={
+  personal:[
+    {lender:'Upstart-style personal loan',product:'Personal loan',amount:'$5K – $30K',req:['600+ score','Steady income','Low recent inquiries']},
+    {lender:'Credit union loan',product:'Personal loan',amount:'$2K – $25K',req:['Member relationship','580+ score','Income proof']},
+    {lender:'Marcus-style consolidation',product:'Debt consolidation',amount:'$10K – $40K',req:['660+ score','DTI under 40%']},
+  ],
+  business:[
+    {lender:'FundBox',product:'Working capital line',amount:'$10K – $35K',req:['6+ months in business','$8K+/mo revenue']},
+    {lender:'Bluevine',product:'Business line of credit',amount:'$15K – $50K',req:['12+ months in business','625+ score','$10K+/mo revenue']},
+    {lender:'OnDeck',product:'Term loan',amount:'$25K – $75K',req:['1+ year in business','Steady revenue','Business bank account']},
+  ],
+  cards:[
+    {lender:'Secured builder card',product:'Secured card',amount:'$200 – $5K limit',req:['Any score','Refundable deposit']},
+    {lender:'Cash-back starter card',product:'Unsecured card',amount:'$500 – $5K limit',req:['640+ score','Low utilization']},
+    {lender:'Premium travel card',product:'Rewards card',amount:'$5K – $30K limit',req:['720+ score','2+ years history']},
+  ],
+  loc:[
+    {lender:'Personal line of credit',product:'Personal LOC',amount:'$5K – $25K',req:['680+ score','Bank relationship']},
+    {lender:'Business LOC',product:'Business LOC',amount:'$10K – $100K',req:['650+ score','$10K+/mo revenue','1+ year in business']},
+  ],
+  vehicle:[
+    {lender:'Credit union auto loan',product:'Auto loan',amount:'$10K – $60K',req:['Pre-approve before the dealer','600+ for decent APR']},
+    {lender:'Refinance offer',product:'Auto refi',amount:'Lower your APR',req:['6+ months of payments','Score improved since purchase']},
+  ],
+  equipment:[
+    {lender:'Equipment financing',product:'Equipment loan',amount:'$10K – $150K',req:['Equipment as collateral','6+ months in business']},
+    {lender:'Equipment lease',product:'Lease-to-own',amount:'$5K – $100K',req:['Startup friendly','First/last payment upfront']},
+  ],
+};
+function eligibilityFit(ready){ return ready>=75?['Strong','up','Your estimated readiness is 75 or higher and matches more of the listed baseline requirements.']:ready>=55?['Possible','warn','Your estimated readiness meets some baseline requirements, but the lender may need a stronger score, lower debt, or more documentation.']:['Build first','down','Your estimated readiness is below 55, so improving the blockers in your plan comes before applying.']; }
+function fundingGuidance(o,ready){
+  const business=/business|equipment|working capital|ondeck|bluevine|fundbox/i.test(`${o.product} ${o.lender}`);
+  return {
+    improve:ready>=75?'Keep utilization low, avoid new inquiries, and verify every application detail.':ready>=55?'Lower utilization, resolve report errors, and strengthen income or revenue documentation.':'Complete your top blockers, build payment history, and recheck readiness before applying.',
+    docs:business?'Government ID, EIN/entity documents, recent business bank statements, revenue proof, and ownership details.':'Government ID, proof of income, recent bank statements, housing cost, and current debt details.'
+  };
+}
+function toggleFundingGuide(btn){const guide=btn.closest('.offerCard')?.querySelector('.fundGuide');if(!guide)return;guide.classList.toggle('hidden');btn.textContent=guide.classList.contains('hidden')?'View qualification steps':'Hide qualification steps';}
+function offerCardHtml(o,ready){
+  const [fit,cls,why]=eligibilityFit(ready),guide=fundingGuidance(o,ready);
+  return `<div class="offerCard"><div style="display:flex;justify-content:space-between;gap:8px"><b>${escapeHtml(o.lender)}</b><span class="chip ${cls}">Estimated readiness: ${fit}</span></div><small style="color:var(--muted)">${escapeHtml(o.product)} · educational match · lender link not connected</small><div class="amt">${escapeHtml(o.amount)}</div><ul>${o.req.map(r=>`<li>${escapeHtml(r)}</li>`).join('')}</ul><div class="fundGuide hidden" style="display:grid;gap:8px;margin-top:10px"><div class="scannerState" style="padding:11px"><strong>Why this is recommended</strong><span>${escapeHtml(why)}</span></div><div class="scannerState" style="padding:11px"><strong>What to improve before applying</strong><span>${escapeHtml(guide.improve)}</span></div><div class="scannerState" style="padding:11px"><strong>Documents likely needed</strong><span>${escapeHtml(guide.docs)}</span></div></div><div class="offerActions"><button class="primary" style="flex:1;padding:9px;font-size:13px" onclick="toggleFundingGuide(this)">View qualification steps</button><button class="ghost" style="padding:9px 13px;font-size:13px" onclick='saveOffer(${JSON.stringify(o).replace(/'/g,"&#39;")})'>Save</button></div></div>`;
+}
+let _fundCat='personal';
+function showFundCat(cat,btn){
+  _fundCat=cat;
+  document.querySelectorAll('#fundTabs .tab').forEach(t=>t.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  renderFundCat();
+}
+function renderFundCat(){
+  const ready=getProfile()?.blueprint?.ready??50;
+  const locked=`<div class="offerCard lockedCard"><div style="display:flex;justify-content:space-between"><b>Advanced Match Profile</b><span class="chip gold">Premium</span></div><small style="color:var(--muted)">Compare your profile against 30+ lender requirement sets. Live applications require lender integration.</small><div class="amt">🔓</div><button class="primary" style="margin-top:auto" onclick="openUpgrade()">Unlock profile matching</button></div>`;
+  $('fundCatGrid').innerHTML=(FUND_CATALOG[_fundCat]||[]).map(o=>offerCardHtml(o,ready)).join('')+locked;
+}
+function saveOffer(o){
+  const v=store('vault')||[];
+  if(v.some(x=>x.lender===o.lender)){toast('Already in your vault.');return}
+  v.push(o); store('vault',v); toast('Saved to your funding vault 🗄️'); renderVault();
+}
+function removeOffer(lender){
+  store('vault',(store('vault')||[]).filter(x=>x.lender!==lender)); renderVault();
+}
+function renderVault(){
+  const v=store('vault')||[];
+  $('vaultGrid').innerHTML=v.length?v.map(o=>`<div class="offerCard"><div style="display:flex;justify-content:space-between"><b>${escapeHtml(o.lender)}</b><button class="ghost" style="padding:4px 9px;font-size:12px" onclick="removeOffer('${escapeHtml(o.lender)}')">✕</button></div><small style="color:var(--muted)">${escapeHtml(o.product)}</small><div class="amt">${escapeHtml(o.amount)}</div></div>`).join(''):'<div class="empty" style="grid-column:1/-1">Save offers you like and compare them here.</div>';
+}
+function renderBlockers(){
+  const p=getProfile(); const el=$('blockerList');
+  if(!p){ el.innerHTML='<div class="empty">Finish onboarding to see your blockers.</div>'; return; }
+  const blockers=[];
+  const negs=(p.negatives||[]).filter(n=>n!=='none');
+  if(negs.length)blockers.push([`${negs.length} type${negs.length===1?'':'s'} of negative items`,'Dispute them in the Scanner','scanner']);
+  if(['high','max'].includes(p.utilization))blockers.push(['High card utilization','Use the payoff helper','simulator']);
+  if(p.hasBusiness!=='yes'&&['funding','business'].includes(p.goal))blockers.push(['Thin business profile','Start the business credit path','business']);
+  if(!blockers.length)blockers.push(['No major blockers found 🎉','Run the AI roadmap for fine-tuning','funding']);
+  el.innerHTML=blockers.map(b=>`<div class="item"><div><strong>${b[0]}</strong><small>${b[1]}</small></div><button class="ghost" style="padding:7px 11px;font-size:12.5px" onclick="showPage('${b[2]}')">Fix →</button></div>`).join('');
+}
+function renderFundingPage(){
+  const p=getProfile(); const ready=p?.blueprint?.ready??50;
+  $('fundReadyNum').textContent=p?ready:'—';
+  $('fundReadyLab').textContent=ready>=80?'Ready':ready>=55?'Almost there':'Building';
+  $('fundReadyRing').style.setProperty('--p',ready);
+  if(p?.blueprint?.score)$('fundingScore').value=p.blueprint.score;
+  renderBlockers(); renderFundCat(); renderVault();
+}
+async function runFundingRoadmap(){
+  if(!getAuthToken()){openAuthModal();return}
+  const btn=$('fundingRoadmapBtn'),results=$('fundingRoadmapResults');
+  btn.disabled=true;btn.textContent='Building your roadmap…';
+  results.innerHTML='<div class="card"><div class="scannerState"><div class="spinner"></div><strong>Analyzing your funding profile…</strong><span>Blockers, monthly steps, timeline, and product matches.</span></div></div>';
+  try{
+    const data=await api.post('/api/ai/fundingroadmap',{funding_goal:$('fundingGoal').value,credit_score:$('fundingScore').value,report_text:$('fundingReportText').value.trim()});
+    const r=data.roadmap;
+    if(!r){ results.innerHTML=`<div class="card"><pre style="color:var(--ink2);white-space:pre-wrap;font-size:13px">${escapeHtml(data.raw||'No output.')}</pre></div>`; return; }
+    const readyPct=Math.min(100,Math.max(0,Number(r.readiness_score)||0));
+    const blockers=(r.blockers||[]).map(b=>`<div class="item"><div><strong>${escapeHtml(b.issue)}</strong><small>${escapeHtml(b.fix)}</small></div><span class="tag ${b.impact==='high'?'red':b.impact==='medium'?'amber':'gray'}">${escapeHtml(b.impact)}</span></div>`).join('');
+    const steps=(r.action_steps||[]).map(s=>`<div class="item"><div><strong>Month ${escapeHtml(String(s.month))}: ${escapeHtml(s.action)}</strong><small>${escapeHtml(s.goal)}</small></div></div>`).join('');
+    const products=(r.funding_products||[]).map(pd=>`<div class="offerCard"><b>${escapeHtml(pd.name)}</b><div class="amt">${escapeHtml(pd.amount)}</div><small style="color:var(--muted)">${escapeHtml(pd.requirement)}</small><span class="tag" style="margin-top:6px">Projected fit: ${escapeHtml(pd.estimated_fit||pd.probability||'Review requirements')}</span><div class="scannerState" style="padding:10px;margin-top:9px"><strong>Why recommended</strong><span>${escapeHtml(pd.why_recommended||'Matched against the profile information available.')}</span><strong>Improve first</strong><span>${escapeHtml(pd.improve_before_applying||'Review blockers and lender requirements.')}</span><strong>Likely documents</strong><span>${escapeHtml(pd.documents||'ID, income or revenue proof, and bank statements.')}</span></div></div>`).join('');
+    results.innerHTML=`<div class="card"><div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin-bottom:14px"><div class="bigRing" style="--p:${readyPct};margin:0"><div><b>${readyPct}%</b><small>projected</small></div></div><div><h3>${escapeHtml(r.readiness_label||'Your roadmap')}</h3><p style="color:var(--muted);font-size:13.5px;margin-top:5px">Illustrative funding range: <b>${escapeHtml(r.funding_amount||'—')}</b> · Target score: <b>${escapeHtml(r.target_score||'—')}</b> · Estimated timeline: <b>${escapeHtml(r.timeline||'—')}</b></p><p style="color:var(--soft);font-size:11.5px;margin-top:6px">Projection only—not an application, offer, or approval.</p></div></div>
+    <div class="sectionTitle" style="margin:10px 0"><h3>Blockers</h3></div><div class="list">${blockers||'<div class="empty">No major blockers found.</div>'}</div>
+    <div class="sectionTitle" style="margin:16px 0 10px"><h3>Month-by-month plan</h3></div><div class="list">${steps}</div>
+    <div class="sectionTitle" style="margin:16px 0 10px"><h3>Matched products</h3></div><div class="offerGrid">${products||'<div class="empty" style="grid-column:1/-1">No products returned.</div>'}</div></div>`;
+  }catch(e){
+    if(e.status===402)openUpgrade();
+    results.innerHTML=`<div class="card"><div class="scannerState error"><strong>Roadmap generation failed</strong><span>${escapeHtml(e.message)}</span></div></div>`;
+  }
+  finally{ btn.disabled=false;btn.textContent='Build my roadmap — 3 credits'; }
+}
+
+// ── Business credit ────────────────────────────────────────────
+const BIZ_CHECKS=[['entity','LLC / entity formed'],['ein','EIN from irs.gov (free)'],['duns','DUNS number from dnb.com (free)'],['phone','Business phone & address'],['bank','Business bank account'],['vendors','3 Net-30 vendor accounts']];
+function getBiz(){ return store('business')||{checks:{},name:'',revenue:'',months:'',tradelines:0}; }
+function saveBiz(){
+  const b=getBiz();
+  b.name=$('bizName').value; b.revenue=$('bizRevenue').value; b.months=$('bizMonths').value;
+  store('business',b); renderBusiness();
+}
+function toggleBizCheck(key,checked){
+  const b=getBiz(); b.checks[key]=checked; store('business',b);
+  if(checked)addWin('🏢 Business step done — '+(BIZ_CHECKS.find(c=>c[0]===key)?.[1]||key));
+  renderBusiness();
+}
+function renderBusiness(){
+  const b=getBiz();
+  if($('bizName').value!==b.name)$('bizName').value=b.name||'';
+  if(!$('bizRevenue').value&&b.revenue)$('bizRevenue').value=b.revenue;
+  if(!$('bizMonths').value&&b.months)$('bizMonths').value=b.months;
+  const doneCount=BIZ_CHECKS.filter(([k])=>b.checks[k]).length;
+  const pct=Math.round((doneCount/BIZ_CHECKS.length)*100);
+  $('bizMeter').style.width=pct+'%'; $('bizPct').textContent=pct+'%';
+  $('bizChecklist').innerHTML=BIZ_CHECKS.map(([k,label])=>`<label class="item" style="cursor:pointer;padding:10px 13px"><span style="font-size:13.5px;${b.checks[k]?'text-decoration:line-through;color:var(--soft)':''}">${label}</span><input type="checkbox" ${b.checks[k]?'checked':''} onchange="toggleBizCheck('${k}',this.checked)" style="width:17px;height:17px"></label>`).join('');
+  const vendors=store('vendors')||DEFAULT_VENDORS;
+  const reporting=vendors.filter(v=>v.stage===3).length;
+  $('tradeNum').textContent=reporting;
+  $('tradeRing').style.setProperty('--p',Math.min(100,(reporting/5)*100));
+}
+
+// ── Vendors (kanban-lite) ──────────────────────────────────────
+const VENDOR_STAGES=['To apply','Applied','Approved','Reporting'];
+const DEFAULT_VENDORS=[{name:'Quill',note:'Net-30 office supplies',stage:0},{name:'Uline',note:'Business supplies, early tradeline',stage:0},{name:'Grainger',note:'Industrial supplies',stage:0},{name:'Summa Office',note:'Starter-friendly Net-30',stage:0},{name:'Nav Prime',note:'Reports to business bureaus',stage:0}];
+function renderVendors(){
+  const vendors=store('vendors')||store('vendors',DEFAULT_VENDORS);
+  $('vendorBoard').innerHTML=VENDOR_STAGES.map((stage,si)=>`<div class="card" style="padding:15px"><div style="display:flex;justify-content:space-between;margin-bottom:10px"><b style="font-size:14px">${stage}</b><span class="tag gray">${vendors.filter(v=>v.stage===si).length}</span></div><div class="list">${vendors.filter(v=>v.stage===si).map(v=>`<div class="item" style="padding:11px"><div><strong style="font-size:13.5px">${escapeHtml(v.name)}</strong><small>${escapeHtml(v.note)}</small></div>${si<3?`<button class="ghost" style="padding:5px 9px;font-size:11.5px" onclick="moveVendor('${escapeHtml(v.name)}')">→</button>`:'<span class="tag">✓</span>'}</div>`).join('')||'<div class="empty" style="padding:14px;font-size:12px">Empty</div>'}</div></div>`).join('');
+}
+function moveVendor(name){
+  const vendors=(store('vendors')||DEFAULT_VENDORS).map(v=>v.name===name?{...v,stage:Math.min(3,v.stage+1)}:v);
+  store('vendors',vendors);
+  const v=vendors.find(x=>x.name===name);
+  if(v.stage===3)addWin(`📦 ${name} is reporting — new business tradeline!`);
+  renderVendors(); renderBusiness();
+}
+
+// ── Jordan ─────────────────────────────────────────────────────
+const chatHistory=[];
+function jordanContext(){
+  const p=getProfile(); if(!p)return '';
+  const scan=store('lastScan');
+  return `User profile: goal=${GOAL_LABELS[p.goal]||p.goal||'unknown'}; est. score=${p.blueprint?.score||'unknown'}; credit health=${p.blueprint?.health||'?'}/100; funding readiness=${p.blueprint?.ready||'?'}/100; utilization band=${p.utilization||'unknown'}; negative items=${(p.negatives||[]).join(',')||'unknown'}; last scan found ${scan?.disputes?.length??'no'} dispute items.`;
+}
+function chipChat(text){ $('chatText').value=text; sendChat(); }
+async function sendChat(){
+  const input=$('chatText'),body=$('chatBody');
+  const text=input.value.trim(); if(!text)return;
+  if(!getAuthToken()){ body.insertAdjacentHTML('beforeend','<div class="bubble bot">Sign in (free) to chat with me — your conversation stays private.</div>'); openAuthModal(); return; }
+  body.insertAdjacentHTML('beforeend',`<div class="bubble me">${escapeHtml(text)}</div>`);
+  input.value=''; body.scrollTop=body.scrollHeight;
+  chatHistory.push({role:'user',content:text});
+  const thinking=document.createElement('div'); thinking.className='bubble bot'; thinking.textContent='Jordan is thinking…';
+  body.appendChild(thinking); body.scrollTop=body.scrollHeight;
+  try{
+    const data=await api.post('/api/ai/chat',{messages:chatHistory,context:jordanContext()});
+    const reply=data.reply||'Sorry — no response came back. Try again.';
+    thinking.textContent=reply;
+    chatHistory.push({role:'assistant',content:reply});
+  }catch(e){ thinking.textContent=`Error: ${e.message}`; }
+  body.scrollTop=body.scrollHeight;
+}
+$('chatText').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat()}});
+function weeklyCheckin(){
+  store('checkin',Date.now());
+  chipChat('Weekly check-in: review my progress and give me my top 3 moves for this week.');
+  $('checkinText').textContent='Checked in '+new Date().toLocaleDateString()+' ✓ — come back next week.';
+}
+function renderJordanSide(){
+  const p=getProfile();
+  $('jordanGoal').textContent=p?(GOAL_LABELS[p.goal]||'Build great credit'):'Set your goal in onboarding';
+  $('jordanReadyTag').textContent=p?.blueprint?`${p.blueprint.ready}% ready`:'—';
+  const done=Object.keys(store('actionsDone')||{}).length;
+  const total=p?.blueprint?Object.values(p.blueprint.plans).flat().length:0;
+  $('goalTrack').innerHTML= p? `<div class="item"><div><strong>${GOAL_LABELS[p.goal]||'Goal'}</strong><small>${done} of ${total} plan steps done</small></div><div class="miniRing" style="--p:${total?Math.round((done/total)*100):0}"><div>${total?Math.round((done/total)*100):0}%</div></div></div>` : '<div class="empty">Finish onboarding to track your goal.</div>';
+  const owned=store('badges')||[];
+  $('badgeGrid').innerHTML=Object.entries(BADGES).map(([id,[emoji,label]])=>`<span class="chip ${owned.includes(id)?'up':'gray'}" title="${label}" style="${owned.includes(id)?'':'opacity:.45'}">${emoji} ${label}</span>`).join('');
+  const last=store('checkin');
+  if(last&&daysBetween(last,Date.now())<7)$('checkinText').textContent='Checked in '+new Date(last).toLocaleDateString()+' ✓ — come back next week.';
+  else if(last)$('checkinText').textContent='It\'s been a week — time for your check-in! Jordan will review your progress.';
+}
+
+// ── Dashboard metrics (server) ─────────────────────────────────
+async function loadDashboardMetrics(){
+  if(!_supabase||!_session){
+    _scannerCredits=null; _scannerUnlimited=false;
+    $('creditPill').style.display='none';
+    $('sideCredits').textContent='—';
+    $('sideMeter').style.width='0%';
+    $('scannerCreditBadge').textContent='Sign in to scan';
+    const btn=$('runAnalysisBtn'); btn.disabled=false; btn.textContent='Run AI analysis'; btn.onclick=runCreditAnalysis;
+    return;
+  }
+  try{
+    const data=await api.get('/api/credits/balance');
+    _plan={plan:data.plan||'free',credits:data.credits,unlimited:!!data.unlimited};
+    updateScannerCreditUI(data.credits,data.unlimited);
+    renderSettings();
+    if(data.payment_failed)toast('⚠️ Your last payment failed — update your card in Settings.');
+  }catch(e){}
+}
+async function loadRuntimeStatus(){
+  try{
+    const data=await api.get('/api/runtime-status');
+    _runtimeStatus=data?.services||null;
+  }catch{
+    _runtimeStatus={supabase:null,stripe:null,gemini:null,ocr:'browser',pdf:'browser'};
+  }
+  renderSettings();
+}
+
+// ── CRM ────────────────────────────────────────────────────────
+async function saveClient(){
+  if(!_supabase||!_session){openAuthModal();return}
+  const name=$('newClientName').value.trim(),email=$('newClientEmail').value.trim(),score=$('newClientScore').value,notes=$('newClientNotes').value.trim(),msg=$('addClientMsg');
+  if(!name){msg.textContent='Name is required.';return}
+  msg.textContent='Saving…';
+  const {error}=await _supabase.from('clients').insert({user_id:_session.user.id,name,email,credit_score:score?Number(score):null,notes,created_at:new Date().toISOString()});
+  if(error){msg.textContent=error.message;return}
+  msg.textContent='Client saved!';
+  setTimeout(()=>{closeAddClient();loadCRMClients()},700);
+}
+async function loadCRMClients(){
+  const grid=$('crmGrid'); if(!grid)return;
+  if(!_supabase||!_session){grid.innerHTML='<div class="empty" style="grid-column:1/-1">Sign in to manage clients.</div>';return}
+  const {data,error}=await _supabase.from('clients').select('*').eq('user_id',_session.user.id).order('created_at',{ascending:false});
+  if(error||!data?.length){grid.innerHTML='<div class="empty" style="grid-column:1/-1">No clients yet. Click + Add client to get started.</div>';return}
+  grid.innerHTML=data.map(c=>`<div class="card"><h3>${escapeHtml(c.name)}</h3><p style="color:var(--muted);margin:7px 0;font-size:13px">${c.credit_score?'Score: '+c.credit_score+' · ':''}${escapeHtml(c.notes||'No notes')}</p><small style="color:var(--soft)">${new Date(c.created_at).toLocaleDateString()}</small></div>`).join('');
+}
+
+// ── Settings ───────────────────────────────────────────────────
+function renderSettings(){
+  const p=getProfile();
+  if(p){ $('setName').value=p.name||''; if(p.goal)$('setGoal').value=p.goal; }
+  const labels={free:'Free — limited credits',starter:'Starter — 25 credits/mo',pro:'Pro — unlimited AI',premium:'Premium — automation + matching',business:'Business — full suite',agency:'Business (legacy "agency")',enterprise:'Business (legacy "enterprise")'};
+  $('setPlan').textContent=(_plan.plan||'free').charAt(0).toUpperCase()+(_plan.plan||'free').slice(1);
+  $('setPlanSub').textContent=labels[_plan.plan]||'Limited credits';
+  const prefs=store('prefs')||{};
+  if(prefs.deadlines!==undefined)$('notifDeadlines').checked=prefs.deadlines;
+  if(prefs.checkin!==undefined)$('notifCheckin').checked=prefs.checkin;
+  renderServiceStatus();
+}
+function saveSettings(){
+  const p=getProfile()||{};
+  p.name=$('setName').value.trim(); p.goal=$('setGoal').value;
+  if(p.blueprint)store('onboarding',p);
+  store('prefs',{deadlines:$('notifDeadlines').checked,checkin:$('notifCheckin').checked});
+  toast('Settings saved ✓'); renderDashboard();
+}
+function clearLocalData(){
+  if(!confirm('Clear your plan, disputes, and progress stored on this device? Your account data stays safe in the cloud.'))return;
+  _hydratingCloud=true;
+  ['onboarding','onboardingDraft','lastScan','disputes','vault','streak','badges','wins','actionsDone','business','vendors','prefs','checkin','quiz','tourSeen'].forEach(key=>localStorage.removeItem('creditos.'+key));
+  _hydratingCloud=false;
+  toast('Device data cleared.'); renderDashboard(); showPage('home');
+}
+
+// ── Boot ───────────────────────────────────────────────────────
+initReportUpload();
+setScanStep(0);
+tickStreak();
+calcFunding();
+renderDashboard();
+renderDisputes();
+renderJordanSide();
+loadRuntimeStatus();
+// deadline nudges
+(async()=>{
+  const prefs=store('prefs')||{};
+  if(prefs.deadlines===false)return;
+  const all=await DisputeStore.list();
+  const urgent=all.find(d=>d.mailed_at&&!['resolved','verified'].includes(d.status)&&(30-daysBetween(new Date(d.mailed_at).getTime(),Date.now()))<=7);
+  if(urgent)setTimeout(()=>toast(`⏳ ${urgent.creditor}: bureau response window closes soon — check your Dispute Center`),1800);
+})();
+</script>
+</body>
+</html>

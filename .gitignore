@@ -1,0 +1,14 @@
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+.env.test
+.DS_Store
+.claude/
+lib 2/
+supabase 2/
+supabase/.temp/
+node_modules/
+node_modules 2/
+*.log

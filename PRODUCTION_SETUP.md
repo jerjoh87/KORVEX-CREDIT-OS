@@ -1,0 +1,134 @@
+# CREDITOS Production Setup
+
+This is the launch wiring guide for the current Express + Supabase + Stripe setup.
+
+## Where to put env values
+
+- Local dev: `.env.local`
+- Production hosting: your provider’s environment settings
+- Never commit `.env.local`
+
+## What goes where
+
+### Server-only
+
+Set these only on the backend host:
+
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `GEMINI_API_KEY`
+- `STRIPE_SECRET_KEY`
+- `STRIPE_WEBHOOK_SECRET`
+- `WEBHOOK_SECRET`
+- `SENTRY_DSN`
+
+These must never be exposed in the browser.
+
+### Public client-safe
+
+These can be shipped to the browser or embedded in the client:
+
+- `SUPABASE_ANON_KEY`
+- `APP_URL`
+- `ALLOWED_ORIGINS`
+- `STRIPE_PRICE_STARTER`
+- `STRIPE_PRICE_PRO`
+- `STRIPE_PRICE_PREMIUM`
+- `STRIPE_PRICE_BUSINESS`
+
+The anon key is public by design. The service-role key is not.
+
+Note: the current static client already embeds the Supabase anon key in `app.html`. That is acceptable because the anon key is meant to be public and RLS is the real security boundary.
+
+## Required environment variables
+
+Set these before launch:
+
+- `SUPABASE_URL`
+- `SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `GEMINI_API_KEY`
+- `STRIPE_SECRET_KEY`
+- `STRIPE_WEBHOOK_SECRET`
+- `APP_URL`
+- `ALLOWED_ORIGINS`
+
+Optional, depending on deployment:
+
+- `STRIPE_PRICE_STARTER`
+- `STRIPE_PRICE_PRO`
+- `STRIPE_PRICE_PREMIUM`
+- `STRIPE_PRICE_BUSINESS`
+- `GEMINI_MODEL`
+- `SENTRY_DSN`
+- `WEBHOOK_SECRET`
+
+## Railway
+
+Add the server-only values above to Railway environment variables.
+
+- `APP_URL` should be the public production URL, for example `https://app.yourdomain.com`.
+- `ALLOWED_ORIGINS` should include only the production app domain and any trusted local dev hosts.
+- `SENTRY_DSN` is optional, but if used it must be the production DSN.
+
+Restart the service after changing env vars.
+
+## Netlify
+
+If you host the marketing site or static assets on Netlify:
+
+- Put the public client-safe values in the site environment settings if the build needs them:
+  - `SUPABASE_ANON_KEY`
+  - `APP_URL`
+  - `ALLOWED_ORIGINS`
+  - any `STRIPE_PRICE_*` values used by the client
+- Keep server-only secrets out of any frontend-only bundle.
+- Make sure any frontend redirect links use the production `APP_URL`, not a localhost URL.
+
+## Supabase
+
+In the Supabase dashboard:
+
+- Set the Auth site URL to the production app URL.
+- Add production redirect URLs that return users to the app after email verification, magic-link login, and password reset.
+- Confirm email auth is allowed for the beta flow you want to test.
+- Confirm RLS is enabled and the schema/migrations are applied.
+
+Recommended redirect allow-list entries:
+
+- `https://app.yourdomain.com/app.html`
+- `https://app.yourdomain.com/app.html?checkout=success`
+- `https://app.yourdomain.com/app.html?checkout=cancelled`
+
+## Stripe
+
+In Stripe:
+
+- Set the webhook endpoint to `POST /api/credits/stripe` on the production backend.
+- Copy the live webhook signing secret into `STRIPE_WEBHOOK_SECRET`.
+- If you use saved Price IDs, set the matching `STRIPE_PRICE_*` values.
+- Confirm Checkout success and cancel URLs point to the production app.
+
+## Redirect URLs
+
+The app currently sends auth users back to `APP_URL/app.html`.
+
+Use these as your baseline:
+
+- Signup verification: `https://app.yourdomain.com/app.html`
+- Magic-link login: `https://app.yourdomain.com/app.html`
+- Password reset: `https://app.yourdomain.com/app.html`
+- Checkout success: `https://app.yourdomain.com/app.html?checkout=success`
+- Checkout cancel: `https://app.yourdomain.com/app.html?checkout=cancelled`
+
+If your final domain differs, update the same pattern everywhere.
+
+## Production checklist
+
+- [ ] Backend env vars are set on the server host.
+- [ ] Public client values are not being used as secrets.
+- [ ] Supabase Auth redirects point at the production domain.
+- [ ] Stripe webhook is live and signing secret is current.
+- [ ] `ALLOWED_ORIGINS` contains the production origin.
+- [ ] `APP_URL` is not localhost.
+- [ ] The app works with a fresh auth session, expired session, and password reset.
