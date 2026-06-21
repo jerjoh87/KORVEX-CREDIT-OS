@@ -8,7 +8,6 @@
 //  POST /api/leads                — landing-page lead capture (public)
 // ─────────────────────────────────────────────
 import { Router } from 'express';
-import { PDFParse } from 'pdf-parse';
 import { requireAuth, supabaseAdmin } from '../lib/server-state.js';
 import { isUnlimitedPlan } from '../lib/billing.js';
 import { callGemini, geminiConfigured, toGeminiText } from '../lib/gemini.js';
@@ -52,6 +51,13 @@ async function extractPdfText(fileData) {
   if (!fileData) return '';
   let parser = null;
   try {
+    // Imported lazily, not at module top level: pdf-parse pulls in pdfjs-dist,
+    // which references the browser-only DOMMatrix global at load time. Eagerly
+    // importing it crashes the serverless cold start (FUNCTION_INVOCATION_FAILED)
+    // whenever its optional @napi-rs/canvas polyfill isn't bundled. Loading it
+    // here keeps it off the cold-start path, and any load failure is caught
+    // below so a PDF upload degrades to a 422 instead of taking down the function.
+    const { PDFParse } = await import('pdf-parse');
     const buffer = decodeBase64File(fileData);
     if (buffer.length > MAX_UPLOAD_BYTES) throw new Error('PDF exceeds the 10 MB upload limit.');
     parser = new PDFParse({ data: buffer });
