@@ -20,11 +20,7 @@ function requireKey(name, label = name) {
     return true;
   }
 
-  if (isProduction) {
-    report('fail', `${label} is missing`);
-  } else {
-    report('blocked', `${label} is not set in this environment`);
-  }
+  report('blocked', `${label} is not set`);
   return false;
 }
 
@@ -105,6 +101,9 @@ failed = !requireKey('GEMINI_API_KEY', 'GEMINI_API_KEY') || failed;
 failed = !optionalKey('GEMINI_MODEL', 'GEMINI_MODEL') || failed;
 failed = !requireKey('STRIPE_SECRET_KEY', 'STRIPE_SECRET_KEY') || failed;
 failed = !requireKey('STRIPE_WEBHOOK_SECRET', 'STRIPE_WEBHOOK_SECRET') || failed;
+failed = !requireKey('CLICK2MAIL_USERNAME', 'CLICK2MAIL_USERNAME') || failed;
+failed = !requireKey('CLICK2MAIL_PASSWORD', 'CLICK2MAIL_PASSWORD') || failed;
+failed = !optionalKey('CLICK2MAIL_BASE_URL', 'CLICK2MAIL_BASE_URL') || failed;
 
 failed = !optionalKey('SENTRY_DSN', 'SENTRY_DSN') || failed;
 failed = !optionalKey('WEBHOOK_SECRET', 'WEBHOOK_SECRET') || failed;

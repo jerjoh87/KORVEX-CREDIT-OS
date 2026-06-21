@@ -130,6 +130,46 @@ create index if not exists clients_user_created_idx on public.clients (user_id, 
 create index if not exists disputes_user_created_idx on public.disputes (user_id, created_at desc);
 create index if not exists disputes_user_status_idx on public.disputes (user_id, status);
 
+create table if not exists public.mail_jobs (
+  id                  uuid primary key default gen_random_uuid(),
+  user_id             uuid not null references auth.users(id) on delete cascade,
+  dispute_id          uuid references public.disputes(id) on delete set null,
+  letter_id           uuid references public.letters(id) on delete set null,
+  status              text not null default 'draft'
+                      check (status in ('draft','payment_pending','queued','submitted','mailed','failed','blocked')),
+  recipient_address   jsonb not null default '{}'::jsonb,
+  return_address      jsonb not null default '{}'::jsonb,
+  supporting_docs     jsonb not null default '[]'::jsonb,
+  letter_text         text not null default '',
+  service_fee_cents   int not null default 1999,
+  mailing_cost_cents  int not null default 550,
+  stripe_session_id   text,
+  click2mail_document_id text,
+  click2mail_address_list_id text,
+  click2mail_job_id   text,
+  packet_path         text,
+  error               text,
+  created_at          timestamptz not null default now(),
+  updated_at          timestamptz not null default now()
+);
+
+alter table public.mail_jobs enable row level security;
+
+drop policy if exists "mail_jobs_select_own" on public.mail_jobs;
+create policy "mail_jobs_select_own" on public.mail_jobs
+  for select to authenticated using ((select auth.uid()) = user_id);
+drop policy if exists "mail_jobs_insert_own" on public.mail_jobs;
+create policy "mail_jobs_insert_own" on public.mail_jobs
+  for insert to authenticated with check ((select auth.uid()) = user_id);
+drop policy if exists "mail_jobs_update_own" on public.mail_jobs;
+create policy "mail_jobs_update_own" on public.mail_jobs
+  for update to authenticated
+  using ((select auth.uid()) = user_id)
+  with check ((select auth.uid()) = user_id);
+
+create index if not exists mail_jobs_user_created_idx on public.mail_jobs (user_id, created_at desc);
+create index if not exists mail_jobs_user_status_idx on public.mail_jobs (user_id, status);
+
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql

@@ -13,8 +13,8 @@ const jsFiles = [
 ];
 
 const htmlFiles = [
-  'app.html',
-  'index.html',
+  'public/app.html',
+  'public/index.html',
 ];
 
 function runCheck(file) {

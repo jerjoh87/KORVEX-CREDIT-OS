@@ -604,6 +604,11 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
             <div style="display:flex;justify-content:space-between;align-items:center;margin:13px 0"><div><b id="setPlan" style="font-size:19px">Free</b><br><small style="color:var(--muted)" id="setPlanSub">Limited credits</small></div><button class="primary" onclick="openUpgrade()">Change plan</button></div>
             <p style="color:var(--muted);font-size:12.5px">Cancel anytime. Payments are processed by Stripe — we never see your card number.</p>
           </div>
+          <div class="card"><h3>📬 Certified mailing profile</h3>
+            <div id="mailingProfileSummary" class="item" style="margin:13px 0 10px"><div><strong>Not set up yet</strong><small>Add your billing address and uploads before shipping dispute letters.</small></div><span class="tag amber">Needs setup</span></div>
+            <button class="primary" style="width:100%" onclick="openMailingModal()">Set up mailing profile</button>
+            <p style="color:var(--muted);font-size:12.5px;margin-top:10px">Required for certified-mail shipping and return address verification.</p>
+          </div>
           <div class="card"><h3>🔔 Notifications</h3>
             <div class="list" style="margin-top:13px">
               <label class="item" style="cursor:pointer"><span>Dispute deadline reminders</span><input type="checkbox" checked id="notifDeadlines" onchange="saveSettings()" style="width:18px;height:18px"></label>
@@ -686,6 +691,84 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
   </div>
 </div></div>
 
+<div class="modalOverlay" id="mailingModal">
+  <div class="modal" style="max-width:860px">
+    <div class="modalHead">
+      <div>
+        <h2>Certified mail setup</h2>
+        <p style="color:var(--muted);margin-top:5px">Set up the billing profile once, then ship dispute letters through Click2Mail with a secure checkout.</p>
+      </div>
+      <button class="close" onclick="closeMailingModal()">✕</button>
+    </div>
+    <div class="grid grid2">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:12px">
+          <div>
+            <h3>1 · Your mailing profile</h3>
+            <p style="color:var(--muted);font-size:13px;margin-top:5px">Needed for return mail and identity verification.</p>
+          </div>
+          <span class="chip info" id="mailingProfileChip">Not set</span>
+        </div>
+        <div class="formGrid">
+          <label>Legal name<input id="mailFullName" placeholder="Your full legal name"></label>
+          <label>Address line 1<input id="mailAddress1" placeholder="Street address"></label>
+          <label>Address line 2<input id="mailAddress2" placeholder="Apt, suite, unit (optional)"></label>
+          <label>City<input id="mailCity" placeholder="City"></label>
+          <label>State<input id="mailState" placeholder="State"></label>
+          <label>ZIP / postal code<input id="mailPostalCode" placeholder="ZIP code"></label>
+        </div>
+        <label style="margin-top:12px">Country<input id="mailCountry" placeholder="United States"></label>
+        <div class="item" style="margin-top:12px;align-items:flex-start">
+          <div>
+            <strong>Driver license</strong>
+            <small>Upload a clear photo or scan for identity support.</small>
+          </div>
+          <div style="display:grid;gap:8px;min-width:min(100%,260px);width:100%">
+            <input id="mailDlInput" type="file" accept=".png,.jpg,.jpeg,.pdf,image/png,image/jpeg,application/pdf">
+            <small id="mailDlStatus" style="color:var(--muted)">No file uploaded yet.</small>
+          </div>
+        </div>
+        <div class="item" style="margin-top:10px;align-items:flex-start">
+          <div>
+            <strong>SSN card</strong>
+            <small>Upload only if you want it included with certified mail packets.</small>
+          </div>
+          <div style="display:grid;gap:8px;min-width:min(100%,260px);width:100%">
+            <input id="mailSsnInput" type="file" accept=".png,.jpg,.jpeg,.pdf,image/png,image/jpeg,application/pdf">
+            <small id="mailSsnStatus" style="color:var(--muted)">No file uploaded yet.</small>
+          </div>
+        </div>
+        <p style="color:var(--soft);font-size:11.5px;margin-top:10px">We never print or expose secret values. These documents stay private in your mailing profile.</p>
+      </div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:12px">
+          <div>
+            <h3>2 · Ship this letter</h3>
+            <p style="color:var(--muted);font-size:13px;margin-top:5px">Enter the bureau mailing address for the letter you want to send.</p>
+          </div>
+          <span class="chip gold">$19.99 + $5.50</span>
+        </div>
+        <div class="formGrid">
+          <label>Recipient name<input id="mailRecipientName" placeholder="Credit bureau or recipient name"></label>
+          <label>Organization<input id="mailRecipientOrg" placeholder="Optional organization name"></label>
+          <label>Address line 1<input id="mailRecipientAddress1" placeholder="Mailing address line 1"></label>
+          <label>Address line 2<input id="mailRecipientAddress2" placeholder="Mailing address line 2"></label>
+          <label>City<input id="mailRecipientCity" placeholder="City"></label>
+          <label>State<input id="mailRecipientState" placeholder="State"></label>
+          <label>ZIP / postal code<input id="mailRecipientPostalCode" placeholder="ZIP code"></label>
+          <label>Country<input id="mailRecipientCountry" placeholder="United States"></label>
+        </div>
+        <label style="margin-top:12px">Letter preview<textarea id="mailLetterText" readonly style="min-height:180px"></textarea></label>
+        <p id="mailingMsg" style="color:var(--muted);font-size:13px;min-height:18px;margin-top:8px"></p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+          <button class="ghost" style="flex:1" onclick="closeMailingModal()">Cancel</button>
+          <button class="primary" style="flex:1" onclick="continueCertifiedMail()">Continue to secure checkout</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
@@ -711,7 +794,7 @@ let _runtimeStatus = null;
 const $ = id => document.getElementById(id);
 function escapeHtml(v){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2600)}
-const CLOUD_STATE_KEYS=['onboarding','onboardingDraft','actionsDone','wins','badges','streak','lastScan','vault','business','checkin','prefs','vendors','tourSeen','disputes'];
+const CLOUD_STATE_KEYS=['onboarding','onboardingDraft','actionsDone','wins','badges','streak','lastScan','vault','business','checkin','prefs','vendors','tourSeen','disputes','mailingProfile'];
 let _cloudSyncTimer=null,_cloudRetryTimer=null,_hydratingCloud=false,_lastHydratedUser=null,_cloudSyncFailed=false;
 function store(key, val){
   if(val===undefined){ try{return JSON.parse(localStorage.getItem('creditos.'+key))}catch{return null} }
@@ -745,11 +828,12 @@ function renderServiceStatus(){
   list.innerHTML=[
     s.supabase===true?connected('Supabase'):(s.supabase===false?setup('Supabase'):serviceRow('Supabase','Checking','Loading service status…','gray')),
     s.stripe===true?connected('Stripe'):(s.stripe===false?setup('Stripe'):serviceRow('Stripe','Checking','Loading service status…','gray')),
+    s.click2mail===true?connected('Click2Mail'):(s.click2mail===false?setup('Click2Mail'):serviceRow('Click2Mail','Checking','Loading service status…','gray')),
     s.gemini===true?connected('Gemini'):(s.gemini===false?setup('Gemini'):serviceRow('Gemini','Checking','Loading service status…','gray')),
     browser('OCR'),
     browser('PDF export')
   ].join('');
-  note.textContent = s.supabase===false || s.stripe===false || s.gemini===false
+  note.textContent = s.supabase===false || s.stripe===false || s.click2mail===false || s.gemini===false
     ? 'Live services are still in setup mode. Local features continue to work, and API calls show a clean status message instead of crashing.'
     : 'All configured live services report ready status, and browser-powered OCR / PDF export stay available locally.';
 }
@@ -796,6 +880,227 @@ const api = {
   async post(path,body){ const res=await fetch(path,{method:'POST',headers:this.headers(),body:JSON.stringify(body)}); const data=await res.json().catch(()=>({error:'Invalid server response.'})); if(!res.ok){const e=new Error(data.error||'Request failed.');e.status=res.status;throw e;} return data; },
   async get(path){ const res=await fetch(path,{headers:this.headers()}); const data=await res.json().catch(()=>({error:'Invalid server response.'})); if(!res.ok){const e=new Error(data.error||'Request failed.');e.status=res.status;throw e;} return data; }
 };
+
+function normalizeMailingAddress(address = {}) {
+  return {
+    fullName: String(address.fullName || address.name || '').trim(),
+    organization: String(address.organization || '').trim(),
+    address1: String(address.address1 || address.line1 || '').trim(),
+    address2: String(address.address2 || address.line2 || '').trim(),
+    city: String(address.city || '').trim(),
+    state: String(address.state || '').trim(),
+    postalCode: String(address.postalCode || address.zip || address.postal_code || '').trim(),
+    country: String(address.country || 'United States').trim() || 'United States'
+  };
+}
+function mailingProfileState(){
+  const profile = store('mailingProfile') || {};
+  return {
+    fullName: String(profile.fullName || profile.billingAddress?.fullName || getProfile()?.name || '').trim(),
+    billingAddress: normalizeMailingAddress(profile.billingAddress || {}),
+    recipientAddress: normalizeMailingAddress(profile.recipientAddress || {}),
+    documents: Array.isArray(profile.documents) ? profile.documents : [],
+    lastUpdated: profile.lastUpdated || null
+  };
+}
+function hasMailingAddress(address){
+  return !!(address.address1 && address.city && address.state && address.postalCode);
+}
+function mailingProfileReady(profile = mailingProfileState()){
+  const docs = Array.isArray(profile.documents) ? profile.documents : [];
+  const docTypes = new Set(docs.map(doc => String(doc.docType || '').toLowerCase()));
+  return !!(profile.fullName && hasMailingAddress(profile.billingAddress) && docTypes.has('driver_license') && docTypes.has('ssn_card'));
+}
+function renderMailingSummary(){
+  const profile = mailingProfileState();
+  const summary = $('mailingProfileSummary');
+  const chip = $('mailingProfileChip');
+  if (summary) {
+    if (mailingProfileReady(profile)) {
+      summary.innerHTML = `<div><strong>Ready for certified mail</strong><small>${escapeHtml(profile.billingAddress.address1)}, ${escapeHtml([profile.billingAddress.city, profile.billingAddress.state].filter(Boolean).join(', '))}</small></div><span class="tag">Ready</span>`;
+    } else {
+      const docCount = profile.documents.length;
+      summary.innerHTML = `<div><strong>Setup still needed</strong><small>${docCount} document${docCount===1?'':'s'} uploaded · add billing address and both identity uploads.</small></div><span class="tag amber">Needs setup</span>`;
+    }
+  }
+  if (chip) {
+    chip.textContent = mailingProfileReady(profile) ? 'Ready' : 'Not set';
+    chip.className = `chip ${mailingProfileReady(profile) ? 'info' : 'warn'}`;
+  }
+  const d1 = $('mailDlStatus');
+  const d2 = $('mailSsnStatus');
+  if (d1 || d2) {
+    const docs = profile.documents || [];
+    const dl = docs.find(doc => String(doc.docType || '').toLowerCase() === 'driver_license');
+    const ssn = docs.find(doc => String(doc.docType || '').toLowerCase() === 'ssn_card');
+    if (d1) d1.textContent = dl ? `Uploaded: ${dl.fileName || 'driver license'}` : 'No file uploaded yet.';
+    if (d2) d2.textContent = ssn ? `Uploaded: ${ssn.fileName || 'SSN card'}` : 'No file uploaded yet.';
+  }
+}
+function writeMailingProfile(profile) {
+  const next = {
+    ...mailingProfileState(),
+    ...profile,
+    billingAddress: normalizeMailingAddress(profile.billingAddress || mailingProfileState().billingAddress),
+    recipientAddress: normalizeMailingAddress(profile.recipientAddress || mailingProfileState().recipientAddress),
+    documents: Array.isArray(profile.documents) ? profile.documents : mailingProfileState().documents,
+    lastUpdated: new Date().toISOString()
+  };
+  store('mailingProfile', next);
+  renderMailingSummary();
+  return next;
+}
+function fillMailingModal(state = {}, letterText = '') {
+  const profile = state.profile || mailingProfileState();
+  const recipient = normalizeMailingAddress(state.recipientAddress || profile.recipientAddress || {});
+  const billing = normalizeMailingAddress(profile.billingAddress || {});
+  $('mailFullName').value = profile.fullName || billing.fullName || '';
+  $('mailAddress1').value = billing.address1 || '';
+  $('mailAddress2').value = billing.address2 || '';
+  $('mailCity').value = billing.city || '';
+  $('mailState').value = billing.state || '';
+  $('mailPostalCode').value = billing.postalCode || '';
+  $('mailCountry').value = billing.country || 'United States';
+  $('mailRecipientName').value = recipient.fullName || recipient.organization || '';
+  $('mailRecipientOrg').value = recipient.organization || '';
+  $('mailRecipientAddress1').value = recipient.address1 || '';
+  $('mailRecipientAddress2').value = recipient.address2 || '';
+  $('mailRecipientCity').value = recipient.city || '';
+  $('mailRecipientState').value = recipient.state || '';
+  $('mailRecipientPostalCode').value = recipient.postalCode || '';
+  $('mailRecipientCountry').value = recipient.country || 'United States';
+  $('mailLetterText').value = letterText || state.letterText || '';
+  $('mailingMsg').textContent = state.message || 'Add your profile details, then continue to checkout.';
+  renderMailingSummary();
+}
+function openMailingModal(state = {}) {
+  fillMailingModal(state, state.letterText || $('letterPreview')?.textContent || '');
+  $('mailingModal').classList.add('show');
+}
+function closeMailingModal() {
+  $('mailingModal').classList.remove('show');
+}
+function readMailingForm() {
+  return {
+    fullName: String($('mailFullName')?.value || '').trim(),
+    billingAddress: normalizeMailingAddress({
+      fullName: String($('mailFullName')?.value || '').trim(),
+      address1: String($('mailAddress1')?.value || '').trim(),
+      address2: String($('mailAddress2')?.value || '').trim(),
+      city: String($('mailCity')?.value || '').trim(),
+      state: String($('mailState')?.value || '').trim(),
+      postalCode: String($('mailPostalCode')?.value || '').trim(),
+      country: String($('mailCountry')?.value || 'United States').trim()
+    }),
+    recipientAddress: normalizeMailingAddress({
+      fullName: String($('mailRecipientName')?.value || '').trim(),
+      organization: String($('mailRecipientOrg')?.value || '').trim(),
+      address1: String($('mailRecipientAddress1')?.value || '').trim(),
+      address2: String($('mailRecipientAddress2')?.value || '').trim(),
+      city: String($('mailRecipientCity')?.value || '').trim(),
+      state: String($('mailRecipientState')?.value || '').trim(),
+      postalCode: String($('mailRecipientPostalCode')?.value || '').trim(),
+      country: String($('mailRecipientCountry')?.value || 'United States').trim()
+    })
+  };
+}
+async function fileToDataUrl(file) {
+  return await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || ''));
+    reader.onerror = () => reject(reader.error || new Error('Could not read file.'));
+    reader.readAsDataURL(file);
+  });
+}
+async function uploadMailingDoc(docType, inputId, statusId) {
+  const input = $(inputId);
+  const file = input?.files?.[0];
+  const status = $(statusId);
+  if (!file) {
+    if (status) status.textContent = 'Choose a file first.';
+    return null;
+  }
+  if (status) status.textContent = 'Uploading securely…';
+  const fileData = await fileToDataUrl(file);
+  const data = await api.post('/api/mailing/upload-doc', {
+    docType,
+    fileName: file.name,
+    mimeType: file.type || 'application/octet-stream',
+    fileData
+  });
+  const profile = mailingProfileState();
+  const docs = (profile.documents || []).filter(doc => String(doc.docType || '').toLowerCase() !== docType);
+  docs.push(data.doc);
+  writeMailingProfile({
+    ...profile,
+    documents: docs,
+    fullName: profile.fullName || readMailingForm().fullName,
+    billingAddress: readMailingForm().billingAddress
+  });
+  if (status) status.textContent = `Uploaded: ${file.name}`;
+  input.value = '';
+  return data.doc;
+}
+function persistMailingProfileFromForm() {
+  const current = mailingProfileState();
+  const form = readMailingForm();
+  const next = {
+    ...current,
+    fullName: form.fullName || current.fullName,
+    billingAddress: { ...form.billingAddress, fullName: form.fullName || form.billingAddress.fullName },
+    recipientAddress: form.recipientAddress || current.recipientAddress,
+    documents: current.documents || []
+  };
+  return writeMailingProfile(next);
+}
+async function continueCertifiedMail() {
+  const msg = $('mailingMsg');
+  if (!getAuthToken()) {
+    closeMailingModal();
+    openAuthModal();
+    $('authMsg').textContent = 'Sign in first so we can save your mailing profile securely.';
+    return;
+  }
+  const profile = persistMailingProfileFromForm();
+  const recipientAddress = readMailingForm().recipientAddress;
+  const letterText = String($('mailLetterText')?.value || '').trim();
+  if (!letterText || /your letter will stream here/i.test(letterText)) {
+    if (msg) msg.textContent = 'Generate a letter before shipping it.';
+    return;
+  }
+  if (!profile.fullName || !hasMailingAddress(profile.billingAddress)) {
+    if (msg) msg.textContent = 'Add your billing address before continuing.';
+    return;
+  }
+  const docs = profile.documents || [];
+  const docTypes = new Set(docs.map(doc => String(doc.docType || '').toLowerCase()));
+  if (!docTypes.has('driver_license') || !docTypes.has('ssn_card')) {
+    if (msg) msg.textContent = 'Upload your driver license and SSN card first.';
+    return;
+  }
+  if (!hasMailingAddress(recipientAddress)) {
+    if (msg) msg.textContent = 'Add the recipient mailing address for this dispute letter.';
+    return;
+  }
+  if (msg) msg.textContent = 'Starting secure checkout…';
+  try {
+    const payload = {
+      letterText,
+      recipientAddress,
+      disputeId: window._pendingDispute?.id || null,
+      letterId: window._pendingLetterId || null
+    };
+    const data = await api.post('/api/mailing/checkout', payload);
+    if (data?.url) {
+      window.location.href = data.url;
+      return;
+    }
+    throw new Error('Could not create secure checkout.');
+  } catch (e) {
+    if (msg) msg.textContent = e?.message || 'Could not start certified mail checkout.';
+    toast(e.message || 'Could not start certified mail checkout.');
+  }
+}
 
 // ── Auth ───────────────────────────────────────────────────────
 function updateAuthUI(session){
@@ -844,10 +1149,13 @@ function handleAuthCallback(){
   const query=new URLSearchParams(location.search),hash=new URLSearchParams(location.hash.replace(/^#/,''));
   const error=query.get('error_description')||hash.get('error_description')||query.get('error')||hash.get('error');
   const type=query.get('type')||hash.get('type');
+  const mail=query.get('mail');
+  if(mail==='success') toast('Payment received — your certified letter is being processed.');
+  if(mail==='cancelled') toast('Certified mail checkout was cancelled.');
   if(error){setAuthMode(false);openAuthModal();$('authMsg').textContent=friendlyAuthError(error);}
   else if(type==='recovery')showPasswordRecovery();
   else if(type==='signup'||type==='email_change')toast('Email verified — you can continue securely.');
-  if(error||type||query.has('code')||hash.has('access_token'))history.replaceState({},document.title,location.pathname);
+  if(error||type||mail||query.has('code')||hash.has('access_token'))history.replaceState({},document.title,location.pathname);
 }
 async function doSignOut(){
   _manualSignOut=true;
@@ -924,7 +1232,7 @@ $('menuCloseBtn').addEventListener('click',closeMenu);
 $('menuOverlay').addEventListener('click',closeMenu);
 $('nav').addEventListener('click',e=>{const b=e.target.closest('.navBtn');if(b)showPage(b.dataset.page)});
 $('bottomNav').addEventListener('click',e=>{const b=e.target.closest('button');if(b)showPage(b.dataset.page)});
-window.addEventListener('keydown',e=>{if(e.key==='Escape'){closeUpgrade();closeAuthModal();closeAddClient();closeMenu()}});
+window.addEventListener('keydown',e=>{if(e.key==='Escape'){closeUpgrade();closeAuthModal();closeAddClient();closeMailingModal();closeMenu()}});
 
 // ── Modals ─────────────────────────────────────────────────────
 function openUpgrade(){$('upgradeModal').classList.add('show')}
@@ -1069,6 +1377,11 @@ function renderWizard(){
       B.innerHTML=`<h2>Want to add your credit report?</h2><p class="sub">The AI scan finds the exact items to dispute. You can also do this later.</p>
       <div class="optGrid"><button class="opt" onclick="finishOnboarding(true)"><span class="em">📄</span><span>Upload my report now<small>Goes to the scanner after your plan is ready</small></span></button>
       <button class="opt" onclick="finishOnboarding(false)"><span class="em">⏭️</span><span>Skip — show me my plan<small>You can scan anytime from Home</small></span></button></div>
+      <div class="card" style="margin-top:18px;background:rgba(255,255,255,.03)">
+        <b>Certified mail prep</b>
+        <p style="color:var(--muted);font-size:13px;margin-top:6px">If you want us to ship dispute letters for you, set up your mailing profile now. You’ll add a billing address plus a driver license and SSN card for packet verification.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:11px"><button class="primary" onclick="openMailingModal()">Set up mailing profile</button><button class="ghost" onclick="showPage('settings')">Do this later in Settings</button></div>
+      </div>
       <div class="card" style="margin-top:20px;background:rgba(255,255,255,.03)"><b>Your blueprint preview</b><div style="display:flex;gap:22px;margin-top:12px;flex-wrap:wrap"><div style="display:flex;gap:10px;align-items:center"><div class="miniRing" style="--p:${bp.health}"><div>${bp.health}</div></div><small style="color:var(--muted)">Credit<br>Health</small></div><div style="display:flex;gap:10px;align-items:center"><div class="miniRing" style="--p:${bp.ready}"><div>${bp.ready}</div></div><small style="color:var(--muted)">Funding<br>Readiness</small></div><div style="display:flex;gap:10px;align-items:center"><div class="miniRing" style="--p:34"><div>3</div></div><small style="color:var(--muted)">Plans<br>30/90/180</small></div></div></div>
       <div class="wizFoot">Takes under 5 minutes · Your answers are private</div>`;
       break;
@@ -1618,14 +1931,26 @@ async function shipCurrentLetter(){
   if(!text||/appears here|stream here/i.test(text)){ toast('Generate the dispute letter first.'); return; }
   if(!getAuthToken()){ openAuthModal(); return; }
   const p=window._pendingDispute || {creditor:$('lCreditor').value.trim()||'Unknown',bureau:$('lBureau').value,bureauName:$('lBureau').value,item_type:$('lType').value};
-  const next={...p,status:'mailed',mailed_at:new Date().toISOString()};
-  await DisputeStore.add(next);
-  await saveLetterToHistory(p.item_type||'dispute',text,p.creditor||'');
-  window._pendingDispute=null;
-  awardBadge('dispute');
-  toast('Dispute marked as mailed and ready to print ✓');
-  showPage('disputes');
-  setTimeout(()=>printLetter('letterPreview','Dispute Letter'),120);
+  if(!p.id){
+    const savedId = await DisputeStore.add({...p,status:'draft'});
+    if(savedId) p.id = savedId;
+  }
+  window._pendingDispute = p;
+  window._pendingLetterId = p.id || null;
+  openMailingModal({
+    letterText: text,
+    recipientAddress: {
+      fullName: p.bureau || 'Credit Bureau',
+      organization: p.bureau || 'Credit Bureau',
+      address1: p.mailingAddress?.address1 || '',
+      address2: p.mailingAddress?.address2 || '',
+      city: p.mailingAddress?.city || '',
+      state: p.mailingAddress?.state || '',
+      postalCode: p.mailingAddress?.postalCode || '',
+      country: p.mailingAddress?.country || 'United States'
+    },
+    message: 'Enter the bureau mailing address, then continue to secure checkout.'
+  });
 }
 Object.assign(window,{
   wireAutofillTracking,
@@ -1711,12 +2036,13 @@ const DisputeStore={
   async add(d){
     const row={...d,round:d.round||1,created_at:new Date().toISOString()};
     if(this.cloud()){
-      const {error}=await _supabase.from('disputes').insert({...row,user_id:_session.user.id});
-      if(!error){ renderDisputes(); return true; }
+      const {data,error}=await _supabase.from('disputes').insert({...row,user_id:_session.user.id}).select('id').single();
+      if(!error){ renderDisputes(); return data?.id||true; }
       toast('Could not sync this dispute. It was saved on this device for retry.');
     }
     const local=store('disputes')||[];
-    local.unshift({...row,id:'loc-'+Date.now()});
+    const id='loc-'+Date.now();
+    local.unshift({...row,id});
     store('disputes',local); renderDisputes();return false;
   },
   async update(id,fields){
@@ -2047,7 +2373,7 @@ async function loadRuntimeStatus(){
     const data=await api.get('/api/runtime-status');
     _runtimeStatus=data?.services||null;
   }catch{
-    _runtimeStatus={supabase:null,stripe:null,gemini:null,ocr:'browser',pdf:'browser'};
+    _runtimeStatus={supabase:null,stripe:null,click2mail:null,gemini:null,ocr:'browser',pdf:'browser'};
   }
   renderSettings();
 }
@@ -2081,6 +2407,7 @@ function renderSettings(){
   const prefs=store('prefs')||{};
   if(prefs.deadlines!==undefined)$('notifDeadlines').checked=prefs.deadlines;
   if(prefs.checkin!==undefined)$('notifCheckin').checked=prefs.checkin;
+  renderMailingSummary();
   renderServiceStatus();
 }
 function saveSettings(){
@@ -2088,15 +2415,26 @@ function saveSettings(){
   p.name=$('setName').value.trim(); p.goal=$('setGoal').value;
   if(p.blueprint)store('onboarding',p);
   store('prefs',{deadlines:$('notifDeadlines').checked,checkin:$('notifCheckin').checked});
+  const mail = mailingProfileState();
+  if (p.name && !mail.fullName) {
+    writeMailingProfile({
+      ...mail,
+      fullName: p.name,
+      billingAddress: { ...mail.billingAddress, fullName: p.name }
+    });
+  }
   toast('Settings saved ✓'); renderDashboard();
 }
 function clearLocalData(){
   if(!confirm('Clear your plan, disputes, and progress stored on this device? Your account data stays safe in the cloud.'))return;
   _hydratingCloud=true;
-  ['onboarding','onboardingDraft','lastScan','disputes','vault','streak','badges','wins','actionsDone','business','vendors','prefs','checkin','quiz','tourSeen'].forEach(key=>localStorage.removeItem('creditos.'+key));
+  ['onboarding','onboardingDraft','lastScan','disputes','vault','streak','badges','wins','actionsDone','business','vendors','prefs','checkin','quiz','tourSeen','mailingProfile'].forEach(key=>localStorage.removeItem('creditos.'+key));
   _hydratingCloud=false;
-  toast('Device data cleared.'); renderDashboard(); showPage('home');
+  toast('Device data cleared.'); renderDashboard(); renderSettings(); showPage('home');
 }
+
+if($('mailDlInput')) $('mailDlInput').addEventListener('change',()=>uploadMailingDoc('driver_license','mailDlInput','mailDlStatus').catch(e=>{$('mailDlStatus').textContent=e.message||'Upload failed.';toast('Driver license upload failed.');}));
+if($('mailSsnInput')) $('mailSsnInput').addEventListener('change',()=>uploadMailingDoc('ssn_card','mailSsnInput','mailSsnStatus').catch(e=>{$('mailSsnStatus').textContent=e.message||'Upload failed.';toast('SSN card upload failed.');}));
 
 // ── Boot ───────────────────────────────────────────────────────
 initReportUpload();
@@ -2106,6 +2444,7 @@ calcFunding();
 renderDashboard();
 renderDisputes();
 renderJordanSide();
+renderMailingSummary();
 loadRuntimeStatus();
 // deadline nudges
 (async()=>{

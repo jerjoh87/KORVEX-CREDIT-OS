@@ -19,6 +19,7 @@ import { requireAuth, supabaseAdmin, hasSupabaseAdmin } from './lib/server-state
 import aiRoutes from './routes/ai.js';
 import creditsRoutes from './routes/credits.js';
 import creditApiRoutes from './routes/creditApi.js';
+import mailingRoutes from './routes/mailing.js';
 
 const app  = express();
 const PORT = process.env.PORT || 3001;
@@ -110,6 +111,7 @@ app.get('/api/runtime-status', (req, res) => {
     services: {
       supabase: !!supabaseAdmin,
       stripe: !!process.env.STRIPE_SECRET_KEY,
+      click2mail: !!(process.env.CLICK2MAIL_USERNAME && process.env.CLICK2MAIL_PASSWORD),
       gemini: !!process.env.GEMINI_API_KEY,
       ocr: 'browser',
       pdf: 'browser'
@@ -120,6 +122,7 @@ app.get('/api/runtime-status', (req, res) => {
 // ── Routes ───────────────────────────────────────────────────────────────────
 app.use('/api/ai',      aiRoutes);
 app.use('/api/credits', creditsRoutes);
+app.use('/api/mailing', mailingRoutes);
 app.use('/api',         creditApiRoutes);
 
 // ── Static frontend ──────────────────────────────────────────────────────────
