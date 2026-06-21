@@ -16,7 +16,7 @@
 // ─────────────────────────────────────────────
 import { Router } from 'express';
 import Stripe from 'stripe';
-import { requireAuth, supabaseAdmin } from '../server.js';
+import { requireAuth, supabaseAdmin } from '../lib/server-state.js';
 import {
   getPlanFromAmount,
   getPlanFromSubscription,

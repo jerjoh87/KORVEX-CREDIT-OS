@@ -14,7 +14,7 @@ import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
-import { createClient } from '@supabase/supabase-js';
+import { requireAuth, supabaseAdmin, hasSupabaseAdmin } from './lib/server-state.js';
 
 import aiRoutes from './routes/ai.js';
 import creditsRoutes from './routes/credits.js';
@@ -22,7 +22,6 @@ import creditApiRoutes from './routes/creditApi.js';
 
 const app  = express();
 const PORT = process.env.PORT || 3001;
-const isVercel = !!process.env.VERCEL;
 const isDirectRun = process.argv[1]
   ? import.meta.url === pathToFileURL(process.argv[1]).href
   : false;
@@ -35,22 +34,15 @@ app.set('trust proxy', 1);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname  = path.dirname(__filename);
 
+app.use((req, res, next) => {
+  console.error(`[request] ${req.method} ${req.url}`);
+  next();
+});
+
 // ── Supabase (OPTIONAL — will not crash if missing) ───────────────────────────
-let supabaseAdmin = null;
-
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey =
-  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY;
-
-if (supabaseUrl && supabaseKey) {
-  supabaseAdmin = createClient(supabaseUrl, supabaseKey, {
-    auth: { autoRefreshToken: false, persistSession: false }
-  });
-} else {
+if (!hasSupabaseAdmin()) {
   console.log("⚠️ Supabase not configured; using SQLite/local routes.");
 }
-
-export { supabaseAdmin };
 
 // ── CORS ─────────────────────────────────────────────────────────────────────
 const allowedOrigins = process.env.ALLOWED_ORIGINS
@@ -100,33 +92,10 @@ const globalLimiter = rateLimit({
 });
 app.use('/api', globalLimiter);
 
-// ── Auth middleware (SAFE if Supabase missing) ───────────────────────────────
-export async function requireAuth(req, res, next) {
-  if (!supabaseAdmin) {
-    return res.status(503).json({
-      error: 'Auth service unavailable (Supabase not configured).'
-    });
-  }
-
-  const authHeader = req.headers.authorization;
-  if (!authHeader?.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Missing authorization header.' });
-  }
-
-  const token = authHeader.split(' ')[1];
-
-  const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
-
-  if (error || !user) {
-    return res.status(401).json({ error: 'Invalid or expired session.' });
-  }
-
-  req.user = user;
-  next();
-}
 
 // ── Health check (must be before catch-all /api route) ───────────────────────
 app.get('/api/health', (req, res) => {
+  console.error('[route] /api/health');
   res.json({
     ok: true,
     service: 'CREDITOS',
@@ -153,12 +122,16 @@ app.use('/api/ai',      aiRoutes);
 app.use('/api/credits', creditsRoutes);
 app.use('/api',         creditApiRoutes);
 
-// ── Static frontend (IMPORTANT FOR RENDER) ───────────────────────────────────
-app.use(express.static(__dirname));
+// ── Static frontend ──────────────────────────────────────────────────────────
+// Frontend lives in /public. On Vercel this is served by the CDN directly
+// (see vercel.json); this middleware is what serves it under `node server.js`.
+const publicDir = path.join(__dirname, 'public');
+app.use(express.static(publicDir));
 
 // Home route
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  console.error('[route] /');
+  res.sendFile(path.join(publicDir, 'index.html'));
 });
 
 // ── 404 ──────────────────────────────────────────────────────────────────────
@@ -167,7 +140,7 @@ app.use((req, res) => {
 });
 
 // ── Sentry error handler (must be before any other error handler) ────────────
-if (process.env.SENTRY_DSN) {
+if (process.env.SENTRY_DSN && Sentry?.setupExpressErrorHandler) {
   Sentry.setupExpressErrorHandler(app);
 }
 
@@ -201,8 +174,10 @@ function startServer(port) {
   });
 }
 
-if (isDirectRun && !isVercel) {
+if (isDirectRun) {
   startServer(PORT);
 }
 
-export default app;
+export default function handler(req, res) {
+  return app(req, res);
+}

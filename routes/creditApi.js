@@ -9,7 +9,7 @@
 // ─────────────────────────────────────────────
 import { Router } from 'express';
 import { PDFParse } from 'pdf-parse';
-import { requireAuth, supabaseAdmin } from '../server.js';
+import { requireAuth, supabaseAdmin } from '../lib/server-state.js';
 import { isUnlimitedPlan } from '../lib/billing.js';
 import { callGemini, geminiConfigured, toGeminiText } from '../lib/gemini.js';
 

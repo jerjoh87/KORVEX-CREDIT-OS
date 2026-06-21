@@ -12,3 +12,4 @@ supabase/.temp/
 node_modules/
 node_modules 2/
 *.log
+.vercel

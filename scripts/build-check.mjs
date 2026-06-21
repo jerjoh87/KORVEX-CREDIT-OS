@@ -1,8 +1,9 @@
 import { existsSync, statSync } from 'node:fs';
 
 const requiredPaths = [
-  'app.html',
-  'index.html',
+  'public/app.html',
+  'public/index.html',
+  'api/index.js',
   'server.js',
   'routes',
   'lib',

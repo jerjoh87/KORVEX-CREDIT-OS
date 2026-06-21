@@ -12,7 +12,7 @@
 // ─────────────────────────────────────────────
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
-import { requireAuth, supabaseAdmin } from '../server.js';
+import { requireAuth, supabaseAdmin } from '../lib/server-state.js';
 import { callGemini, geminiConfigured, toGeminiText } from '../lib/gemini.js';
 
 const router = Router();

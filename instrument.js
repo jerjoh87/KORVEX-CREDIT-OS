@@ -1,30 +1,29 @@
 // ─────────────────────────────────────────────
-//  ContentEmpire AI — Sentry instrumentation
+//  CREDITOS — Sentry instrumentation
 //  instrument.js
 //
-//  Must be the first import in server.js so Sentry
-//  can instrument all subsequent modules.
+//  Must be the first import in server.js so Sentry can
+//  instrument all subsequently-loaded modules.
 //
-//  If SENTRY_DSN is not set, this file is a no-op.
-//  Run once after adding the DSN:
-//    npm install   (adds @sentry/node)
+//  When SENTRY_DSN is not set this file is a true no-op:
+//  @sentry/node is never imported, so its OpenTelemetry
+//  auto-instrumentation can't crash the serverless cold start.
 // ─────────────────────────────────────────────
-import * as Sentry from '@sentry/node';
+
+let Sentry = null;
 
 if (process.env.SENTRY_DSN) {
+  // Imported lazily and awaited so the default export below is the real,
+  // initialised Sentry object. A plain `export default <reassigned let>`
+  // would capture the initial null and never see the reassignment.
+  const mod = await import('@sentry/node');
+  Sentry = mod.default ?? mod;
+
   Sentry.init({
     dsn: process.env.SENTRY_DSN,
-
-    // Tag every event with the environment so prod/staging stay separate
     environment: process.env.NODE_ENV || 'production',
-
-    // Capture 10 % of transactions for performance monitoring — raise if needed
     tracesSampleRate: 0.1,
-
-    // Attach request data (URL, method, headers) to every error automatically
-    integrations: [
-      Sentry.expressIntegration(),
-    ],
+    integrations: [Sentry.expressIntegration()],
   });
 
   console.log(`[sentry] Initialised (env: ${process.env.NODE_ENV || 'production'})`);
