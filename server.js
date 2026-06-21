@@ -19,8 +19,10 @@ import { requireAuth, supabaseAdmin, hasSupabaseAdmin } from './lib/server-state
 import aiRoutes from './routes/ai.js';
 import creditsRoutes from './routes/credits.js';
 import creditApiRoutes from './routes/creditApi.js';
+import launchRoutes from './routes/launch.js';
 import mailingRoutes from './routes/mailing.js';
 import disputeRoutes from './routes/disputes.js';
+import responseRoutes from './routes/responses.js';
 
 const app  = express();
 const PORT = process.env.PORT || 3001;
@@ -41,31 +43,76 @@ app.use((req, res, next) => {
   next();
 });
 
+function normalizeOrigin(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return null;
+  try {
+    return new URL(raw).origin;
+  } catch {
+    return null;
+  }
+}
+
+function resolveAllowedOrigins() {
+  const origins = new Set([
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'http://localhost:3002',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:3001',
+    'http://127.0.0.1:3002'
+  ]);
+
+  const configured = process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim()).filter(Boolean)
+    : [];
+  configured.forEach(origin => {
+    const normalized = normalizeOrigin(origin);
+    if (normalized) origins.add(normalized);
+  });
+
+  const appOrigin = normalizeOrigin(process.env.APP_BASE_URL || process.env.APP_URL);
+  if (appOrigin) origins.add(appOrigin);
+
+  const vercelUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null;
+  const vercelOrigin = normalizeOrigin(vercelUrl);
+  if (vercelOrigin) origins.add(vercelOrigin);
+
+  return [...origins];
+}
+
 // ── Supabase (OPTIONAL — will not crash if missing) ───────────────────────────
 if (!hasSupabaseAdmin()) {
   console.log("⚠️ Supabase not configured; using SQLite/local routes.");
 }
 
 // ── CORS ─────────────────────────────────────────────────────────────────────
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
-  : [
-      'http://localhost:3000',
-      'http://localhost:3001',
-      'http://localhost:3002',
-      'http://127.0.0.1:3000',
-      'http://127.0.0.1:3001',
-      'http://127.0.0.1:3002'
-    ];
+const allowedOrigins = resolveAllowedOrigins();
 
-app.use(cors({
-  origin: (origin, cb) => {
-    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
-    cb(new Error(`CORS blocked: ${origin}`));
-  },
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
+// Same-origin requests (the app fetching its own /api) still send an Origin
+// header on POST, so they must be allowed even when their domain isn't in the
+// allow-list — otherwise every POST 500s with "Request origin is not allowed".
+// A request is same-origin when the Origin's host matches the Host it arrived
+// on; this is robust across Vercel preview/prod aliases and custom domains with
+// no extra env config. Genuine cross-origin callers that aren't allow-listed are
+// simply denied CORS headers (the browser blocks them) — we never throw a 500.
+function isAllowedOrigin(origin, req) {
+  if (!origin) return true;
+  if (allowedOrigins.includes(origin)) return true;
+  const host = req.headers.host;
+  if (host) {
+    try { if (new URL(origin).host === host) return true; } catch { /* malformed Origin */ }
+  }
+  return false;
+}
+
+app.use(cors((req, cb) => {
+  cb(null, {
+    origin: isAllowedOrigin(req.headers.origin, req),
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+  });
 }));
 
 // ── Body parsing ─────────────────────────────────────────────────────────────
@@ -109,6 +156,7 @@ app.get('/api/health', (req, res) => {
 app.get('/api/runtime-status', (req, res) => {
   res.json({
     ok: true,
+    appUrl: process.env.APP_BASE_URL || process.env.APP_URL || null,
     services: {
       supabase: !!supabaseAdmin,
       stripe: !!process.env.STRIPE_SECRET_KEY,
@@ -123,8 +171,10 @@ app.get('/api/runtime-status', (req, res) => {
 // ── Routes ───────────────────────────────────────────────────────────────────
 app.use('/api/ai',       aiRoutes);
 app.use('/api/credits',  creditsRoutes);
+app.use('/api/launch',   launchRoutes);
 app.use('/api/mailing',  mailingRoutes);
 app.use('/api/disputes', disputeRoutes);
+app.use('/api/responses', responseRoutes);
 app.use('/api',          creditApiRoutes);
 
 // ── Static frontend ──────────────────────────────────────────────────────────

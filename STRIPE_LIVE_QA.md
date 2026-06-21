@@ -30,11 +30,15 @@ Legend:
 - [ ] `POST /api/credits/stripe` verifies the Stripe signature with the raw request body.
 - [ ] `STRIPE_WEBHOOK_SECRET` is loaded from the server environment.
 - [ ] Checkout success grants the expected plan or credits once.
+- [ ] Premium Checkout charges $1 today, records `trialing`, and schedules the $99 renewal exactly seven days later.
+- [ ] The one-time $1 invoice is classified as Premium from Checkout metadata, not as a low-dollar Starter purchase.
 - [ ] Checkout cancel returns the user to the app without changing billing state.
 - [ ] Failed payment flags the account but does not unlock paid access.
 - [ ] Duplicate webhook deliveries do not double-credit the user.
 - [ ] `invoice.paid` clears any failure flag safely.
 - [ ] `customer.subscription.deleted` downgrades to free as expected.
+- [ ] `customer.subscription.created` grants Premium trial access even if it arrives before `checkout.session.completed`.
+- [ ] `customer.subscription.trial_will_end` creates the in-app renewal reminder.
 
 ## Manual test cases
 

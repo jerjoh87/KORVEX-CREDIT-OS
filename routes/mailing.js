@@ -12,10 +12,11 @@ import {
   toRecipientBookRow,
   validateRecipientRecord
 } from '../lib/recipient-address-book.js';
+import { recordLaunchVerificationEvent } from '../lib/launch-verification.js';
 
 const router = Router();
 const stripe = process.env.STRIPE_SECRET_KEY
-  ? new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2023-10-16' })
+  ? new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2026-04-22.dahlia' })
   : null;
 
 const MAIL_BUCKET = String(process.env.MAILING_BUCKET || 'mailing-docs').trim();
@@ -336,6 +337,14 @@ async function finalizeSingleMailJob(job, session) {
     supportDocs
   });
 
+  recordLaunchVerificationEvent({
+    eventType: 'click2mail_packet_generated',
+    provider: 'click2mail',
+    status: 'pass',
+    userId: job.user_id,
+    metadata: { job_id: job.id, dispute_id: job.dispute_id || null }
+  }).catch(() => {});
+
   const packetPath = await uploadPacket(job.id, packetBytes);
   const sent = await sendCertifiedMail({
     packetBytes,
@@ -354,6 +363,18 @@ async function finalizeSingleMailJob(job, session) {
   });
 
   await updateLinkedDispute(job);
+
+  recordLaunchVerificationEvent({
+    eventType: 'click2mail_tracking_status_received',
+    provider: 'click2mail',
+    status: 'pass',
+    userId: job.user_id,
+    metadata: {
+      job_id: job.id,
+      click2mail_job_id: sent.jobId,
+      click2mail_document_id: sent.documentId
+    }
+  }).catch(() => {});
 
   return {
     mailed: true,
@@ -391,6 +412,19 @@ async function createMailJobsForSelection({ userId, disputeId, letterId, letterT
     .insert(rows)
     .select('id, mail_batch_id, recipient_snapshot_json');
   if (error) throw error;
+
+  recordLaunchVerificationEvent({
+    eventType: 'click2mail_certified_mail_job_created',
+    provider: 'click2mail',
+    status: 'pass',
+    userId: userId,
+    metadata: {
+      batch_id: batchId,
+      job_count: rows.length,
+      dispute_id: disputeId || null,
+      letter_id: letterId || null
+    }
+  }).catch(() => {});
 
   return { batchId, jobs: data || [] };
 }
@@ -596,7 +630,7 @@ router.post('/checkout', requireAuth, async (req, res) => {
   const letterText = String(req.body?.letterText || '').trim();
   const disputeId = req.body?.disputeId || null;
   const letterId = req.body?.letterId || null;
-  const appUrl = process.env.APP_URL || `${req.protocol}://${req.get('host')}`;
+  const appUrl = process.env.APP_BASE_URL || process.env.APP_URL || `${req.protocol}://${req.get('host')}`;
   const saveCustomRecipient = !!req.body?.save_custom_recipient || !!req.body?.saveCustomRecipient;
   const recipientMode = String(req.body?.recipient_mode || req.body?.recipientMode || 'single').trim();
 

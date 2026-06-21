@@ -1,6 +1,6 @@
 const isProduction = process.env.NODE_ENV === 'production' || process.env.LAUNCH_MODE === 'production';
 const env = process.env;
-const appUrl = safeValue('APP_URL');
+const appUrl = safeValue('APP_BASE_URL') || safeValue('APP_URL');
 
 function hasValue(name) {
   return String(env[name] || '').trim().length > 0;
@@ -49,16 +49,23 @@ function validateUrl(name, label = name) {
 
 function validateOrigins() {
   const raw = safeValue('ALLOWED_ORIGINS');
-  if (!raw) return requireKey('ALLOWED_ORIGINS');
+  const origins = raw ? raw.split(',').map(v => v.trim()).filter(Boolean) : [];
+  const appOrigins = [safeValue('APP_BASE_URL'), safeValue('APP_URL')].filter(Boolean);
+  const combined = [...new Set([...origins, ...appOrigins])];
 
-  const origins = raw.split(',').map(v => v.trim()).filter(Boolean);
-  if (!origins.length) {
+  if (!combined.length) return requireKey('ALLOWED_ORIGINS');
+
+  if (!raw && appOrigins.length) {
+    report('na', 'ALLOWED_ORIGINS is not set; APP_BASE_URL / APP_URL will be used for same-origin requests');
+  }
+
+  if (!combined.length) {
     report(isProduction ? 'fail' : 'blocked', 'ALLOWED_ORIGINS is empty');
     return false;
   }
 
   let ok = true;
-  for (const origin of origins) {
+  for (const origin of combined) {
     try {
       new URL(origin);
       report('pass', `Allowed origin configured: ${origin}`);
@@ -88,8 +95,12 @@ console.log(`CREDITOS env validation (${isProduction ? 'production' : 'local'} m
 
 let failed = false;
 
-failed = !requireKey('APP_URL', 'APP_URL') || failed;
-failed = !validateUrl('APP_URL', 'APP_URL') || failed;
+if (hasValue('APP_BASE_URL')) {
+  failed = !validateUrl('APP_BASE_URL', 'APP_BASE_URL') || failed;
+} else {
+  failed = !requireKey('APP_URL', 'APP_BASE_URL or legacy APP_URL') || failed;
+  failed = !validateUrl('APP_URL', 'APP_URL') || failed;
+}
 failed = !validateOrigins() || failed;
 
 failed = !requireKey('SUPABASE_URL', 'SUPABASE_URL') || failed;
@@ -111,6 +122,8 @@ failed = !validatePriceId('STRIPE_PRICE_STARTER') || failed;
 failed = !validatePriceId('STRIPE_PRICE_PRO') || failed;
 failed = !validatePriceId('STRIPE_PRICE_PREMIUM') || failed;
 failed = !validatePriceId('STRIPE_PRICE_BUSINESS') || failed;
+failed = !validatePriceId('STRIPE_PREMIUM_PRICE_ID') || failed;
+failed = !validatePriceId('STRIPE_TRIAL_ACTIVATION_PRICE_ID') || failed;
 
 report('pass', appUrl ? `Auth redirect: ${appUrl}/app.html` : 'Auth redirect: not available until APP_URL is set');
 report('pass', appUrl ? `Stripe success redirect: ${appUrl}/app.html?checkout=success` : 'Stripe success redirect: not available until APP_URL is set');

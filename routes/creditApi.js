@@ -227,7 +227,7 @@ router.post('/analyze-credit', requireAuth, async (req, res) => {
 //  to pass to /api/analyze-credit. Does NOT run AI or charge credits itself —
 //  all analysis and billing goes through /api/analyze-credit.
 // ─────────────────────────────────────────────────────────────────────────────
-router.post('/upload-credit-report', requireAuth, async (req, res) => {
+router.post('/upload-credit-report', async (req, res) => {
   try {
     const body = req.body && typeof req.body === 'object' ? req.body : {};
     let reportText = getReportText({ body });

@@ -30,6 +30,7 @@ These can be shipped to the browser or embedded in the client:
 
 - `SUPABASE_ANON_KEY`
 - `APP_URL`
+- `APP_BASE_URL`
 - `ALLOWED_ORIGINS`
 - `STRIPE_PRICE_STARTER`
 - `STRIPE_PRICE_PRO`
@@ -50,7 +51,7 @@ Set these before launch:
 - `GEMINI_API_KEY`
 - `STRIPE_SECRET_KEY`
 - `STRIPE_WEBHOOK_SECRET`
-- `APP_URL`
+- `APP_BASE_URL` (preferred) or legacy `APP_URL`
 - `ALLOWED_ORIGINS`
 
 Optional, depending on deployment:
@@ -59,15 +60,18 @@ Optional, depending on deployment:
 - `STRIPE_PRICE_PRO`
 - `STRIPE_PRICE_PREMIUM`
 - `STRIPE_PRICE_BUSINESS`
+- `STRIPE_PREMIUM_PRICE_ID`
+- `STRIPE_TRIAL_ACTIVATION_PRICE_ID`
 - `GEMINI_MODEL`
 - `SENTRY_DSN`
 - `WEBHOOK_SECRET`
+- `BUREAU_RESPONSE_BUCKET` (defaults to `bureau-responses`)
 
 ## Railway
 
 Add the server-only values above to Railway environment variables.
 
-- `APP_URL` should be the public production URL, for example `https://app.yourdomain.com`.
+- `APP_BASE_URL` should be the public production URL, for example `https://app.yourdomain.com`. `APP_URL` remains supported as a fallback.
 - `ALLOWED_ORIGINS` should include only the production app domain and any trusted local dev hosts.
 - `SENTRY_DSN` is optional, but if used it must be the production DSN.
 
@@ -106,12 +110,15 @@ In Stripe:
 
 - Set the webhook endpoint to `POST /api/credits/stripe` on the production backend.
 - Copy the live webhook signing secret into `STRIPE_WEBHOOK_SECRET`.
+- Optional: create a recurring $99/month Premium Price and set its ID as `STRIPE_PREMIUM_PRICE_ID` or `STRIPE_PRICE_PREMIUM`. If omitted, Checkout uses inline recurring price data.
+- Optional: create a one-time $1 activation Price and set its ID as `STRIPE_TRIAL_ACTIVATION_PRICE_ID`. If omitted, Checkout uses inline one-time price data.
+- Enable and configure the Stripe Customer Portal so users can cancel or update payment details themselves.
 - If you use saved Price IDs, set the matching `STRIPE_PRICE_*` values.
 - Confirm Checkout success and cancel URLs point to the production app.
 
 ## Redirect URLs
 
-The app currently sends auth users back to `APP_URL/app.html`.
+The app sends auth users back to `APP_BASE_URL/app.html` (or legacy `APP_URL/app.html`).
 
 Use these as your baseline:
 
@@ -131,4 +138,7 @@ If your final domain differs, update the same pattern everywhere.
 - [ ] Stripe webhook is live and signing secret is current.
 - [ ] `ALLOWED_ORIGINS` contains the production origin.
 - [ ] `APP_URL` is not localhost.
+- [ ] `APP_BASE_URL` is the canonical production origin.
+- [ ] Premium Checkout has either saved Price IDs configured or inline price-data fallback verified.
+- [ ] Migration `20260621090000_premium_response_workflow.sql` is applied.
 - [ ] The app works with a fresh auth session, expired session, and password reset.

@@ -206,13 +206,15 @@ textarea{min-height:96px;resize:vertical}
 .playbookMetrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}
 .playbookMetric{padding:16px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.035)}
 .playbookMetric .metricNum{font-size:25px;line-height:1.05}
-.playbookLayout{display:grid;grid-template-columns:280px minmax(0,1fr) 320px;gap:16px;align-items:start}
+.playbookLayout{display:grid;grid-template-columns:280px minmax(0,1fr) 320px;gap:16px;align-items:start;min-width:0}
+.playbookLayout .card,.playbookLayout > *{min-width:0}
 .playbookQueue{display:grid;gap:10px}
 .playbookAccount{width:100%;text-align:left;border:1px solid var(--line);background:rgba(255,255,255,.035);color:var(--ink);border-radius:12px;padding:13px;cursor:pointer;display:grid;gap:7px;transition:.15s}
 .playbookAccount:hover{border-color:rgba(78,222,163,.35);background:rgba(16,185,129,.08)}
 .playbookAccount.active{border-color:var(--em);background:var(--em-soft);box-shadow:0 0 0 1px rgba(78,222,163,.12)}
 .playbookAccount b{font-size:13.5px}.playbookAccount small{color:var(--muted);font-size:11.5px}
 .playbookScoreCard{display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.playbookScoreCard>div:first-child{flex:1;min-width:0}
 .playbookScore{--p:70;width:128px;height:128px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#4EDEA3 calc(var(--p)*1%),#3B82F6 calc(var(--p)*1% + 12%),#1A2637 0);filter:drop-shadow(0 0 12px rgba(16,185,129,.18));flex:none}
 .playbookScore>div{width:102px;height:102px;border-radius:50%;background:#0B1424;border:1px solid var(--line);display:grid;place-items:center;text-align:center}
 .playbookScore b{font-size:28px;line-height:1}.playbookScore small{color:var(--muted);font-size:10px;font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase}
@@ -220,6 +222,7 @@ textarea{min-height:96px;resize:vertical}
 .analysisField{padding:11px;border:1px solid var(--line);border-radius:11px;background:rgba(255,255,255,.025)}
 .analysisField span{display:block;font:600 9px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
 .analysisField b{font-size:13px;font-weight:600;color:var(--ink2)}
+.playbookScoreCard p,.analysisField b,.playbookStep small,.docGroup li,.casePanel small,.caseFile small{overflow-wrap:anywhere}
 .playbookSteps{counter-reset:pbStep;display:grid;gap:9px}
 .playbookStep{counter-increment:pbStep;display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:flex-start;padding:12px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.03)}
 .playbookStep:before{content:counter(pbStep);width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--em);color:#fff;font-weight:800;font-size:12px}
@@ -229,7 +232,7 @@ textarea{min-height:96px;resize:vertical}
 .docGroup b{font-size:13px}.docGroup ul{list-style:none;display:grid;gap:5px;margin-top:8px;color:var(--ink2);font-size:12.5px}
 .docGroup li{display:flex;gap:6px;align-items:flex-start}.docGroup li:before{content:'check_circle';font-family:'Material Symbols Outlined';color:#4EDEA3;font-size:16px;line-height:1.2}
 .pbTimeline{padding-bottom:6px}.pbTimeline .stepNode{min-width:112px}
-.casePanel{position:sticky;top:86px;display:grid;gap:14px}
+.casePanel{position:sticky;top:86px;display:grid;gap:14px;min-width:0}
 .caseAnalyst{border-color:rgba(124,168,255,.22)}
 .factorGrid{display:grid;gap:8px;margin-top:10px}
 .factorRow{display:grid;grid-template-columns:1fr 42px;gap:9px;align-items:center;font-size:12.5px;color:var(--ink2)}
@@ -238,8 +241,24 @@ textarea{min-height:96px;resize:vertical}
 .caseFile{border:1px solid var(--line);background:rgba(255,255,255,.025);border-radius:12px;padding:12px;min-height:86px}
 .caseFile strong{display:block;font-size:13px}.caseFile small{color:var(--muted);font-size:11.5px}
 .noteBox{display:grid;gap:8px;margin-top:10px}
-@media(max-width:1180px){.playbookLayout{grid-template-columns:1fr}.casePanel{position:static}.playbookMetrics{grid-template-columns:repeat(2,minmax(0,1fr))}.caseFiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:760px){.playbookMetrics,.analysisGrid,.docChecklist,.caseFiles{grid-template-columns:1fr}.playbookScoreCard{align-items:flex-start}.playbookScore{width:112px;height:112px}.playbookScore>div{width:90px;height:90px}}
+.responseLayout{display:grid;grid-template-columns:minmax(300px,.78fr) minmax(0,1.22fr);gap:16px;align-items:start}
+.responseDrop{border:1px dashed rgba(78,222,163,.36);background:rgba(16,185,129,.055);border-radius:13px;padding:18px;display:grid;gap:11px}
+.responseDrop input[type=file]{background:#07101e;border-color:rgba(78,222,163,.2)}
+.premiumLock{padding:34px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:center;border-color:rgba(78,222,163,.28)}
+.premiumLock h3{font-size:24px}.premiumLock p{color:var(--muted);max-width:700px;margin-top:8px}
+.billingDisclosure{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:16px 0}
+.billingDisclosure div{padding:11px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.025)}
+.billingDisclosure small{display:block;color:var(--muted);font-size:10px;margin-bottom:4px}.billingDisclosure b{font-size:13px}
+.planCard .billingDisclosure{grid-template-columns:repeat(2,minmax(0,1fr));margin:12px 0}
+.responseAccount{border-left:3px solid var(--blue);padding:12px 13px;background:rgba(255,255,255,.025);border-radius:0 11px 11px 0}
+.responseAccount.deleted{border-left-color:var(--em)}.responseAccount.verified,.responseAccount.unchanged{border-left-color:#F59E0B}.responseAccount.frivolous_or_irrelevant{border-left-color:var(--red)}
+.deadlineRail{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin-top:14px}
+.deadlinePoint{padding:10px;border-top:2px solid var(--line2);font-size:11px;color:var(--muted)}.deadlinePoint b{display:block;color:var(--ink);font-size:12px;margin-bottom:3px}
+.deadlinePoint.done{border-color:var(--em)}.deadlinePoint.due{border-color:var(--red);background:var(--red-soft)}
+.confidenceBar{height:7px;border-radius:999px;background:#172438;overflow:hidden;margin-top:7px}.confidenceBar span{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--em))}
+@media(max-width:1450px){.playbookLayout{grid-template-columns:280px minmax(0,1fr)}.casePanel{position:static;grid-column:1/-1;grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:1180px){.playbookLayout,.responseLayout{grid-template-columns:1fr}.casePanel{position:static;grid-template-columns:1fr}.playbookMetrics{grid-template-columns:repeat(2,minmax(0,1fr))}.caseFiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.playbookMetrics,.analysisGrid,.docChecklist,.caseFiles,.billingDisclosure{grid-template-columns:1fr}.playbookScoreCard{align-items:flex-start}.playbookScore{width:112px;height:112px}.playbookScore>div{width:90px;height:90px}.premiumLock{grid-template-columns:1fr;padding:22px}.deadlineRail{grid-template-columns:1fr}.deadlinePoint{border-top:0;border-left:2px solid var(--line2)}}
 
 /* ── Bottom mobile nav ── */
 .bottomNav{display:none;position:fixed;left:0;right:0;bottom:0;z-index:90;background:#0a0e16;border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom));grid-template-columns:repeat(6,1fr)}
@@ -307,6 +326,7 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
       <button class="navBtn" data-page="scanner"><span class="material-symbols-outlined ic">monitor_heart</span> Monitoring</button>
       <button class="navBtn" data-page="playbook"><span class="material-symbols-outlined ic">psychology_alt</span> Dispute Playbook <span class="navBadge gold">AI</span></button>
       <button class="navBtn" data-page="disputes"><span class="material-symbols-outlined ic">timeline</span> Dispute Timeline <span class="navBadge" id="disputeCount"></span></button>
+      <button class="navBtn" data-page="responses"><span class="material-symbols-outlined ic">mark_email_read</span> Bureau Responses <span class="navBadge gold">Premium</span></button>
       <button class="navBtn" data-page="letters"><span class="material-symbols-outlined ic">report_problem</span> Negative Items</button>
       <button class="navBtn" data-page="simulator"><span class="material-symbols-outlined ic">model_training</span> Simulators</button>
       <div class="navLabel">Funding</div>
@@ -602,7 +622,7 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
 
       <!-- ════════ DISPUTE CENTER ════════ -->
       <div class="page" id="disputes">
-        <div class="heroHead"><div><h2>Dispute Center</h2><p>Track every dispute like a package — from letter created to resolved. Bureaus must respond within 30 days (FCRA §611).</p></div><button class="primary" onclick="showPage('scanner')">Find items to dispute</button></div>
+        <div class="heroHead"><div><h2>Dispute Center</h2><p>Track each dispute from draft through the standard 30-day target and the maximum 45-day investigation window that can apply in some cases.</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="ghost" onclick="showPage('responses')">Upload bureau response</button><button class="primary" onclick="showPage('scanner')">Find items to dispute</button></div></div>
         <div class="grid grid3">
           <div class="card"><div class="metricLab">Open</div><div class="metricNum" id="dOpen">0</div></div>
           <div class="card"><div class="metricLab">Waiting on bureau</div><div class="metricNum" id="dSent">0</div></div>
@@ -615,7 +635,56 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
           <button class="tab" data-dtab="resolved" onclick="filterDisputes('resolved',this)">Resolved</button>
         </div>
         <div class="list" id="disputeList"><div class="empty">No disputes yet. Scan your report, generate a letter, then track it here.</div></div>
-        <div class="disclaimer">CREDITOS tracks your timeline and prepares documents. The new Ship letter button prepares a printable packet and records the mailed date in your timeline; physical mailing still requires your printer or a connected mail-fulfillment integration.</div>
+        <div class="disclaimer">CREDITOS tracks self-reported dates and prepares documents. Use the certified-mail delivery date when available; otherwise the sent date anchors reminders. The 30-day date is the standard target, while 45 days can apply in some investigations.</div>
+      </div>
+
+      <!-- ════════ PREMIUM BUREAU RESPONSES ════════ -->
+      <div class="page" id="responses">
+        <div class="heroHead"><div><h2>Bureau Response Center <span class="chip gold">Premium</span></h2><p>Upload the bureau’s letter, understand what changed, prepare the right next round, and know when to act.</p></div><button class="ghost" onclick="showPage('disputes')">Open dispute timeline</button></div>
+        <div id="responseGate"></div>
+        <div id="responseWorkspace" class="hidden">
+          <div class="responseLayout">
+            <div style="display:grid;gap:16px;align-content:start">
+              <div class="card">
+                <div class="stitchCardHead"><div><h3>Upload bureau response</h3><p style="color:var(--muted);font-size:13px;margin-top:5px">PDF, PNG, JPG, or TXT · up to 10 MB</p></div><span class="chip up">Private</span></div>
+                <div class="responseDrop">
+                  <label>Match to a dispute<select id="responseDispute"></select></label>
+                  <div class="formGrid">
+                    <label>Bureau<select id="responseBureau"><option value="auto">Auto-detect</option><option>Experian</option><option>Equifax</option><option>TransUnion</option></select></label>
+                    <label>Response date<input id="responseDate" type="date"></label>
+                  </div>
+                  <label>Response file<input id="responseFile" type="file" accept=".pdf,.png,.jpg,.jpeg,.txt,application/pdf,image/png,image/jpeg,text/plain"></label>
+                  <button class="primary" id="analyzeResponseBtn" onclick="uploadBureauResponse()">Upload and analyze</button>
+                  <p id="responseUploadStatus" style="color:var(--muted);font-size:12px">AI will identify the bureau, response date, account results, reasons, and recommended next action.</p>
+                </div>
+              </div>
+              <div class="card">
+                <div class="stitchCardHead"><h3>Alerts center</h3><span id="responseAlertCount" class="tag">0 due</span></div>
+                <div id="responseAlerts" class="list"><div class="empty">No deadline alerts yet.</div></div>
+              </div>
+            </div>
+            <div style="display:grid;gap:16px;align-content:start">
+              <div class="card" id="responseAnalysisPanel">
+                <h3>Response analysis</h3>
+                <div class="empty" style="margin-top:13px">Upload a bureau response to see what changed, what stayed, and the recommended next move.</div>
+              </div>
+              <div class="card hidden" id="responseLetterPanel">
+                <div class="stitchCardHead"><div><h3>Next-round letter</h3><p style="color:var(--muted);font-size:12px;margin-top:4px">Editable before you copy, download, or mail it.</p></div><span id="responseLetterType" class="tag blue"></span></div>
+                <pre id="responseLetterPreview" contenteditable="true" style="white-space:pre-wrap;color:var(--ink2);font-family:var(--font);font-size:13px;line-height:1.65;max-height:520px;overflow:auto;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:14px"></pre>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:11px"><button class="ghost" onclick="copyText('responseLetterPreview')">Copy</button><button class="ghost" onclick="downloadText('responseLetterPreview','creditos-next-round-letter')">Download .txt</button><button class="primary" onclick="downloadLetterPdf('responseLetterPreview','Next Round Letter','creditos-next-round-letter')">Download PDF</button></div>
+              </div>
+              <div class="card">
+                <div class="stitchCardHead"><h3>30 / 45-day dispute timeline</h3><span class="kickerMono" style="font-size:9px">Delivery date preferred</span></div>
+                <div id="responseRounds" class="list"><div class="empty">Your premium dispute rounds will appear here.</div></div>
+              </div>
+              <div class="card">
+                <div class="stitchCardHead"><h3>Response history</h3><span id="responseHistoryCount" class="tag gray">0</span></div>
+                <div id="responseHistory" class="list"><div class="empty">No bureau responses uploaded yet.</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="disclaimer">CREDITOS provides self-service software tools, document storage, AI drafting, education, and reminders. It does not guarantee score increases, deletions, or removal of accurate information. Review every result and letter before acting.</div>
+        </div>
       </div>
 
       <!-- ════════ SIMULATORS ════════ -->
@@ -771,6 +840,8 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
           </div>
           <div class="card"><h3>💳 My plan</h3>
             <div style="display:flex;justify-content:space-between;align-items:center;margin:13px 0"><div><b id="setPlan" style="font-size:19px">Free</b><br><small style="color:var(--muted)" id="setPlanSub">Limited credits</small></div><button class="primary" onclick="openUpgrade()">Change plan</button></div>
+            <div id="setPlanBilling" class="scannerState" style="padding:11px 13px;margin-bottom:11px"><strong>No active paid billing</strong><span>Choose a plan to unlock paid features.</span></div>
+            <button class="ghost hidden" id="manageBillingBtn" style="width:100%;margin-bottom:10px" onclick="manageBilling()">Manage billing or cancel in Stripe</button>
             <p style="color:var(--muted);font-size:12.5px">Cancel anytime. Payments are processed by Stripe — we never see your card number.</p>
           </div>
           <div class="card"><h3>📬 Certified mailing profile</h3>
@@ -810,6 +881,13 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
             <div class="list" id="serviceStatusList" style="margin-top:13px"></div>
             <p id="serviceStatusNote" style="color:var(--muted);font-size:12.5px;margin-top:10px">Checking which live services are connected…</p>
           </div>
+          <div class="card hidden" id="launchVerificationCard"><h3>✅ Launch proof dashboard</h3>
+            <p style="color:var(--muted);font-size:13px;margin-top:6px">Admin-only proof log for live auth, Stripe, and Click2Mail checks.</p>
+            <div class="billingDisclosure" id="launchVerificationSummary" style="margin-top:13px;grid-template-columns:repeat(3,minmax(0,1fr))"></div>
+            <div class="list" id="launchVerificationList" style="margin-top:13px"></div>
+            <p id="launchVerificationNote" style="color:var(--muted);font-size:12.5px;margin-top:10px">Loading launch proof status…</p>
+            <button class="ghost" style="width:100%;margin-top:10px" onclick="loadLaunchVerificationDashboard()">Refresh proof status</button>
+          </div>
           <div class="card"><h3>🔒 Data & privacy</h3>
             <p style="color:var(--muted);font-size:13px;margin:10px 0 7px">Credit report contents are analyzed and never stored or sold. Scan metadata, your plan, and progress sync to your account.</p>
             <p id="cloudSyncStatus" style="color:var(--muted);font-size:12px;margin-bottom:13px">Sign in to enable cross-device sync.</p>
@@ -835,15 +913,15 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
 
 <!-- ════════ MODALS ════════ -->
 <div class="modalOverlay" id="upgradeModal"><div class="modal">
-  <div class="modalHead"><div><h2>Choose your plan</h2><p style="color:var(--muted);margin-top:5px">7-day free trial on paid plans · Cancel anytime · Secured by Stripe 🔒</p></div><button class="close" onclick="closeUpgrade()">✕</button></div>
+  <div class="modalHead"><div><h2>Choose your plan</h2><p style="color:var(--muted);margin-top:5px">Premium includes a one-time $1, 7-day introductory trial · Secured by Stripe 🔒</p></div><button class="close" onclick="closeUpgrade()">✕</button></div>
   <div class="grid grid3" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+    <div class="planCard popular"><b>Premium <span class="chip up">$1 trial</span></b><div class="pr">$1<small> today</small></div><ul><li>7 days of Premium access</li><li>Bureau response upload + AI analysis</li><li>AI next-round letters</li><li>30 / 45-day timeline and alerts</li></ul><div class="billingDisclosure"><div><small>Today</small><b>$1</b></div><div><small>Trial</small><b>7 days</b></div><div><small>Next bill</small><b id="premiumTrialBillDate">—</b></div><div><small>Then</small><b>$99/mo</b></div></div><button class="primary" style="margin-top:auto" onclick="startCheckout('premium')">Start $1 Premium trial</button></div>
     <div class="planCard"><b>Free</b><div class="pr">$0</div><ul><li>3 credits to try AI</li><li>Score & funding simulators</li><li>Personal plan (30/90/180)</li></ul><button class="ghost" style="margin-top:auto">Current plan</button></div>
-    <div class="planCard"><b>Starter</b><div class="pr">$19<small>/mo</small></div><ul><li>25 AI credits / month</li><li>All letter types</li><li>Dispute tracking</li></ul><button class="primary" style="margin-top:auto" onclick="startCheckout('starter')">Start free trial</button></div>
-    <div class="planCard popular"><b>Pro <span class="chip up">Most popular</span></b><div class="pr">$49<small>/mo</small></div><ul><li>Unlimited AI scans & letters</li><li>Jordan AI coach unlimited</li><li>AI funding roadmaps</li><li>Bulk letters (20 at once)</li></ul><button class="primary" style="margin-top:auto" onclick="startCheckout('pro')">Start free trial</button></div>
-    <div class="planCard"><b>Premium</b><div class="pr">$99<small>/mo</small></div><ul><li>Everything in Pro</li><li>Advanced dispute workflows</li><li>Live lender matching (coming soon)</li><li>Priority AI guidance</li></ul><button class="primary" style="margin-top:auto" onclick="startCheckout('premium')">Start free trial</button></div>
-    <div class="planCard"><b>Business</b><div class="pr">$199<small>/mo</small></div><ul><li>Everything in Premium</li><li>Client CRM & vendor tracker</li><li>Business credit suite</li><li>White-label (coming soon)</li></ul><button class="primary" style="margin-top:auto" onclick="startCheckout('business')">Start free trial</button></div>
+    <div class="planCard"><b>Pro</b><div class="pr">$49<small>/mo</small></div><ul><li>Unlimited AI scans & letters</li><li>Jordan AI coach unlimited</li><li>AI funding roadmaps</li><li>Bulk letters (20 at once)</li></ul><button class="primary" style="margin-top:auto" onclick="startCheckout('pro')">Choose Pro</button></div>
+    <div class="planCard"><b>Starter</b><div class="pr">$19<small>/mo</small></div><ul><li>25 AI credits / month</li><li>All letter types</li><li>Dispute tracking</li></ul><button class="primary" style="margin-top:auto" onclick="startCheckout('starter')">Choose Starter</button></div>
+    <div class="planCard"><b>Business</b><div class="pr">$199<small>/mo</small></div><ul><li>Everything in Premium</li><li>Client CRM & vendor tracker</li><li>Business credit suite</li><li>White-label (coming soon)</li></ul><button class="primary" style="margin-top:auto" onclick="startCheckout('business')">Choose Business</button></div>
   </div>
-  <p style="color:var(--soft);font-size:11.5px;margin-top:14px">Prices in USD. Subscriptions renew monthly until canceled in Settings. CREDITOS never charges per-deletion fees.</p>
+  <p style="color:var(--soft);font-size:11.5px;margin-top:14px">Premium: $1 today, then $99/month on the exact date shown unless canceled beforehand. The trial provides self-service software access—not promised credit-repair results. No score increase or deletion is guaranteed. Other paid plans bill at checkout and renew monthly.</p>
 </div></div>
 
 <div class="modalOverlay" id="authModal"><div class="modal" style="max-width:420px">
@@ -1001,8 +1079,10 @@ const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
 
 let _supabase = null;
 let _session  = null;
-let _plan     = { plan: 'free', credits: null, unlimited: false };
+let _plan     = { plan: 'free', credits: null, unlimited: false, premiumAccess: false, subscriptionStatus: null, trialEndsAt: null, nextBillAt: null, paymentFailed: false, canManageBilling: false };
 let _runtimeStatus = null;
+let _appBaseUrl = location.origin;
+let _launchVerification = { admin: false, checks: [], recentEvents: [], counts: { pass: 0, fail: 0, blocked: 0 }, loading: false, error: null };
 
 // ── Tiny helpers ───────────────────────────────────────────────
 const $ = id => document.getElementById(id);
@@ -1050,6 +1130,10 @@ function renderServiceStatus(){
   note.textContent = s.supabase===false || s.stripe===false || s.click2mail===false || s.gemini===false
     ? 'Live services are still in setup mode. Local features continue to work, and API calls show a clean status message instead of crashing.'
     : 'All configured live services report ready status, and browser-powered OCR / PDF export stay available locally.';
+}
+function appBaseUrl(){
+  const configured = String(_appBaseUrl || _runtimeStatus?.appUrl || location.origin || '').trim().replace(/\/+$/, '');
+  return configured || location.origin;
 }
 async function syncCloudState(){
   if(!_supabase||!_session||_hydratingCloud)return;
@@ -1720,7 +1804,10 @@ function updateAuthUI(session){
   if(session){ btn.textContent='Sign out'; btn.onclick=doSignOut; $('setEmail').textContent=session.user?.email||'—';setCloudStatus('Loading your saved progress…'); }
   else { btn.textContent='Sign in'; btn.onclick=openAuthModal; $('setEmail').textContent='not signed in';setCloudStatus('Sign in to enable cross-device sync.'); }
   loadDashboardMetrics(); loadCRMClients(); loadLetterHistory(); renderDisputes();
+  if($('responses')?.classList.contains('active'))renderResponseCenter();
   if(session)hydrateCloudState(session);
+  if(session) loadLaunchVerificationDashboard().catch(()=>{});
+  else clearLaunchVerificationDashboard();
 }
 let _manualSignOut=false,_hadSession=false;
 try{
@@ -1762,12 +1849,26 @@ function handleAuthCallback(){
   const error=query.get('error_description')||hash.get('error_description')||query.get('error')||hash.get('error');
   const type=query.get('type')||hash.get('type');
   const mail=query.get('mail');
+  const checkout=query.get('checkout');
+  const billing=query.get('billing');
   if(mail==='success') toast('Payment received — your certified letter is being processed.');
   if(mail==='cancelled') toast('Certified mail checkout was cancelled.');
+  if(checkout==='success'){toast('Premium checkout complete — access is syncing now.');setTimeout(()=>loadDashboardMetrics().then(()=>showPage('responses')),900);}
+  if(checkout==='cancelled')toast('Plan checkout was cancelled. You were not enrolled.');
+  if(billing==='return'){toast('Billing settings updated.');setTimeout(loadDashboardMetrics,500);}
   if(error){setAuthMode(false);openAuthModal();$('authMsg').textContent=friendlyAuthError(error);}
-  else if(type==='recovery')showPasswordRecovery();
-  else if(type==='signup'||type==='email_change')toast('Email verified — you can continue securely.');
-  if(error||type||mail||query.has('code')||hash.has('access_token'))history.replaceState({},document.title,location.pathname);
+  else if(type==='recovery'){
+    showPasswordRecovery();
+    recordLaunchVerificationEvent('auth_password_reset','supabase','blocked',{source:'recovery-link-opened'}).catch(()=>{});
+  }
+  else if(type==='signup'||type==='email_change'){
+    toast('Email verified — you can continue securely.');
+    recordLaunchVerificationEvent('auth_email_verification','supabase','pass',{source:'auth_callback',type}).catch(()=>{});
+  }
+  else if(type==='magiclink' || (query.has('code') || hash.has('access_token'))){
+    recordLaunchVerificationEvent('auth_magic_link','supabase','pass',{source:'auth_callback',type:type||'magiclink'}).catch(()=>{});
+  }
+  if(error||type||mail||checkout||billing||query.has('code')||hash.has('access_token'))history.replaceState({},document.title,location.pathname);
 }
 async function doSignOut(){
   _manualSignOut=true;
@@ -1782,7 +1883,7 @@ async function submitAuth(mode){
   if(mode==='signup'&&pass.length<8){msg.textContent='Create a password with at least 8 characters.';return}
   if(!_supabase){msg.textContent='Auth not configured.';return}
   msg.textContent='Working…';
-  const fn = mode==='signup' ? _supabase.auth.signUp({email,password:pass,options:{emailRedirectTo:`${location.origin}/app.html`}}) : _supabase.auth.signInWithPassword({email,password:pass});
+  const fn = mode==='signup' ? _supabase.auth.signUp({email,password:pass,options:{emailRedirectTo:`${appBaseUrl()}/app.html`}}) : _supabase.auth.signInWithPassword({email,password:pass});
   const {error}=await fn;
   if(error){msg.textContent=friendlyAuthError(error)}
   else{msg.textContent= mode==='signup'?'Check your email to confirm your account.':'Signed in!'; setTimeout(closeAuthModal,1100)}
@@ -1792,14 +1893,14 @@ async function sendMagicLink(){
   if(!email){msg.textContent='Enter your email first, then request the magic link.';return}
   if(!_supabase){msg.textContent='Auth is not configured.';return}
   msg.textContent='Sending secure sign-in link…';
-  const {error}=await _supabase.auth.signInWithOtp({email,options:{emailRedirectTo:`${location.origin}/app.html`,shouldCreateUser:true}});
+  const {error}=await _supabase.auth.signInWithOtp({email,options:{emailRedirectTo:`${appBaseUrl()}/app.html`,shouldCreateUser:true}});
   msg.textContent=error?friendlyAuthError(error):'Magic link sent. Open it on this device to sign in.';
 }
 async function forgotPassword(){
   const email=$('authEmail').value.trim(), msg=$('authMsg');
   if(!email){msg.textContent='Type your email above first, then tap "Forgot password".';return}
   if(!_supabase){msg.textContent='Auth is not configured.';return}
-  const {error}=await _supabase.auth.resetPasswordForEmail(email,{redirectTo:`${location.origin}/app.html`});
+  const {error}=await _supabase.auth.resetPasswordForEmail(email,{redirectTo:`${appBaseUrl()}/app.html`});
   msg.textContent=error?friendlyAuthError(error):'Reset link sent — check your email. It expires for your protection.';
 }
 async function completePasswordReset(){
@@ -1810,12 +1911,13 @@ async function completePasswordReset(){
   msg.textContent='Updating password…';
   const {error}=await _supabase.auth.updateUser({password:pass});
   if(error){msg.textContent=friendlyAuthError(error);return}
+  recordLaunchVerificationEvent('auth_password_reset','supabase','pass',{source:'completePasswordReset'}).catch(()=>{});
   msg.textContent='Password updated. You are signed in.';_passwordRecovery=false;
   setTimeout(()=>{setAuthMode(false);closeAuthModal();},1100);
 }
 
 // ── Navigation ─────────────────────────────────────────────────
-const PAGE_TITLES={home:'Dashboard',onboarding:'Goals & Plan',scanner:'Monitoring',playbook:'Dispute Playbook',letters:'Negative Items',disputes:'Dispute Timeline',simulator:'Simulators',funding:'Funding Center',business:'Business Credit',jordan:'Jordan AI',crm:'Client CRM',vendors:'Vendor Tracker',settings:'Settings'};
+const PAGE_TITLES={home:'Dashboard',onboarding:'Goals & Plan',scanner:'Monitoring',playbook:'Dispute Playbook',letters:'Negative Items',disputes:'Dispute Timeline',responses:'Bureau Responses',simulator:'Simulators',funding:'Funding Center',business:'Business Credit',jordan:'Jordan AI',crm:'Client CRM',vendors:'Vendor Tracker',settings:'Settings'};
 function openMenu(){document.body.classList.add('menu-open')}
 function closeMenu(){document.body.classList.remove('menu-open')}
 function toggleMenu(){document.body.classList.contains('menu-open')?closeMenu():openMenu()}
@@ -1835,6 +1937,7 @@ function showPage(id){
   if(id==='home') renderDashboard();
   if(id==='playbook') renderPlaybook();
   if(id==='disputes') renderDisputes();
+  if(id==='responses') renderResponseCenter();
   if(id==='funding') renderFundingPage();
   if(id==='business') renderBusiness();
   if(id==='jordan') renderJordanSide();
@@ -1848,7 +1951,9 @@ $('bottomNav').addEventListener('click',e=>{const b=e.target.closest('button');i
 window.addEventListener('keydown',e=>{if(e.key==='Escape'){closeUpgrade();closeAuthModal();closeAddClient();closeMailingModal();closeMenu()}});
 
 // ── Modals ─────────────────────────────────────────────────────
-function openUpgrade(){$('upgradeModal').classList.add('show')}
+function exactDate(value){if(!value)return '—';const d=new Date(value);return Number.isNaN(d.getTime())?'—':d.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})}
+function premiumTrialEndPreview(){const d=new Date();d.setDate(d.getDate()+7);return d}
+function openUpgrade(){const bill=$('premiumTrialBillDate');if(bill)bill.textContent=exactDate(premiumTrialEndPreview());$('upgradeModal').classList.add('show')}
 function closeUpgrade(){$('upgradeModal').classList.remove('show')}
 function openAddClient(){$('addClientModal').classList.add('show')}
 function closeAddClient(){$('addClientModal').classList.remove('show')}
@@ -1862,6 +1967,91 @@ async function startCheckout(plan){
   }catch(e){
     toast(e.status===503?'Payments are not configured yet on this server.':('Checkout error: '+e.message));
   }
+}
+async function manageBilling(){
+  if(!getAuthToken()){openAuthModal();return}
+  try{
+    const data=await api.post('/api/credits/portal',{});
+    recordLaunchVerificationEvent('stripe_billing_portal_opened','stripe','pass',{source:'frontend'}).catch(()=>{});
+    if(data.url)location.href=data.url;else throw new Error('Billing portal did not return a link.');
+  }
+  catch(e){toast(e.message||'Could not open billing management.');}
+}
+
+async function recordLaunchVerificationEvent(eventType, provider, status='pass', metadata={}){
+  if(!_supabase||!_session) return null;
+  try{
+    await api.post('/api/launch/verification/events',{event_type:eventType,provider,status,metadata});
+    return true;
+  }catch{
+    return false;
+  }
+}
+
+function clearLaunchVerificationDashboard(){
+  _launchVerification = { admin: false, checks: [], recentEvents: [], counts: { pass: 0, fail: 0, blocked: 0 }, loading: false, error: null };
+  renderLaunchVerificationDashboard();
+}
+
+async function loadLaunchVerificationDashboard(){
+  if(!_supabase||!_session){ clearLaunchVerificationDashboard(); return; }
+  _launchVerification.loading = true;
+  _launchVerification.error = null;
+  renderLaunchVerificationDashboard();
+  try{
+    const data = await api.get('/api/launch/verification/dashboard');
+    _launchVerification = {
+      admin: !!data.admin,
+      checks: Array.isArray(data.checks) ? data.checks : [],
+      recentEvents: Array.isArray(data.recentEvents) ? data.recentEvents : [],
+      counts: data.counts || { pass: 0, fail: 0, blocked: 0 },
+      loading: false,
+      error: null
+    };
+  }catch(e){
+    _launchVerification = {
+      admin: false,
+      checks: [],
+      recentEvents: [],
+      counts: { pass: 0, fail: 0, blocked: 0 },
+      loading: false,
+      error: e?.status === 403 ? 'Admin access required.' : (e?.message || 'Could not load launch verification status.')
+    };
+  }
+  renderLaunchVerificationDashboard();
+}
+
+function launchStatusTag(status){
+  const value=String(status||'blocked').toLowerCase();
+  if(value==='pass') return '<span class="tag">PASS</span>';
+  if(value==='fail') return '<span class="tag red">FAIL</span>';
+  return '<span class="tag amber">BLOCKED</span>';
+}
+
+function renderLaunchVerificationDashboard(){
+  const card=$('launchVerificationCard');
+  const summary=$('launchVerificationSummary');
+  const list=$('launchVerificationList');
+  const note=$('launchVerificationNote');
+  if(!card||!summary||!list||!note) return;
+  if(!_launchVerification.admin){
+    card.classList.add('hidden');
+    if(_launchVerification.loading) return;
+    if(_launchVerification.error === 'Admin access required.') return;
+    return;
+  }
+  card.classList.remove('hidden');
+  const counts=_launchVerification.counts || {pass:0,fail:0,blocked:0};
+  summary.innerHTML = `<div><strong>${counts.pass || 0} PASS</strong><small>Verified live or captured by a successful backend proof event.</small></div><div><strong>${counts.blocked || 0} BLOCKED</strong><small>Still waiting on real-world proof.</small></div><div><strong>${counts.fail || 0} FAIL</strong><small>Something was attempted but did not complete.</small></div>`;
+  note.textContent = _launchVerification.error || (_launchVerification.loading ? 'Loading launch proof status…' : 'Live proof events are stored in Supabase and shown here for launch verification.');
+  const rows=(_launchVerification.checks||[]).map(check=>{
+    const when = check.created_at ? exactDate(check.created_at) : 'Not yet tested';
+    const metaBits = [];
+    if (check.provider) metaBits.push(check.provider);
+    if (check.event_type) metaBits.push(check.event_type);
+    return `<div class="item" style="align-items:flex-start"><div><strong>${escapeHtml(check.label)}</strong><small>${escapeHtml(when)}${metaBits.length ? ' · ' + escapeHtml(metaBits.join(' · ')) : ''}</small></div>${launchStatusTag(check.status)}</div>`;
+  }).join('');
+  list.innerHTML = rows || '<div class="empty">No proof events recorded yet. Complete a live test and this dashboard will populate automatically.</div>';
 }
 
 // ── Profile / blueprint store ──────────────────────────────────
@@ -2029,6 +2219,7 @@ function finishOnboarding(goScan){
   if(_supabase && _session){ _supabase.from('onboarding_profiles').upsert({user_id:_session.user.id,answers:a,health_score:a.blueprint.health,readiness_score:a.blueprint.ready,updated_at:new Date().toISOString()},{onConflict:'user_id'}).then(()=>{}).catch?.(()=>{}); }
   toast('🎉 Your plan is ready!');
   renderDashboard();
+  renderPlaybook();
   showPage(goScan?'scanner':'home');
   if(!store('tourSeen'))setTimeout(openProductTour,350);
 }
@@ -2276,6 +2467,7 @@ function renderScanFindings(analysis,meta=_pendingScanMeta||{}){
   <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">${stat('Issues found',items.length)}${stat('Potential impact',summary.estimated_score_impact||'—')}${stat('High priority',summary.high_priority??items.filter(i=>i.priority==='high').length)}</div>
   <div style="display:grid;gap:11px">${rows||'<div class="empty">No obvious dispute items — that\'s good news! Keep utilization low and monitor monthly.</div>'}</div>`;
   renderDashboard();
+  renderPlaybook();
 }
 function disputeFromScan(idx){
   const scan=store('lastScan'); const it=scan?.disputes?.[idx]; if(!it)return;
@@ -2351,6 +2543,7 @@ async function ocrReportFile(file){
 }
 function friendlyScanError(error){
   const raw=String(error?.message||error||'').toLowerCase();
+  if(raw.includes('authorization')||raw.includes('unauthorized')||raw.includes('invalid or expired session')||raw.includes('missing authorization'))return 'Please sign in again, then upload your report.';
   if(raw.includes('unsupported')||raw.includes('txt or pdf'))return 'Unsupported file. Use PDF, TXT, PNG, or JPG.';
   if(raw.includes('too large')||raw.includes('10 mb'))return 'File too large. Choose a report smaller than 10 MB.';
   if(raw.includes('ocr'))return 'OCR failed. Try a clearer image, a searchable PDF export, or paste the report text.';
@@ -2373,8 +2566,16 @@ async function analyzeText(text){
     renderScanFindings(data.analysis,meta);
     setUploadStatus('Analysis complete ✓');
   }catch(e){
-    if(e.status===402){updateScannerCreditUI(0,false);openUpgrade();setScannerError('You\'re out of credits. Upgrade to keep scanning.');}
-    else setScannerError(friendlyScanError(e),()=>analyzeText(text));
+    if(e.status===401||e.status===403){
+      openAuthModal();
+      setScannerError('Please sign in again, then retry your scan.');
+    }else if(e.status===402){
+      updateScannerCreditUI(0,false);
+      openUpgrade();
+      setScannerError('You\'re out of credits. Upgrade to keep scanning.');
+    }else{
+      setScannerError(friendlyScanError(e),()=>analyzeText(text));
+    }
     setUploadStatus('Analysis failed.');
   }
 }
@@ -2419,7 +2620,15 @@ async function handleReportFile(file){
     _pendingScanMeta={filename:name,fileType:file.type||'application/pdf',extractionMethod:method,characters:text.length,truncated:!!ocrInfo?.truncated,pages:ocrInfo?.pages||null};
     $('reportText').value=text; setUploadStatus(`${method==='ocr'?'OCR complete':'Extracted'} ${name}${ocrInfo?.truncated?' (first 12 pages)':''} ✓`);
     await analyzeText(text);
-  }catch(e){ setUploadStatus('Upload failed.'); setScannerError(friendlyScanError(e),()=>handleReportFile(file)); }
+  }catch(e){
+    if (e?.status === 401 || e?.status === 403) {
+      setUploadStatus('Please sign in again.');
+      openAuthModal();
+    } else {
+      setUploadStatus('Upload failed.');
+    }
+    setScannerError(friendlyScanError(e),()=>handleReportFile(file));
+  }
 }
 function initReportUpload(){
   const dz=$('reportDropZone'),input=$('reportFileInput');
@@ -2651,13 +2860,13 @@ const DisputeStore={
     const row={...d,round:d.round||1,created_at:new Date().toISOString()};
     if(this.cloud()){
       const {data,error}=await _supabase.from('disputes').insert({...row,user_id:_session.user.id}).select('id').single();
-      if(!error){ renderDisputes(); return data?.id||true; }
+      if(!error){ renderDisputes(); renderPlaybook(); return data?.id||true; }
       toast('Could not sync this dispute. It was saved on this device for retry.');
     }
     const local=store('disputes')||[];
     const id='loc-'+Date.now();
     local.unshift({...row,id});
-    store('disputes',local); renderDisputes();return false;
+    store('disputes',local); renderDisputes(); renderPlaybook(); return false;
   },
   async update(id,fields){
     if(this.cloud()&&!String(id).startsWith('loc-')){
@@ -2667,7 +2876,7 @@ const DisputeStore={
       const local=(store('disputes')||[]).map(d=>d.id===id?{...d,...fields}:d);
       store('disputes',local);
     }
-    renderDisputes();return true;
+    renderDisputes(); renderPlaybook(); return true;
   }
 };
 let _dFilter='all';
@@ -2717,13 +2926,18 @@ async function renderDisputes(){
   if(!rows.length){ el.innerHTML='<div class="empty">No disputes here yet. Scan your report, generate a letter, then track it.</div>'; return; }
   el.innerHTML=rows.map(d=>{
     let countdown='';
-    let overdue=false,dueDate='';
+    let overdue=false,prepareNext=false,dueDate='',maxDate='';
     if(d.mailed_at&&!['resolved','deleted','verified'].includes(d.status)){
-      const left=30-daysBetween(new Date(d.mailed_at).getTime(),Date.now());
-      overdue=left<0;dueDate=new Date(new Date(d.mailed_at).getTime()+30*86400000).toLocaleDateString();
-      countdown= left>=0 ? `<span class="chip ${left<=7?'warn':'info'} countdown">⏳ ${escapeHtml(d.bureau||'Bureau')} due ${dueDate} · ${left} day${left===1?'':'s'}</span>` : `<span class="chip down countdown">⚠️ ${escapeHtml(d.bureau||'Bureau')} deadline passed ${dueDate}</span>`;
+      const elapsed=daysBetween(new Date(d.mailed_at).getTime(),Date.now());
+      const standardLeft=30-elapsed,maxLeft=45-elapsed;
+      overdue=maxLeft<0;prepareNext=elapsed>=38;dueDate=new Date(new Date(d.mailed_at).getTime()+30*86400000).toLocaleDateString();maxDate=new Date(new Date(d.mailed_at).getTime()+45*86400000).toLocaleDateString();
+      countdown= standardLeft>=0
+        ? `<span class="chip ${standardLeft<=7?'warn':'info'} countdown">⏳ 30-day target ${dueDate} · ${standardLeft} day${standardLeft===1?'':'s'}</span>`
+        : maxLeft>=0
+          ? `<span class="chip warn countdown">30-day target reached · 45-day max ${maxDate} · ${maxLeft} day${maxLeft===1?'':'s'}</span>`
+          : `<span class="chip down countdown">⚠️ 45-day maximum passed ${maxDate}</span>`;
     }
-    const nextStep={draft:'Review the letter, mail it with tracking, then record the mail date.',mailed:`Keep your receipt and wait for ${escapeHtml(d.bureau||'the bureau')} through ${dueDate||'the response date'}.`,investigating:'Review the bureau response before choosing corrected, deleted, or verified.',verified:'Review the response and start Round 2 if the investigation was incomplete.',escalated:'Review and mail the Round 2 letter, then record the new mail date.',resolved:'Keep the written result and verify the correction on a fresh report.',deleted:'Keep proof and verify the deletion across every relevant bureau.'}[d.status]||'Review the record and choose the next accurate status.';
+    const nextStep={draft:'Review the letter, mail it with tracking, then record the mail date.',mailed:`Keep your receipt. The standard target is ${dueDate||'30 days'} and the maximum window shown is ${maxDate||'45 days'}.`,investigating:'Upload the bureau response before choosing corrected, deleted, or verified.',verified:'Review the response and start Round 2 if the investigation was incomplete.',escalated:'Review and mail the Round 2 letter, then record the new mail date.',resolved:'Keep the written result and verify the correction on a fresh report.',deleted:'Keep proof and verify the deletion across every relevant bureau.'}[d.status]||'Review the record and choose the next accurate status.';
     const actions={
       draft:`<button class="primary" style="padding:8px 13px;font-size:13px" onclick="confirmAdvanceDispute('${d.id}','mailed')">I mailed it ✉️</button>`,
       mailed:`<button class="ghost" style="padding:8px 13px;font-size:13px" onclick="confirmAdvanceDispute('${d.id}','investigating')">Bureau received it</button>`,
@@ -2731,9 +2945,642 @@ async function renderDisputes(){
       verified:`<button class="primary" style="padding:8px 13px;font-size:13px" onclick="confirmAdvanceDispute('${d.id}','escalated')">Start Round 2 →</button>`,
       escalated:`<button class="primary" style="padding:8px 13px;font-size:13px" onclick="confirmAdvanceDispute('${d.id}','mailed')">I mailed Round ${d.round||2} ✉️</button>`,
     }[d.status]||'';
-    const overdueAction=overdue?`<button class="primary" style="padding:8px 13px;font-size:13px" onclick="confirmAdvanceDispute('${d.id}','escalated')">Start Round 2 →</button>`:'';
-    return `<div class="card" style="padding:18px"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><div><strong>${escapeHtml(d.creditor||'Unknown')} — ${escapeHtml(d.item_type||d.type||'item')}</strong><br><small style="color:var(--muted)">${escapeHtml(d.bureau||'Bureau')} · Round ${d.round||1} · started ${new Date(d.created_at).toLocaleDateString()}</small></div><div style="display:flex;gap:7px;align-items:flex-start;flex-wrap:wrap">${countdown}<span class="tag ${['resolved','deleted'].includes(d.status)?'':d.status==='verified'?'red':'blue'}">${DISPUTE_LABELS[d.status]||d.status}</span></div></div>${disputeTimelineHtml(d)}<div class="scannerState" style="padding:11px 13px;margin:10px 0"><strong>Suggested next step</strong><span>${nextStep}</span></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">${actions}${overdueAction}</div></div>`;
+    const overdueAction=(overdue||prepareNext)?`<button class="primary" style="padding:8px 13px;font-size:13px" onclick="confirmAdvanceDispute('${d.id}','escalated')">${overdue?'Generate no-response follow-up':'Prepare next round'} →</button>`:'';
+    const uploadAction=['mailed','investigating','verified'].includes(d.status)?`<button class="ghost" style="padding:8px 13px;font-size:13px" onclick="showPage('responses')">Upload bureau response</button>`:'';
+    return `<div class="card" style="padding:18px"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><div><strong>${escapeHtml(d.creditor||'Unknown')} — ${escapeHtml(d.item_type||d.type||'item')}</strong><br><small style="color:var(--muted)">${escapeHtml(d.bureau||'Bureau')} · Round ${d.round||1} · started ${new Date(d.created_at).toLocaleDateString()}</small></div><div style="display:flex;gap:7px;align-items:flex-start;flex-wrap:wrap">${countdown}<span class="tag ${['resolved','deleted'].includes(d.status)?'':d.status==='verified'?'red':'blue'}">${DISPUTE_LABELS[d.status]||d.status}</span></div></div>${disputeTimelineHtml(d)}<div class="scannerState" style="padding:11px 13px;margin:10px 0"><strong>Suggested next step</strong><span>${nextStep}</span></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">${actions}${uploadAction}${overdueAction}</div></div>`;
   }).join('');
+}
+
+// ── Premium bureau response workflow ───────────────────────────
+let _responseDashboard=null;
+let _activeResponseId=null;
+function responseCategoryLabel(value){return ({deleted:'Deleted',updated:'Updated',verified:'Verified as accurate',unchanged:'Remains unchanged',frivolous_or_irrelevant:'Frivolous / irrelevant',needs_more_information:'Needs more information',no_investigation:'Not investigated',mixed_result:'Mixed result',unclear:'No clear result'})[value]||String(value||'Unclear').replace(/_/g,' ')}
+function responseDate(value){return value?exactDate(value):'Not recorded'}
+function isPremiumClient(){return !!_plan.premiumAccess||['premium','business','agency','enterprise'].includes(_plan.plan)&&!['canceled','unpaid','paused'].includes(_plan.subscriptionStatus)}
+function premiumGateHtml(){
+  if(!_session)return `<div class="card premiumLock"><div><span class="chip gold">Premium workflow</span><h3 style="margin-top:10px">Sign in to use the Response Center</h3><p>Your response history, letters, and deadlines are tied to your secure account.</p></div><button class="primary" onclick="openAuthModal()">Sign in</button></div>`;
+  const next=exactDate(premiumTrialEndPreview());
+  return `<div class="card premiumLock"><div><span class="chip gold">Premium workflow</span><h3 style="margin-top:10px">Turn bureau mail into your next clear action</h3><p>Upload responses, see account-by-account results, generate the appropriate next-round draft, and track both the standard 30-day target and the 45-day maximum window.</p><div class="billingDisclosure"><div><small>Today</small><b>$1</b></div><div><small>Access</small><b>7 days</b></div><div><small>Next bill</small><b>${next}</b></div><div><small>Then</small><b>$99/mo</b></div></div><small style="color:var(--soft)">Cancel before ${next} to avoid renewal. Self-service software access only; no guaranteed score increase or deletion.</small></div><button class="primary" onclick="openUpgrade()">Start $1 trial</button></div>`;
+}
+async function renderResponseCenter(){
+  const gate=$('responseGate'),workspace=$('responseWorkspace');if(!gate||!workspace)return;
+  if(!_session||!isPremiumClient()){gate.innerHTML=premiumGateHtml();workspace.classList.add('hidden');return}
+  gate.innerHTML='';workspace.classList.remove('hidden');
+  try{
+    _responseDashboard=await api.get('/api/responses/dashboard');
+    const disputes=_responseDashboard.disputes||[];
+    $('responseDispute').innerHTML=`<option value="">No matching dispute / choose later</option>${disputes.map(d=>`<option value="${escapeHtml(d.id)}">${escapeHtml(d.bureau||'Bureau')} · ${escapeHtml(d.creditor||'Unknown creditor')} · Round ${Number(d.round)||1}</option>`).join('')}`;
+    renderResponseHistory();renderResponseRounds();renderResponseAlerts();
+    if(!_activeResponseId&&_responseDashboard.responses?.length)showSavedResponse(_responseDashboard.responses[0].id,false);
+  }catch(e){
+    if(e.status===402){_plan.premiumAccess=false;gate.innerHTML=premiumGateHtml();workspace.classList.add('hidden');return}
+    $('responseAnalysisPanel').innerHTML=`<h3>Response analysis</h3><div class="scannerState error" style="margin-top:13px"><strong>Could not load the Response Center</strong><span>${escapeHtml(e.message)}</span></div>`;
+  }
+}
+async function uploadBureauResponse(){
+  if(!isPremiumClient()){openUpgrade();return}
+  const file=$('responseFile')?.files?.[0],status=$('responseUploadStatus'),btn=$('analyzeResponseBtn');
+  if(!file){status.textContent='Choose a PDF, PNG, JPG, or TXT response first.';return}
+  if(file.size>10*1024*1024){status.textContent='Choose a file smaller than 10 MB.';return}
+  const allowed=['application/pdf','image/png','image/jpeg','text/plain'];
+  if(!allowed.includes(file.type)){status.textContent='That file type is not supported. Use PDF, PNG, JPG, or TXT.';return}
+  btn.disabled=true;btn.textContent='Analyzing bureau response…';status.textContent='Securely uploading and comparing this response with the selected dispute round…';
+  try{
+    const data=await api.post('/api/responses/upload',{
+      fileName:file.name,mimeType:file.type,fileData:await fileToDataUrl(file),
+      bureau:$('responseBureau').value==='auto'?'Unknown':$('responseBureau').value,
+      responseDate:$('responseDate').value||null,disputeId:$('responseDispute').value||null
+    });
+    _activeResponseId=data.response.id;renderResponseAnalysis(data.response,data.analysis);toast('Bureau response analysis ready ✓');
+    $('responseFile').value='';status.textContent='Analysis saved. Review every result against the original letter before generating a follow-up.';
+    _responseDashboard=await api.get('/api/responses/dashboard');renderResponseHistory();renderResponseRounds();renderResponseAlerts();
+  }catch(e){status.textContent=e.message||'Could not analyze this response.';toast(status.textContent);}
+  finally{btn.disabled=false;btn.textContent='Upload and analyze'}
+}
+function responseAnalysisFromRow(row){return {bureau:row.bureau,response_date:row.response_date,client_name:row.client_name,overall_category:row.overall_category,summary:row.ai_summary,confidence_score:row.confidence_score,accounts:row.detected_accounts_json||[],recommended_next_action:row.recommended_next_action,recommended_letter_type:row.recommended_letter_type,missing_documents:row.missing_documents_json||[]}}
+function renderResponseAnalysis(row,analysis=responseAnalysisFromRow(row)){
+  const panel=$('responseAnalysisPanel');if(!panel)return;_activeResponseId=row.id;
+  const accounts=(analysis.accounts||[]).map(a=>`<div class="responseAccount ${escapeHtml(a.category)}"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><strong>${escapeHtml(a.account_name||'Account not identified')}${a.account_last4?' · ••••'+escapeHtml(a.account_last4):''}</strong><span class="tag ${a.category==='deleted'?'up':a.category==='verified'||a.category==='unchanged'?'amber':'blue'}">${escapeHtml(responseCategoryLabel(a.category))}</span></div><p style="color:var(--muted);font-size:12.5px;margin-top:6px">${escapeHtml(a.bureau_explanation||'No specific explanation was detected.')}</p></div>`).join('');
+  const docs=(analysis.missing_documents||[]).map(d=>`<li>${escapeHtml(d)}</li>`).join('');
+  const letterAction=analysis.recommended_letter_type?`<button class="primary" onclick="generateResponseLetter('${escapeHtml(row.id)}','${escapeHtml(analysis.recommended_letter_type)}')">Generate ${escapeHtml(String(analysis.recommended_letter_type).replace(/_/g,' '))} →</button>`:`<span class="chip up">No follow-up letter recommended</span>`;
+  panel.innerHTML=`<div class="stitchCardHead"><div><h3>${escapeHtml(analysis.bureau||row.bureau||'Bureau')} response</h3><p style="color:var(--muted);font-size:12px;margin-top:4px">Response date: ${escapeHtml(responseDate(analysis.response_date||row.response_date))}</p></div><span class="tag ${analysis.overall_category==='deleted'?'up':analysis.overall_category==='verified'?'amber':'blue'}">${escapeHtml(responseCategoryLabel(analysis.overall_category))}</span></div><div class="scannerState success" style="padding:13px"><strong>What the bureau said</strong><span>${escapeHtml(analysis.summary||'No summary available.')}</span></div><div style="margin:14px 0"><div style="display:flex;justify-content:space-between;font-size:12px"><span style="color:var(--muted)">AI confidence</span><b>${Number(analysis.confidence_score)||0}%</b></div><div class="confidenceBar"><span style="width:${Math.max(0,Math.min(100,Number(analysis.confidence_score)||0))}%"></span></div></div><div style="display:grid;gap:9px">${accounts||'<div class="empty">No account-level result was clear enough to list. Review the original document manually.</div>'}</div><div class="scannerState" style="margin-top:14px;padding:13px"><strong>Recommended next action</strong><span>${escapeHtml(analysis.recommended_next_action||'Review the original response before choosing the next step.')}</span>${docs?`<strong style="margin-top:8px">Evidence to add</strong><ul style="padding-left:18px;color:var(--muted)">${docs}</ul>`:''}</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:13px">${letterAction}<button class="ghost" onclick="showPage('disputes')">Review timeline</button></div>`;
+}
+function showSavedResponse(id,scroll=true){const row=(_responseDashboard?.responses||[]).find(r=>String(r.id)===String(id));if(!row)return;renderResponseAnalysis(row);if(scroll)$('responseAnalysisPanel').scrollIntoView({behavior:'smooth',block:'start'})}
+function renderResponseHistory(){
+  const rows=_responseDashboard?.responses||[];$('responseHistoryCount').textContent=rows.length;
+  $('responseHistory').innerHTML=rows.length?rows.map(r=>`<button class="item" style="width:100%;text-align:left;cursor:pointer;color:inherit" onclick="showSavedResponse('${escapeHtml(r.id)}')"><div><strong>${escapeHtml(r.bureau)} · ${escapeHtml(r.original_filename||'Bureau response')}</strong><small>${escapeHtml(responseCategoryLabel(r.overall_category))} · ${responseDate(r.response_date||r.created_at)} · confidence ${Number(r.confidence_score)||0}%</small></div><span class="material-symbols-outlined" style="color:var(--muted)">chevron_right</span></button>`).join(''):'<div class="empty">No bureau responses uploaded yet.</div>';
+}
+function roundDeadlineRail(round){
+  const now=Date.now(),response=round.response_uploaded_at;
+  const points=[['Sent',round.sent_at],['Delivered',round.delivered_at],['30-day target',round.standard_due_at],['45-day max',round.max_due_at],['Response',response]];
+  return `<div class="deadlineRail">${points.map(([label,date])=>{const due=date&&new Date(date).getTime()<=now;const done=(label==='Sent'&&round.sent_at)||(label==='Delivered'&&round.delivered_at)||(label==='Response'&&response);return `<div class="deadlinePoint ${done?'done':due&&!response?'due':''}"><b>${label}</b>${date?escapeHtml(exactDate(date)):'Not recorded'}</div>`}).join('')}</div>`;
+}
+function renderResponseRounds(){
+  const rounds=_responseDashboard?.rounds||[],disputes=_responseDashboard?.disputes||[];
+  $('responseRounds').innerHTML=rounds.length?rounds.map(r=>{const d=disputes.find(x=>x.id===r.dispute_id),maxPast=r.max_due_at&&new Date(r.max_due_at).getTime()<Date.now()&&!r.response_uploaded_at;return `<div class="item" style="display:block"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><div><strong>${escapeHtml(r.bureau)} · Round ${Number(r.round_number)||1}</strong><small>${escapeHtml(d?.creditor||'Unmatched bureau response')} · ${escapeHtml(String(r.status||'tracking').replace(/_/g,' '))}</small></div><span class="tag ${maxPast?'red':'blue'}">${maxPast?'45-day max reached':r.response_uploaded_at?'Response received':'Tracking'}</span></div>${roundDeadlineRail(r)}${!r.delivered_at?`<div style="display:flex;gap:8px;align-items:end;flex-wrap:wrap;margin-top:11px"><label style="flex:1;min-width:180px">Certified-mail delivery date<input id="delivery-${escapeHtml(r.id)}" type="date"></label><button class="ghost" onclick="setRoundDelivery('${escapeHtml(r.id)}')">Save delivery date</button></div>`:''}${maxPast?`<button class="primary" style="margin-top:11px" onclick="generateNoResponseLetter('${escapeHtml(r.id)}')">Generate no-response follow-up</button>`:''}</div>`}).join(''):'<div class="empty">Upload a response or match one to an existing dispute to start the premium timeline.</div>';
+}
+async function setRoundDelivery(id){const value=$(`delivery-${id}`)?.value;if(!value){toast('Choose the certified-mail delivery date first.');return}try{await api.patch(`/api/responses/rounds/${id}`,{deliveredAt:new Date(value+'T12:00:00').toISOString()});_responseDashboard=await api.get('/api/responses/dashboard');renderResponseRounds();renderResponseAlerts();toast('Delivery date and deadlines updated ✓')}catch(e){toast(e.message)}}
+function renderResponseAlerts(){
+  const alerts=_responseDashboard?.alerts||[],active=alerts.filter(a=>!['read','dismissed'].includes(a.status)),due=active.filter(a=>a.status==='due'||new Date(a.alert_date).getTime()<=Date.now());$('responseAlertCount').textContent=`${due.length} due`;
+  $('responseAlerts').innerHTML=active.length?active.slice(0,12).map(a=>`<div class="item"><div><strong>${escapeHtml(a.metadata?.title||String(a.alert_type).replace(/_/g,' '))}</strong><small>${responseDate(a.alert_date)}${a.metadata?.message?' · '+escapeHtml(a.metadata.message):''}</small></div><button class="ghost" style="padding:6px 9px;font-size:11px" onclick="markResponseAlertRead('${escapeHtml(a.id)}')">Done</button></div>`).join(''):'<div class="empty">No active alerts. Upcoming reminders appear after a sent or delivery date is recorded.</div>';
+}
+async function markResponseAlertRead(id){try{await api.patch(`/api/responses/alerts/${id}/read`,{});_responseDashboard=await api.get('/api/responses/dashboard');renderResponseAlerts()}catch(e){toast(e.message)}}
+async function generateResponseLetter(id,letterType){
+  const panel=$('responseLetterPanel'),preview=$('responseLetterPreview');panel.classList.remove('hidden');preview.textContent='Generating an editable next-round letter…';panel.scrollIntoView({behavior:'smooth',block:'start'});
+  try{const data=await api.post(`/api/responses/${id}/letter`,{letterType,clientName:getProfile()?.name||''});$('responseLetterType').textContent=String(data.letterType||letterType).replace(/_/g,' ');preview.textContent=data.letter.content;toast('Next-round letter saved ✓');_responseDashboard=await api.get('/api/responses/dashboard');renderResponseRounds();renderResponseAlerts();}
+  catch(e){preview.textContent='Letter generation failed: '+e.message;toast(e.message)}
+}
+async function generateNoResponseLetter(roundId){
+  const panel=$('responseLetterPanel'),preview=$('responseLetterPreview');panel.classList.remove('hidden');preview.textContent='Generating the no-response follow-up…';panel.scrollIntoView({behavior:'smooth',block:'start'});
+  try{const data=await api.post(`/api/responses/rounds/${roundId}/no-response-letter`,{clientName:getProfile()?.name||''});$('responseLetterType').textContent='no-response follow-up';preview.textContent=data.letter.content;toast('No-response follow-up saved ✓');_responseDashboard=await api.get('/api/responses/dashboard');renderResponseRounds();renderResponseAlerts();}
+  catch(e){preview.textContent='Letter generation failed: '+e.message;toast(e.message)}
+}
+
+// ── Dispute Playbook ───────────────────────────────────────────
+const PLAYBOOK_STRATEGIES=[
+  'Factual Accuracy Dispute',
+  'Metro 2 Compliance Review',
+  'Debt Validation',
+  'Direct Furnisher Dispute',
+  'Identity Theft Dispute',
+  'Goodwill Strategy',
+  'Method of Verification Request',
+  'CFPB Escalation'
+];
+const PLAYBOOK_DOC_LIBRARY={
+  identity:['Driver License','State ID','Passport'],
+  address:['Utility Bill','Bank Statement','Lease Agreement'],
+  payment:['Bank Statements','Payment Receipts','Transaction Records'],
+  fraud:['FTC Identity Theft Report','Police Report','Fraud Affidavit'],
+  dispute:['Prior dispute letter','Bureau response','Certified mail receipt'],
+  account:['Account statements','Settlement or payoff letter','Creditor correspondence']
+};
+const PLAYBOOK_TIMELINE_STAGES=['Draft Created','Letter Sent','Delivered','Investigation Started','Response Received','Follow-Up Due','Escalation Eligible','Case Closed'];
+let _playbookSelectedId=null;
+let _playbookAccounts=[];
+let _playbookAnalyses=new Map();
+
+function pbClamp(n,lo=0,hi=100){return Math.max(lo,Math.min(hi,n));}
+function pbSafeId(...parts){return parts.filter(Boolean).join('-').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,90)||'account';}
+function pbText(...parts){return parts.filter(v=>v!==undefined&&v!==null).map(v=>Array.isArray(v)?v.join(' '):String(v)).join(' ').toLowerCase();}
+function pbDisplay(v,fallback='Not provided in scan'){return v===undefined||v===null||String(v).trim()===''?fallback:String(v);}
+function pbKeyFor(values={}){
+  return pbSafeId(values.creditor||values.furnisher||'unknown',values.bureau||'bureau',values.item_type||values.type||values.accountType||'item');
+}
+function pbDocsFromAccount(account){
+  const docs=[
+    ...(Array.isArray(account.supportingDocumentation)?account.supportingDocumentation:[]),
+    ...(Array.isArray(account.supporting_documents)?account.supporting_documents:[]),
+    ...(Array.isArray(account.documents)?account.documents:[])
+  ].map(String).filter(Boolean);
+  return [...new Set(docs)];
+}
+function pbPriorityScore(priority){
+  const p=String(priority||'').toLowerCase();
+  return p==='high'?86:p==='medium'?68:52;
+}
+function pbMatchingDisputes(item,disputes=[]){
+  const itemCreditor=String(item.creditor||item.furnisher||'').toLowerCase();
+  const itemBureau=String(item.bureau||'').toLowerCase();
+  const itemType=String(item.item_type||item.type||item.accountType||'').toLowerCase();
+  return disputes.filter(d=>{
+    const creditor=String(d.creditor||'').toLowerCase();
+    const bureau=String(d.bureau||'').toLowerCase();
+    const type=String(d.item_type||d.type||'').toLowerCase();
+    return creditor&&itemCreditor&&creditor===itemCreditor
+      && (!itemBureau||!bureau||bureau===itemBureau)
+      && (!itemType||!type||type.includes(itemType)||itemType.includes(type));
+  });
+}
+function pbLatestDispute(disputes=[]){
+  return [...disputes].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0))[0]||null;
+}
+function pbAccountFromScan(item,idx,tracked=[],scan={}){
+  const matches=pbMatchingDisputes(item,tracked),latest=pbLatestDispute(matches);
+  const rawType=item.type||item.item_type||'account';
+  const type=mapScanType(rawType);
+  return {
+    id:`scan-${idx}-${pbKeyFor({...item,accountType:type})}`,
+    source:'scan',
+    raw:item,
+    creditor:item.creditor||item.furnisher||'Unknown creditor',
+    furnisher:item.furnisher||item.creditor||'Unknown furnisher',
+    bureau:['Experian','Equifax','TransUnion'].includes(item.bureau)?item.bureau:(item.bureau||'All bureaus'),
+    accountType:type,
+    rawType,
+    accountNumber:item.account_number||item.accountNumber||'',
+    balance:item.balance||item.current_balance||item.amount,
+    creditLimit:item.credit_limit||item.creditLimit,
+    paymentHistory:item.payment_history||item.paymentHistory||(String(rawType).toLowerCase().includes('late')?'Late payment reported':'Review month-by-month history'),
+    dateOpened:item.date_opened||item.dateOpened,
+    dateClosed:item.date_closed||item.dateClosed,
+    dofd:item.date_of_first_delinquency||item.dofd||item.dateOfFirstDelinquency,
+    collectionStatus:item.collection_status||item.collectionStatus||(String(rawType).toLowerCase().includes('collection')?'Collection reported':'No collection flag found'),
+    chargeOffStatus:item.charge_off_status||item.chargeOffStatus||(String(rawType).toLowerCase().includes('charge')?'Charge-off reported':'No charge-off flag found'),
+    inquiryHistory:item.inquiry_history||item.inquiryHistory||(String(rawType).toLowerCase().includes('inquiry')?'Hard inquiry under review':'No inquiry issue found'),
+    personalInfoMatches:item.personal_info_matches||item.personalInfoMatches||'Compare name, address, SSN, and DOB before mailing',
+    previousDisputeAttempts:Number(item.previous_dispute_attempts||item.previousDisputeAttempts||matches.length||0),
+    supportingDocumentation:item.supporting_documentation||item.supportingDocuments||item.documents||[],
+    issue:item.violation||item.strategy||item.issue||'Possible inaccurate, inconsistent, or unverifiable reporting',
+    priority:item.priority||'medium',
+    law:item.law||'FCRA',
+    estimatedImpact:item.estimated_impact||item.estimatedImpact||scan.summary?.estimated_score_impact||'Not estimated',
+    quality:scan.quality?.level||'medium',
+    status:latest?.status||'untracked',
+    round:latest?.round||1,
+    mailed_at:latest?.mailed_at||null,
+    resolved_at:latest?.resolved_at||null,
+    trackedId:latest?.id||null
+  };
+}
+function pbAccountFromDispute(d,idx){
+  const type=mapScanType(d.item_type||d.type||'account');
+  return {
+    id:`dispute-${idx}-${pbKeyFor(d)}`,
+    source:'timeline',
+    creditor:d.creditor||'Unknown creditor',
+    furnisher:d.creditor||'Unknown furnisher',
+    bureau:d.bureau||'Bureau',
+    accountType:type,
+    rawType:d.item_type||d.type||type,
+    accountNumber:d.account_number||d.accountNumber||'',
+    balance:d.balance,
+    creditLimit:d.credit_limit,
+    paymentHistory:String(type).toLowerCase().includes('late')?'Late payment under dispute':'Review reported payment grid',
+    dateOpened:d.date_opened,
+    dateClosed:d.date_closed,
+    dofd:d.dofd,
+    collectionStatus:String(type).toLowerCase().includes('collection')?'Collection reported':'No collection flag found',
+    chargeOffStatus:String(type).toLowerCase().includes('charge')?'Charge-off reported':'No charge-off flag found',
+    inquiryHistory:String(type).toLowerCase().includes('inquiry')?'Inquiry under dispute':'No inquiry issue found',
+    personalInfoMatches:'Confirm identifiers match before next letter',
+    previousDisputeAttempts:Math.max(0,Number(d.round||1)-1)+(d.status==='verified'?1:0),
+    supportingDocumentation:[],
+    issue:`Timeline case is currently ${DISPUTE_LABELS[d.status]||d.status||'tracked'}.`,
+    priority:['verified','escalated'].includes(d.status)?'high':['mailed','investigating'].includes(d.status)?'medium':'low',
+    law:'FCRA',
+    estimatedImpact:'Tracked case',
+    quality:'medium',
+    status:d.status||'draft',
+    round:d.round||1,
+    mailed_at:d.mailed_at||null,
+    resolved_at:d.resolved_at||null,
+    trackedId:d.id||null
+  };
+}
+function pbDemoAccount(){
+  return {
+    id:'demo-dispute-playbook-account',
+    source:'demo',
+    isDemo:true,
+    creditor:'Midland Credit Management',
+    furnisher:'Midland Credit Management',
+    bureau:'Equifax',
+    accountType:'Collection',
+    rawType:'collection',
+    accountNumber:'****4821',
+    balance:'$1,240',
+    creditLimit:'Not applicable',
+    paymentHistory:'Collection account with disputed ownership',
+    dateOpened:'02/2024',
+    dateClosed:'Not closed',
+    dofd:'09/2022',
+    collectionStatus:'Active collection reporting',
+    chargeOffStatus:'Original creditor charge-off referenced',
+    inquiryHistory:'No related inquiry found',
+    personalInfoMatches:'Name and address match, ownership documents missing',
+    previousDisputeAttempts:2,
+    supportingDocumentation:['Prior dispute letter','Bureau response','Certified mail receipt','Collector correspondence'],
+    issue:'Bureau verified the collection twice without explaining ownership validation or investigation method.',
+    priority:'high',
+    law:'FCRA / FDCPA',
+    estimatedImpact:'High',
+    quality:'high',
+    status:'verified',
+    round:2,
+    mailed_at:new Date(Date.now()-38*86400000).toISOString(),
+    resolved_at:null,
+    trackedId:null
+  };
+}
+function buildPlaybookAccounts(disputes=[]){
+  const scan=store('lastScan')||{};
+  const scanItems=Array.isArray(scan.disputes)?scan.disputes:[];
+  const accounts=scanItems.map((item,idx)=>pbAccountFromScan(item,idx,disputes,scan));
+  const seen=new Set(accounts.map(a=>pbKeyFor(a)));
+  disputes.forEach((d,idx)=>{
+    const key=pbKeyFor(d);
+    if(!seen.has(key)){accounts.push(pbAccountFromDispute(d,idx));seen.add(key);}
+  });
+  return accounts.length?accounts:[pbDemoAccount()];
+}
+function playbookTemplateFor(analysis,account){
+  const t=pbText(account.accountType,account.rawType,account.issue,analysis.recommendation);
+  if(analysis.recommendation==='CFPB Escalation')return 'cfpb';
+  if(analysis.recommendation==='Method of Verification Request')return 'method-of-verification';
+  if(analysis.recommendation==='Debt Validation')return 'debt-validation';
+  if(analysis.recommendation==='Identity Theft Dispute')return t.includes('inquiry')?'identity-theft-inquiry':'fraudulent-account';
+  if(analysis.recommendation==='Goodwill Strategy')return 'goodwill-late-payment';
+  if(analysis.recommendation==='Direct Furnisher Dispute')return t.includes('ownership')?'account-ownership-dispute':'furnisher-direct-dispute';
+  if(t.includes('limit'))return 'incorrect-credit-limit';
+  if(t.includes('date')||t.includes('dofd')||t.includes('delinquency'))return 'incorrect-account-dates';
+  if(t.includes('balance'))return 'incorrect-balance';
+  if(t.includes('payment')||t.includes('late'))return 'incorrect-payment-history';
+  if(t.includes('status'))return 'incorrect-account-status';
+  return 'incorrect-account-status';
+}
+function playbookExpectedTimeline(strategy){
+  if(strategy==='Goodwill Strategy')return '14-30 day creditor response';
+  if(strategy==='Debt Validation')return '30 days after collector receipt';
+  if(strategy==='CFPB Escalation')return '15 day company response target';
+  if(strategy==='Direct Furnisher Dispute')return '30-45 days after receipt';
+  return '30 days after bureau receipt';
+}
+function playbookLetterLabel(templateId,strategy){
+  const labels={
+    cfpb:'CFPB Complaint Draft',
+    'method-of-verification':'Method of Verification Request',
+    'debt-validation':'Debt Validation Letter',
+    'fraudulent-account':'Identity Theft Dispute Letter',
+    'identity-theft-inquiry':'Identity Theft Inquiry Letter',
+    'goodwill-late-payment':'Goodwill Letter',
+    'furnisher-direct-dispute':'Direct Furnisher Dispute',
+    'account-ownership-dispute':'Account Ownership Dispute',
+    'incorrect-credit-limit':'Credit Limit Dispute',
+    'incorrect-account-dates':'Account Dates Dispute',
+    'incorrect-balance':'Balance Accuracy Dispute',
+    'incorrect-payment-history':'Payment History Dispute',
+    'incorrect-account-status':'Account Status Dispute'
+  };
+  return labels[templateId]||strategy;
+}
+function analyzePlaybookAccount(account){
+  const text=pbText(account.accountType,account.rawType,account.issue,account.paymentHistory,account.collectionStatus,account.chargeOffStatus,account.inquiryHistory,account.personalInfoMatches);
+  const docs=pbDocsFromAccount(account);
+  const attempts=Number(account.previousDisputeAttempts)||0;
+  const closed=['resolved','deleted'].includes(account.status);
+  const failedResponse=['verified','escalated'].includes(account.status);
+  const daysSinceMailed=account.mailed_at?daysBetween(new Date(account.mailed_at).getTime(),Date.now()):null;
+  const overdue=Number.isFinite(daysSinceMailed)&&daysSinceMailed>30&&!closed&&!failedResponse;
+  const collection=/collection|collector|debt/.test(text);
+  const chargeoff=/charge.?off/.test(text);
+  const inquiry=/inquiry|permissible/.test(text);
+  const identity=/fraud|identity|not mine|not recognized|unauthorized/.test(text);
+  const goodwill=/goodwill|isolated|otherwise positive|long payment history/.test(text);
+  const factual=/balance|date|status|limit|payment history|late|incorrect|inaccurate|wrong/.test(text);
+  const metro=/metro|inconsistent|conflict|rating|code|dofd|delinquency|payment grid/.test(text);
+  const cfpbEligible=(failedResponse||overdue||attempts>=2)&&(docs.length>=2||attempts>=2||account.isDemo);
+  let recommendation=PLAYBOOK_STRATEGIES[0];
+  if(cfpbEligible)recommendation='CFPB Escalation';
+  else if(failedResponse||attempts>=1)recommendation='Method of Verification Request';
+  else if(identity)recommendation='Identity Theft Dispute';
+  else if(collection)recommendation='Debt Validation';
+  else if(goodwill&&!/incorrect|inaccurate|wrong|fraud|not mine/.test(text))recommendation='Goodwill Strategy';
+  else if(metro||chargeoff)recommendation='Metro 2 Compliance Review';
+  else if(/actively reporting|furnisher|creditor/.test(text))recommendation='Direct Furnisher Dispute';
+  else if(factual||inquiry)recommendation='Factual Accuracy Dispute';
+
+  const evidenceStrength=pbClamp(pbPriorityScore(account.priority)+(account.quality==='high'?8:account.quality==='low'?-12:0)+(account.issue?6:0));
+  const documentationQuality=pbClamp(34+Math.min(42,docs.length*13)+(account.quality==='high'?12:0)+(account.quality==='low'?-8:0));
+  const reportingInconsistencies=pbClamp((metro?84:factual?70:collection?58:44)+(chargeoff?8:0));
+  const previousResults=pbClamp(failedResponse||overdue?88:attempts?68:42);
+  const ageOfAccount=pbClamp(account.dofd||account.dateOpened?72:50);
+  const typeOfError=pbClamp(identity?92:cfpbEligible?88:collection?78:metro?82:factual?74:goodwill?58:62);
+  const score=Math.round((evidenceStrength*.22)+(documentationQuality*.18)+(reportingInconsistencies*.2)+(previousResults*.14)+(ageOfAccount*.1)+(typeOfError*.16));
+  const probability=score>=80?'High Probability':score>=60?'Medium Probability':'Low Probability';
+  const templateId=playbookTemplateFor({recommendation},account);
+  const letterLabel=playbookLetterLabel(templateId,recommendation);
+  const timeline=playbookExpectedTimeline(recommendation);
+  const weakness=[
+    docs.length<2?'documentation is thin':null,
+    account.quality==='low'?'scan evidence should be confirmed against the original report':null,
+    !account.dofd&&(/collection|charge/i.test(account.accountType))?'Date of First Delinquency is missing':null,
+    recommendation==='Goodwill Strategy'?'creditor is not required to grant goodwill':null,
+    failedResponse?'prior verification may require stronger evidence or escalation':null
+  ].filter(Boolean).join('; ')||'No major weakness found from the available data.';
+  const reason={
+    'Factual Accuracy Dispute':'The account shows possible wrong balances, dates, status, credit limit, or payment-history reporting.',
+    'Metro 2 Compliance Review':'The account has field-level inconsistency signals that should be checked against Metro 2 reporting expectations.',
+    'Debt Validation':'A collection account is present and ownership or validation should be forced before relying on the reporting.',
+    'Direct Furnisher Dispute':'The furnisher appears responsible for the inaccurate data and should investigate at the source.',
+    'Identity Theft Dispute':'The account has fraud, not-recognized, or unauthorized-use indicators.',
+    'Goodwill Strategy':'The issue appears more like an accurate isolated late mark than a provable reporting error.',
+    'Method of Verification Request':'A previous dispute was verified or the investigation detail is unclear, so the next move is to demand the procedure used.',
+    'CFPB Escalation':'Multiple failed or inadequate dispute responses plus supporting evidence make escalation appropriate.'
+  }[recommendation];
+  const neededDocs=docsForPlaybook(recommendation,account,docs);
+  const followups=playbookFollowups(account,{recommendation,overdue,failedResponse,cfpbEligible,timeline});
+  return {
+    recommendation,reason,weakness,score,probability,templateId,letterLabel,timeline,docs,neededDocs,followups,
+    cfpbEligible,overdue,failedResponse,attempts,closed,
+    issueCount:[factual,metro,collection,identity,failedResponse,overdue].filter(Boolean).length||1,
+    factors:{'Evidence Strength':evidenceStrength,'Documentation Quality':documentationQuality,'Reporting Inconsistencies':reportingInconsistencies,'Previous Results':previousResults,'Age of Account':ageOfAccount,'Type of Error':typeOfError},
+    actionPlan:[
+      ['Recommended dispute method',recommendation],
+      ['Supporting documents needed',neededDocs.flatMap(g=>g.items).slice(0,5).join(', ')||'Government ID and account evidence'],
+      ['Letter to generate',letterLabel],
+      ['Expected response timeline',timeline],
+      ['Follow-up action',followups[0]?.title||'Monitor for bureau response and keep proof of mailing'],
+      ['Escalation path if unsuccessful',cfpbEligible?'CFPB complaint with timeline, evidence package, and creditor history':'Method of Verification, Direct Furnisher Dispute, then CFPB complaint if responses remain inadequate']
+    ]
+  };
+}
+function docsForPlaybook(strategy,account,existing=[]){
+  const text=pbText(strategy,account.accountType,account.rawType,account.issue);
+  const groups=[
+    {title:'Identity Verification',items:PLAYBOOK_DOC_LIBRARY.identity},
+    {title:'Address Verification',items:PLAYBOOK_DOC_LIBRARY.address}
+  ];
+  if(/payment|balance|late|charge|collection|debt/.test(text))groups.push({title:'Payment Verification',items:PLAYBOOK_DOC_LIBRARY.payment});
+  if(/fraud|identity|unauthorized|not mine/.test(text))groups.push({title:'Fraud Verification',items:PLAYBOOK_DOC_LIBRARY.fraud});
+  if(/method|cfpb|previous|verified|escalation/.test(text)||Number(account.previousDisputeAttempts)>0)groups.push({title:'Prior Dispute File',items:PLAYBOOK_DOC_LIBRARY.dispute});
+  groups.push({title:'Account Evidence',items:[...new Set([...PLAYBOOK_DOC_LIBRARY.account,...existing])].slice(0,6)});
+  return groups;
+}
+function playbookFollowups(account,analysis){
+  const actions=[];
+  if(account.status==='untracked')actions.push({title:'Create dispute draft',detail:'Generate the recommended letter and add it to the Dispute Center.'});
+  if(account.status==='draft')actions.push({title:'Send certified mail',detail:'Mail the letter, keep copies, and record the mail date.'});
+  if(['mailed','investigating'].includes(account.status)&&!analysis.overdue)actions.push({title:'Monitor response window',detail:`Wait through the expected ${analysis.timeline}; upload the response when received.`});
+  if(analysis.overdue)actions.push({title:'Follow-Up Dispute',detail:'No response is recorded after the expected period.'});
+  if(analysis.failedResponse||analysis.overdue)actions.push({title:'Method of Verification Request',detail:'Ask the bureau how it verified the account and who it contacted.'});
+  if(analysis.failedResponse)actions.push({title:'Direct Furnisher Dispute',detail:'Challenge the source of the data with the creditor or collector.'});
+  if(analysis.cfpbEligible)actions.push({title:'CFPB Complaint',detail:'Escalate with the full timeline, prior responses, and supporting documents.'});
+  actions.push({title:'Documentation Update',detail:'Add new statements, receipts, identity documents, or bureau responses to the case file.'});
+  return actions.slice(0,5);
+}
+async function renderPlaybook(){
+  if(!$('pbAccountList'))return;
+  const disputes=await DisputeStore.list();
+  _playbookAccounts=buildPlaybookAccounts(disputes);
+  _playbookAnalyses=new Map(_playbookAccounts.map(account=>[account.id,analyzePlaybookAccount(account)]));
+  if(!_playbookSelectedId||!_playbookAccounts.some(a=>a.id===_playbookSelectedId))_playbookSelectedId=_playbookAccounts[0]?.id||null;
+  renderPlaybookMetrics(disputes);
+  renderPlaybookAccountList();
+  renderSelectedPlaybookAccount();
+}
+function renderPlaybookMetrics(disputes=[]){
+  const real=_playbookAccounts.filter(a=>!a.isDemo);
+  const analyses=real.map(a=>_playbookAnalyses.get(a.id)).filter(Boolean);
+  const active=disputes.filter(d=>!['resolved','deleted','verified'].includes(d.status)).length;
+  const closed=disputes.filter(d=>['resolved','deleted','verified'].includes(d.status));
+  const won=closed.filter(d=>['resolved','deleted'].includes(d.status)).length;
+  const recent=disputes.filter(d=>['resolved','deleted'].includes(d.status)&&d.resolved_at&&daysBetween(new Date(d.resolved_at).getTime(),Date.now())<=30).length;
+  $('pbTotalAccounts').textContent=real.length;
+  $('pbActiveDisputes').textContent=active;
+  $('pbRecommendedActions').textContent=analyses.filter(a=>!a.closed).length;
+  $('pbPotentialIssues').textContent=analyses.reduce((sum,a)=>sum+a.issueCount,0);
+  $('pbEscalationAccounts').textContent=analyses.filter(a=>a.overdue||a.failedResponse||a.recommendation==='CFPB Escalation').length;
+  $('pbCfpbEligible').textContent=analyses.filter(a=>a.cfpbEligible).length;
+  $('pbSuccessRate').textContent=closed.length?`${Math.round((won/closed.length)*100)}%`:'0%';
+  $('pbResolvedItems').textContent=recent;
+  $('pbQueueCount').textContent=`${_playbookAccounts.length} account${_playbookAccounts.length===1?'':'s'}`;
+  $('pbDataNotice').textContent=real.length
+    ? `Using ${real.length} account${real.length===1?'':'s'} from your latest scan and dispute timeline.`
+    : 'Demo analysis is shown below so you can preview the workflow. Run a monitoring scan to replace it with real tradelines.';
+}
+function renderPlaybookAccountList(){
+  const el=$('pbAccountList');
+  if(!_playbookAccounts.length){el.innerHTML='<div class="empty">Run a monitoring scan to analyze tradelines.</div>';return;}
+  el.innerHTML=_playbookAccounts.map(account=>{
+    const analysis=_playbookAnalyses.get(account.id);
+    const active=account.id===_playbookSelectedId?'active':'';
+    const tone=analysis?.score>=80?'up':analysis?.score>=60?'warn':'gray';
+    return `<button class="playbookAccount ${active}" onclick="selectPlaybookAccount('${account.id}')">
+      <span style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><b>${escapeHtml(account.creditor)}</b><span class="chip ${tone}" style="padding:3px 7px">${analysis?.score||0}</span></span>
+      <small>${escapeHtml(account.bureau)} · ${escapeHtml(account.accountType)} · ${escapeHtml(analysis?.recommendation||'Analyze')}</small>
+      <span style="display:flex;gap:6px;flex-wrap:wrap"><span class="tag ${account.priority==='high'?'red':account.priority==='medium'?'amber':'gray'}">${escapeHtml(account.priority||'review')}</span>${account.isDemo?'<span class="tag blue">Demo</span>':''}${account.status&&account.status!=='untracked'?`<span class="tag blue">${escapeHtml(DISPUTE_LABELS[account.status]||account.status)}</span>`:''}</span>
+    </button>`;
+  }).join('');
+}
+function selectPlaybookAccount(id){
+  _playbookSelectedId=id;
+  renderPlaybookAccountList();
+  renderSelectedPlaybookAccount();
+}
+function selectedPlaybook(){
+  const account=_playbookAccounts.find(a=>a.id===_playbookSelectedId)||_playbookAccounts[0]||null;
+  return {account,analysis:account?_playbookAnalyses.get(account.id):null};
+}
+function renderSelectedPlaybookAccount(){
+  const {account,analysis}=selectedPlaybook();
+  if(!account||!analysis)return;
+  $('pbSelectedTitle').textContent=account.creditor;
+  $('pbSelectedSub').textContent=`${account.bureau} · ${account.accountType} · ${account.issue}`;
+  $('pbSelectedBadges').innerHTML=[
+    `<span class="chip ${analysis.score>=80?'up':analysis.score>=60?'warn':'gray'}">${analysis.probability}</span>`,
+    `<span class="chip info">${escapeHtml(account.law||'FCRA')}</span>`,
+    `<span class="chip ${analysis.cfpbEligible?'down':'gray'}">${analysis.cfpbEligible?'CFPB eligible':'Escalation watch'}</span>`
+  ].join('');
+  $('pbScore').textContent=analysis.score;
+  $('pbProbability').textContent=analysis.probability.replace(' Probability','');
+  $('pbScoreRing').style.setProperty('--p',analysis.score);
+  $('pbRecommendedMethod').textContent=analysis.recommendation;
+  $('pbRecommendationWhy').textContent=analysis.reason;
+  $('pbRiskWeakness').textContent=`Risks / weaknesses: ${analysis.weakness}`;
+  $('pbExpectedTimeline').textContent=analysis.timeline;
+  renderPlaybookFields(account);
+  renderPlaybookFactors(analysis);
+  renderPlaybookActionPlan(analysis);
+  renderPlaybookDocs(analysis);
+  renderPlaybookTimeline(account,analysis);
+  renderPlaybookCaseAnalyst(account,analysis);
+  renderPlaybookFollowups(analysis);
+  renderPlaybookEscalation(account,analysis);
+  renderPlaybookCaseFiles(account,analysis);
+  renderPlaybookNotes(account);
+}
+function renderPlaybookFields(account){
+  const fields=[
+    ['Account Type',account.accountType],
+    ['Furnisher',account.furnisher],
+    ['Balance',account.balance],
+    ['Credit Limit',account.creditLimit],
+    ['Payment History',account.paymentHistory],
+    ['Date Opened',account.dateOpened],
+    ['Date Closed',account.dateClosed],
+    ['Date of First Delinquency',account.dofd],
+    ['Collection Status',account.collectionStatus],
+    ['Charge Off Status',account.chargeOffStatus],
+    ['Inquiry History',account.inquiryHistory],
+    ['Personal Information Matches',account.personalInfoMatches],
+    ['Previous Dispute Attempts',account.previousDisputeAttempts],
+    ['Supporting Documentation',pbDocsFromAccount(account).join(', ')||'None recorded yet']
+  ];
+  $('pbAnalysisFields').innerHTML=fields.map(([label,value])=>`<div class="analysisField"><span>${escapeHtml(label)}</span><b>${escapeHtml(pbDisplay(value))}</b></div>`).join('');
+}
+function renderPlaybookFactors(analysis){
+  $('pbFactors').innerHTML=Object.entries(analysis.factors).map(([label,value])=>`<div class="factorRow"><span>${escapeHtml(label)}</span><b>${value}</b><div class="track"><span style="width:${value}%"></span></div></div>`).join('');
+}
+function renderPlaybookActionPlan(analysis){
+  $('pbActionPlan').innerHTML=analysis.actionPlan.map(([title,detail])=>`<div class="playbookStep"><div><strong>${escapeHtml(title)}</strong><small>${escapeHtml(detail)}</small></div></div>`).join('');
+}
+function renderPlaybookDocs(analysis){
+  $('pbDocChecklist').innerHTML=analysis.neededDocs.map(group=>`<div class="docGroup"><b>${escapeHtml(group.title)}</b><ul>${group.items.map(item=>`<li>${escapeHtml(item)}</li>`).join('')}</ul></div>`).join('');
+}
+function renderPlaybookTimeline(account,analysis){
+  const status=account.status||'untracked';
+  let current=0;
+  if(status==='draft')current=0;
+  if(status==='mailed')current=1;
+  if(status==='investigating')current=3;
+  if(status==='verified')current=4;
+  if(analysis.overdue)current=6;
+  if(status==='escalated')current=6;
+  if(['resolved','deleted'].includes(status))current=7;
+  $('pbTimeline').innerHTML=PLAYBOOK_TIMELINE_STAGES.map((label,i)=>`<div class="stepNode ${i<current?'done':i===current?'now':''}"><i>${i<current?'✓':i+1}</i><br>${escapeHtml(label)}</div>`).join('');
+}
+function renderPlaybookCaseAnalyst(account,analysis){
+  $('pbCaseSummary').textContent=account.issue;
+  $('pbCaseStrategy').textContent=analysis.recommendation;
+  $('pbCaseWhy').textContent=analysis.reason;
+  $('pbCaseRisk').textContent=analysis.weakness;
+  $('pbCaseEvidence').textContent=analysis.neededDocs.flatMap(g=>g.items).slice(0,6).join(', ');
+  $('pbCaseProbability').textContent=`${analysis.score}/100 · ${analysis.probability}`;
+  $('pbCaseNext').textContent=analysis.followups[0]?.detail||analysis.actionPlan[4]?.[1]||'Prepare the next letter.';
+}
+function renderPlaybookFollowups(analysis){
+  $('pbFollowupList').innerHTML=analysis.followups.map(action=>`<div class="item"><div><strong>${escapeHtml(action.title)}</strong><small>${escapeHtml(action.detail)}</small></div></div>`).join('');
+}
+function renderPlaybookEscalation(account,analysis){
+  const el=$('pbEscalationBox');
+  if(analysis.cfpbEligible){
+    el.innerHTML=`<strong>Escalation Recommended</strong><span>Reason: ${escapeHtml(analysis.reason)}</span><strong>Supporting Evidence Summary</strong><span>${escapeHtml(pbDocsFromAccount(account).join(', ')||'Add prior disputes, bureau responses, and certified mail receipts before filing.')}</span><strong>Package to generate</strong><span>CFPB Complaint Draft, Timeline Summary, Supporting Document Package, and Creditor History Summary.</span>`;
+  }else{
+    el.innerHTML=`<strong>Escalation not recommended yet</strong><span>Reason: complete the current dispute step first, then escalate if the bureau verifies without a meaningful explanation or misses the response window.</span>`;
+  }
+}
+function renderPlaybookCaseFiles(account,analysis){
+  const profile=mailingProfileState();
+  const docs=(profile.documents||[]).length+pbDocsFromAccount(account).length;
+  const wins=store('wins')||[];
+  const files=[
+    ['Generated letters',account.trackedId?'Tracked in Dispute Center':'Ready to generate'],
+    ['Uploaded documents',`${docs} document${docs===1?'':'s'} recorded`],
+    ['Bureau responses',analysis.failedResponse?'Response verified item':'No response recorded yet'],
+    ['Creditor responses',analysis.recommendation==='Direct Furnisher Dispute'?'Needed from furnisher':'Not requested yet'],
+    ['CFPB complaints',analysis.cfpbEligible?'Eligible to draft':'Not eligible yet'],
+    ['Activity logs',`${wins.length} win${wins.length===1?'':'s'} and progress events`]
+  ];
+  $('pbCaseFiles').innerHTML=files.map(([title,detail])=>`<div class="caseFile"><strong>${escapeHtml(title)}</strong><small>${escapeHtml(detail)}</small></div>`).join('');
+}
+function renderPlaybookNotes(account){
+  const notes=(store('playbookNotes')||[]).filter(n=>n.accountKey===pbKeyFor(account));
+  $('pbCaseNotes').innerHTML=notes.length?notes.map(n=>`<div class="item"><div><strong>${new Date(n.ts).toLocaleDateString()}</strong><small>${escapeHtml(n.text)}</small></div></div>`).join(''):'<div class="empty" style="padding:14px">No case notes yet.</div>';
+}
+function savePlaybookNote(){
+  const {account}=selectedPlaybook();
+  const text=$('pbNote')?.value.trim();
+  if(!account||!text){toast('Add a note first.');return}
+  const notes=store('playbookNotes')||[];
+  notes.unshift({accountKey:pbKeyFor(account),text,ts:Date.now()});
+  store('playbookNotes',notes.slice(0,100));
+  $('pbNote').value='';
+  renderPlaybookNotes(account);
+  toast('Case note saved ✓');
+}
+function playbookLetterType(account){
+  const type=String(account.accountType||account.rawType||'').toLowerCase();
+  if(type.includes('late'))return 'Late Payment';
+  if(type.includes('charge'))return 'Charge-off';
+  if(type.includes('inquiry'))return 'Inquiry';
+  return 'Collection';
+}
+function playbookLetterStrategy(analysis){
+  if(analysis.recommendation==='Goodwill Strategy')return 'Goodwill Adjustment';
+  if(analysis.recommendation==='Metro 2 Compliance Review')return 'Metro 2 Inaccuracy';
+  if(['Method of Verification Request','CFPB Escalation'].includes(analysis.recommendation))return 'Round 2 Escalation';
+  return 'FCRA Validation';
+}
+async function preparePlaybookLetter(mode='recommended'){
+  const {account,analysis}=selectedPlaybook();
+  if(!account||!analysis){toast('Select an account first.');return}
+  if(account.isDemo){toast('Run a scan to generate real case letters.');return}
+  if(analysis.templateId==='cfpb'||analysis.recommendation==='CFPB Escalation'){generatePlaybookCfpbPackage();return}
+  showPage('letters');
+  switchLetterTab('dispute',document.querySelector('[data-ltab="dispute"]'));
+  const profile=getProfile()||{},mail=mailingProfileState(),billing=mail.billingAddress||{};
+  maybeFillField('lCreditor',account.creditor,true);
+  maybeFillField('lBureau',['Experian','Equifax','TransUnion'].includes(account.bureau)?account.bureau:'Experian',true);
+  maybeFillField('lType',playbookLetterType(account),true);
+  maybeFillField('lStrategy',playbookLetterStrategy(analysis),true);
+  maybeFillField('letterClientName',profile.name||mail.fullName||'',true);
+  window._pendingDispute={creditor:account.creditor,bureau:['Experian','Equifax','TransUnion'].includes(account.bureau)?account.bureau:'Experian',item_type:playbookLetterType(account)};
+  const preview=$('letterPreview');
+  preview.textContent='Generating the recommended Playbook letter...';
+  try{
+    const cityStateZip=[billing.city,billing.state,billing.postalCode].filter(Boolean).join(', ');
+    const data=await api.post('/api/disputes/generate',{templateId:analysis.templateId,data:{fullName:mail.fullName||profile.name||'',address:billing.address1||'',cityStateZip,creditor:account.creditor,accountNumber:account.accountNumber||'',bureau:['Experian','Equifax','TransUnion'].includes(account.bureau)?account.bureau:'Experian'}});
+    preview.textContent=data.letter||'Letter generated, but no text was returned.';
+    await saveLetterToHistory(`playbook-${analysis.recommendation}`,preview.textContent,account.creditor);
+    toast('Recommended Playbook letter generated ✓');
+  }catch(e){
+    preview.textContent=`The form is pre-filled. Tap Generate letter if you want the AI-written version.\n\nReason: ${e.message}`;
+    toast('Letter form prepared from the Playbook.');
+  }
+}
+async function trackSelectedPlaybookAccount(){
+  const {account}=selectedPlaybook();
+  if(!account){toast('Select an account first.');return}
+  if(account.isDemo){toast('Run a scan before tracking real disputes.');return}
+  if(account.trackedId){showPage('disputes');toast('This account is already tracked.');return}
+  await DisputeStore.add({creditor:account.creditor,bureau:['Experian','Equifax','TransUnion'].includes(account.bureau)?account.bureau:'Experian',item_type:playbookLetterType(account),status:'draft'});
+  awardBadge('dispute');
+  toast('Added to your Dispute Center ✓');
+  await renderPlaybook();
+}
+function generatePlaybookCfpbPackage(){
+  const {account,analysis}=selectedPlaybook();
+  if(!account||!analysis){toast('Select an account first.');return}
+  const docs=analysis.neededDocs.flatMap(g=>g.items).slice(0,8);
+  const timeline=[
+    `Case opened: ${account.source==='scan'?'latest report scan':'dispute timeline'}`,
+    account.mailed_at?`Letter mailed: ${new Date(account.mailed_at).toLocaleDateString()}`:'Letter mailed: not recorded',
+    analysis.failedResponse?'Response received: item verified or kept':'Response received: not recorded',
+    analysis.overdue?'Follow-up due: response window has passed':'Follow-up due: monitor expected response window'
+  ];
+  $('pbEscalationBox').innerHTML=`<strong>CFPB Complaint Draft</strong><span>I am filing this complaint regarding ${escapeHtml(account.creditor)} because disputed credit reporting for ${escapeHtml(account.accountType)} remains unresolved after prior dispute activity. I request correction or deletion of inaccurate/unverifiable reporting and written confirmation of the investigation results.</span><strong>Timeline Summary</strong><span>${timeline.map(escapeHtml).join('<br>')}</span><strong>Supporting Document Package</strong><span>${escapeHtml(docs.join(', '))}</span><strong>Creditor History Summary</strong><span>${escapeHtml(account.creditor)} · ${escapeHtml(account.bureau)} · ${escapeHtml(account.issue)}</span>`;
+  toast('CFPB package drafted in the Playbook.');
 }
 
 // ── Simulators ─────────────────────────────────────────────────
@@ -2967,6 +3814,7 @@ function renderJordanSide(){
 async function loadDashboardMetrics(){
   if(!_supabase||!_session){
     _scannerCredits=null; _scannerUnlimited=false;
+    _plan={plan:'free',credits:null,unlimited:false,premiumAccess:false,subscriptionStatus:null,trialEndsAt:null,nextBillAt:null,paymentFailed:false,canManageBilling:false};
     $('creditPill').style.display='none';
     $('sideCredits').textContent='—';
     $('sideMeter').style.width='0%';
@@ -2976,16 +3824,18 @@ async function loadDashboardMetrics(){
   }
   try{
     const data=await api.get('/api/credits/balance');
-    _plan={plan:data.plan||'free',credits:data.credits,unlimited:!!data.unlimited};
+    _plan={plan:data.plan||'free',credits:data.credits,unlimited:!!data.unlimited,premiumAccess:!!data.premium_access,subscriptionStatus:data.subscription_status||null,trialEndsAt:data.trial_ends_at||null,nextBillAt:data.next_bill_at||null,canceledAt:data.canceled_at||null,paymentFailed:!!data.payment_failed,canManageBilling:!!data.can_manage_billing};
     updateScannerCreditUI(data.credits,data.unlimited);
     renderSettings();
+    if($('responses')?.classList.contains('active'))renderResponseCenter();
     if(data.payment_failed)toast('⚠️ Your last payment failed — update your card in Settings.');
   }catch(e){}
 }
 async function loadRuntimeStatus(){
   try{
     const data=await api.get('/api/runtime-status');
-    _runtimeStatus=data?.services||null;
+    _runtimeStatus=data?.services || null;
+    if (data?.appUrl) _appBaseUrl = String(data.appUrl).trim().replace(/\/+$/, '');
   }catch{
     _runtimeStatus={supabase:null,stripe:null,click2mail:null,gemini:null,ocr:'browser',pdf:'browser'};
   }
@@ -3018,6 +3868,14 @@ function renderSettings(){
   const labels={free:'Free — limited credits',starter:'Starter — 25 credits/mo',pro:'Pro — unlimited AI',premium:'Premium — automation + matching',business:'Business — full suite',agency:'Business (legacy "agency")',enterprise:'Business (legacy "enterprise")'};
   $('setPlan').textContent=(_plan.plan||'free').charAt(0).toUpperCase()+(_plan.plan||'free').slice(1);
   $('setPlanSub').textContent=labels[_plan.plan]||'Limited credits';
+  const billing=$('setPlanBilling'),manage=$('manageBillingBtn');
+  if(billing){
+    if(_plan.paymentFailed){billing.className='scannerState error';billing.innerHTML='<strong>Payment needs attention</strong><span>Stripe could not complete the latest charge. Update the payment method to keep access uninterrupted.</span>';}
+    else if(_plan.subscriptionStatus==='trialing'){billing.className='scannerState success';billing.innerHTML=`<strong>Premium trial active</strong><span>Next bill: ${escapeHtml(exactDate(_plan.nextBillAt||_plan.trialEndsAt))} · $99/month unless canceled beforehand.</span>`;}
+    else if(_plan.subscriptionStatus==='active'){billing.className='scannerState success';billing.innerHTML=`<strong>Paid access active</strong><span>${_plan.nextBillAt?'Next billing date: '+escapeHtml(exactDate(_plan.nextBillAt)):'Your monthly subscription is active.'}</span>`;}
+    else{billing.className='scannerState';billing.innerHTML='<strong>No active paid billing</strong><span>Choose a plan to unlock paid features.</span>';}
+  }
+  if(manage)manage.classList.toggle('hidden',!_plan.canManageBilling);
   const prefs=store('prefs')||{};
   if(prefs.deadlines!==undefined)$('notifDeadlines').checked=prefs.deadlines;
   if(prefs.checkin!==undefined)$('notifCheckin').checked=prefs.checkin;
@@ -3025,6 +3883,7 @@ function renderSettings(){
   if(_session) loadMailingRecipients().then(()=>renderMailingAdminSection()).catch(()=>{});
   else renderMailingAdminSection();
   renderServiceStatus();
+  renderLaunchVerificationDashboard();
 }
 function saveSettings(){
   const p=getProfile()||{};
@@ -3044,7 +3903,7 @@ function saveSettings(){
 function clearLocalData(){
   if(!confirm('Clear your plan, disputes, and progress stored on this device? Your account data stays safe in the cloud.'))return;
   _hydratingCloud=true;
-  ['onboarding','onboardingDraft','lastScan','disputes','vault','streak','badges','wins','actionsDone','business','vendors','prefs','checkin','quiz','tourSeen','mailingProfile'].forEach(key=>localStorage.removeItem('creditos.'+key));
+  ['onboarding','onboardingDraft','lastScan','disputes','vault','streak','badges','wins','actionsDone','business','vendors','prefs','checkin','quiz','tourSeen','mailingProfile','playbookNotes'].forEach(key=>localStorage.removeItem('creditos.'+key));
   _hydratingCloud=false;
   toast('Device data cleared.'); renderDashboard(); renderSettings(); showPage('home');
 }
@@ -3059,6 +3918,7 @@ tickStreak();
 calcFunding();
 renderDashboard();
 renderDisputes();
+renderPlaybook();
 renderJordanSide();
 renderMailingSummary();
 loadRuntimeStatus();

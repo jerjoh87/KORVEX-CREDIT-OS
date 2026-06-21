@@ -7,8 +7,10 @@ const jsFiles = [
   'server.js',
   'instrument.js',
   'lib/billing.js',
+  'lib/bureau-response.js',
   'routes/ai.js',
   'routes/credits.js',
+  'routes/responses.js',
   'routes/creditApi.js',
 ];
 

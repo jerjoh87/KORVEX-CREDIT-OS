@@ -82,6 +82,8 @@ test('recommend: having disputed before pivots to Method of Verification', () =>
   const again = recommendStrategy({ disputeType: 'late', problem: 'incorrect-status', disputedBefore: true });
   assert.equal(again.primary, STRATEGIES.MOV);
   assert.ok(again.escalationPath.includes(STRATEGIES.CFPB));
+  assert.equal(again.recommendedTemplateId, 'method-of-verification');
+  assert.equal(again.recommendedTemplate.label, 'Method of Verification Request');
   assert.ok(again.confidence <= base.confidence);
 });
 
