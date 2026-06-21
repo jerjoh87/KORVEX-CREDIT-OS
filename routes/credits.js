@@ -24,7 +24,7 @@ import {
   isUnlimitedPlan,
   PLAN_PRICES_CENTS
 } from '../lib/billing.js';
-import { finalizeCertifiedMailJob } from './mailing.js';
+import { finalizeCertifiedMailBatch, finalizeCertifiedMailJob } from './mailing.js';
 
 const stripe = process.env.STRIPE_SECRET_KEY
   ? new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2023-10-16' })
@@ -72,7 +72,27 @@ async function handleCheckout(event) {
   const amountTotal   = session.amount_total || 0;
 
   if (session.metadata?.purpose === 'certified_mail') {
+    const mailBatchId = session.metadata.mail_batch_id;
     const mailJobId = session.metadata.mail_job_id;
+    if (mailBatchId) {
+      try {
+        const results = await finalizeCertifiedMailBatch(mailBatchId);
+        return { mailed: true, batchId: mailBatchId, results };
+      } catch (e) {
+        console.error('[stripe:certified_mail batch]', e.message);
+        const { error: updateError } = await supabaseAdmin
+          .from('mail_jobs')
+          .update({
+            status: 'failed',
+            error: e.message,
+            updated_at: new Date().toISOString()
+          })
+          .eq('mail_batch_id', mailBatchId);
+        if (updateError) console.error('[stripe:certified_mail batch] update failed', updateError.message);
+        return { warning: 'Certified mail processing failed.' };
+      }
+    }
+
     if (!mailJobId) {
       console.warn('[stripe:checkout] Certified mail session missing mail_job_id');
       return { warning: 'Missing certified mail job ID.' };

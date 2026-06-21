@@ -20,6 +20,7 @@ import aiRoutes from './routes/ai.js';
 import creditsRoutes from './routes/credits.js';
 import creditApiRoutes from './routes/creditApi.js';
 import mailingRoutes from './routes/mailing.js';
+import disputeRoutes from './routes/disputes.js';
 
 const app  = express();
 const PORT = process.env.PORT || 3001;
@@ -120,10 +121,11 @@ app.get('/api/runtime-status', (req, res) => {
 });
 
 // ── Routes ───────────────────────────────────────────────────────────────────
-app.use('/api/ai',      aiRoutes);
-app.use('/api/credits', creditsRoutes);
-app.use('/api/mailing', mailingRoutes);
-app.use('/api',         creditApiRoutes);
+app.use('/api/ai',       aiRoutes);
+app.use('/api/credits',  creditsRoutes);
+app.use('/api/mailing',  mailingRoutes);
+app.use('/api/disputes', disputeRoutes);
+app.use('/api',          creditApiRoutes);
 
 // ── Static frontend ──────────────────────────────────────────────────────────
 // Frontend lives in /public. On Vercel this is served by the CDN directly

@@ -6,6 +6,7 @@
 --    profiles            — plan, credits, Stripe linkage (1 row per user)
 --    letters             — generated letter history
 --    clients             — agency CRM clients
+--    recipient_address_book — reusable mailing recipients
 --    disputes            — tracked disputes (package-style timeline)
 --    onboarding_profiles — wizard answers + computed scores
 --    user_state          — cross-device progress, vault, badges, and preferences
@@ -23,6 +24,7 @@ create table if not exists public.profiles (
   plan               text not null default 'free',
   credits            int  not null default 3,
   payment_failed     boolean not null default false,
+  is_admin           boolean not null default false,
   stripe_customer_id text,
   created_at         timestamptz not null default now(),
   updated_at         timestamptz not null default now()
@@ -30,6 +32,7 @@ create table if not exists public.profiles (
 
 -- Upgrade compatibility for earlier CREDITOS schemas.
 alter table public.profiles add column if not exists payment_failed boolean not null default false;
+alter table public.profiles add column if not exists is_admin boolean not null default false;
 alter table public.profiles add column if not exists updated_at timestamptz not null default now();
 
 alter table public.profiles enable row level security;
@@ -51,8 +54,8 @@ create index if not exists profiles_email_idx           on public.profiles (emai
 create or replace function public.handle_new_user()
 returns trigger language plpgsql security definer set search_path = '' as $$
 begin
-  insert into public.profiles (id, email, plan, credits)
-  values (new.id, new.email, 'free', 3)
+  insert into public.profiles (id, email, plan, credits, is_admin)
+  values (new.id, new.email, 'free', 3, false)
   on conflict (id) do nothing;
   return new;
 end; $$;
@@ -118,6 +121,71 @@ create policy "clients_delete_own" on public.clients for delete to authenticated
 
 create index if not exists clients_user_created_idx on public.clients (user_id, created_at desc);
 
+-- ── recipient_address_book ─────────────────────────────────────
+create table if not exists public.recipient_address_book (
+  id                  uuid primary key default gen_random_uuid(),
+  organization_id     uuid references auth.users(id) on delete cascade,
+  user_id             uuid references auth.users(id) on delete cascade,
+  recipient_type      text not null,
+  recipient_name      text not null,
+  department          text,
+  address_line_1      text not null,
+  address_line_2      text,
+  city                text not null,
+  state               text not null,
+  postal_code         text not null,
+  country             text not null default 'United States',
+  is_default          boolean not null default false,
+  is_active           boolean not null default true,
+  is_system_recipient boolean not null default false,
+  last_verified_at    timestamptz,
+  notes               text,
+  created_at          timestamptz not null default now(),
+  updated_at          timestamptz not null default now()
+);
+
+alter table public.recipient_address_book add column if not exists organization_id uuid references auth.users(id) on delete cascade;
+alter table public.recipient_address_book add column if not exists user_id uuid references auth.users(id) on delete cascade;
+alter table public.recipient_address_book add column if not exists recipient_type text;
+alter table public.recipient_address_book add column if not exists recipient_name text;
+alter table public.recipient_address_book add column if not exists department text;
+alter table public.recipient_address_book add column if not exists address_line_1 text;
+alter table public.recipient_address_book add column if not exists address_line_2 text;
+alter table public.recipient_address_book add column if not exists city text;
+alter table public.recipient_address_book add column if not exists state text;
+alter table public.recipient_address_book add column if not exists postal_code text;
+alter table public.recipient_address_book add column if not exists country text not null default 'United States';
+alter table public.recipient_address_book add column if not exists is_default boolean not null default false;
+alter table public.recipient_address_book add column if not exists is_active boolean not null default true;
+alter table public.recipient_address_book add column if not exists is_system_recipient boolean not null default false;
+alter table public.recipient_address_book add column if not exists last_verified_at timestamptz;
+alter table public.recipient_address_book add column if not exists notes text;
+alter table public.recipient_address_book add column if not exists updated_at timestamptz not null default now();
+
+alter table public.recipient_address_book enable row level security;
+
+drop policy if exists "recipient_book_select_system" on public.recipient_address_book;
+create policy "recipient_book_select_system" on public.recipient_address_book
+  for select to authenticated using (is_system_recipient and is_active);
+drop policy if exists "recipient_book_select_own" on public.recipient_address_book;
+create policy "recipient_book_select_own" on public.recipient_address_book
+  for select to authenticated using ((select auth.uid()) = user_id or (select auth.uid()) = organization_id);
+drop policy if exists "recipient_book_insert_own" on public.recipient_address_book;
+create policy "recipient_book_insert_own" on public.recipient_address_book
+  for insert to authenticated with check ((select auth.uid()) = user_id and (select auth.uid()) = organization_id and not is_system_recipient);
+drop policy if exists "recipient_book_update_own" on public.recipient_address_book;
+create policy "recipient_book_update_own" on public.recipient_address_book
+  for update to authenticated
+  using ((select auth.uid()) = user_id or (select auth.uid()) = organization_id)
+  with check ((select auth.uid()) = user_id or (select auth.uid()) = organization_id);
+drop policy if exists "recipient_book_delete_own" on public.recipient_address_book;
+create policy "recipient_book_delete_own" on public.recipient_address_book
+  for delete to authenticated using ((select auth.uid()) = user_id or (select auth.uid()) = organization_id);
+
+create index if not exists recipient_book_system_type_idx on public.recipient_address_book (recipient_type, is_system_recipient);
+create index if not exists recipient_book_org_idx on public.recipient_address_book (organization_id, is_active);
+create index if not exists recipient_book_user_idx on public.recipient_address_book (user_id, is_active);
+
 -- ── disputes ─────────────────────────────────────────────────────
 create table if not exists public.disputes (
   id          uuid primary key default gen_random_uuid(),
@@ -164,7 +232,11 @@ create table if not exists public.mail_jobs (
   letter_id           uuid references public.letters(id) on delete set null,
   status              text not null default 'draft'
                       check (status in ('draft','payment_pending','queued','submitted','mailed','failed','blocked')),
+  mail_batch_id       uuid,
+  mail_batch_index    int,
+  recipient_address_book_id uuid references public.recipient_address_book(id) on delete set null,
   recipient_address   jsonb not null default '{}'::jsonb,
+  recipient_snapshot_json jsonb not null default '{}'::jsonb,
   return_address      jsonb not null default '{}'::jsonb,
   supporting_docs     jsonb not null default '[]'::jsonb,
   letter_text         text not null default '',
@@ -182,6 +254,11 @@ create table if not exists public.mail_jobs (
 
 alter table public.mail_jobs enable row level security;
 
+alter table public.mail_jobs add column if not exists mail_batch_id uuid;
+alter table public.mail_jobs add column if not exists mail_batch_index int;
+alter table public.mail_jobs add column if not exists recipient_address_book_id uuid references public.recipient_address_book(id) on delete set null;
+alter table public.mail_jobs add column if not exists recipient_snapshot_json jsonb not null default '{}'::jsonb;
+
 drop policy if exists "mail_jobs_select_own" on public.mail_jobs;
 create policy "mail_jobs_select_own" on public.mail_jobs for select to authenticated using ((select auth.uid()) = user_id);
 drop policy if exists "mail_jobs_insert_own" on public.mail_jobs;
@@ -193,6 +270,7 @@ create policy "mail_jobs_update_own" on public.mail_jobs for update to authentic
 
 create index if not exists mail_jobs_user_created_idx on public.mail_jobs (user_id, created_at desc);
 create index if not exists mail_jobs_user_status_idx on public.mail_jobs (user_id, status);
+create index if not exists mail_jobs_batch_idx on public.mail_jobs (mail_batch_id, mail_batch_index);
 
 -- ── onboarding_profiles ──────────────────────────────────────────
 create table if not exists public.onboarding_profiles (

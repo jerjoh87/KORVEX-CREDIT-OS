@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CREDITOS — Dispute Advisor</title>
+<meta name="description" content="CREDITOS Dispute Advisor: recommended dispute strategy, a full letter library, and a CFPB complaint generator." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050810;--card:#0c1322;--ink:#E6EDF7;--ink2:#C3D0E2;--muted:#94A6C6;--soft:#637393;
+  --line:rgba(255,255,255,.10);--line2:rgba(255,255,255,.16);
+  --em:#10B981;--em2:#4EDEA3;--em-soft:rgba(16,185,129,.14);
+  --gold:#F4C95D;--red:#ff6b81;--amber:#F0A33C;--blue:#7CA8FF;--blue-soft:rgba(124,168,255,.14);
+  --r:16px;--shadow:0 8px 30px rgba(0,0,0,.45);--font:'Geist',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;background:radial-gradient(1100px 560px at 12% -8%,rgba(16,185,129,.10),transparent 55%),radial-gradient(1000px 520px at 100% 0%,rgba(59,130,246,.09),transparent 50%),var(--bg);background-attachment:fixed;color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.55}
+a{color:inherit;text-decoration:none}button,input,select,textarea{font:inherit}
+.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 350,'GRAD' 0,'opsz' 24;vertical-align:middle}
+.wrap{max-width:1080px;margin:0 auto;padding:26px 22px 90px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:8px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:40px;height:40px;border-radius:11px;background:radial-gradient(circle at 50% 32%,rgba(78,222,163,.3),rgba(5,8,16,.96));border:1px solid rgba(78,222,163,.3);box-shadow:inset 0 0 18px rgba(16,185,129,.15);display:grid;place-items:center}
+.logo:after{content:'';width:13px;height:13px;border:2px solid var(--em2);transform:rotate(45deg);box-shadow:0 0 9px var(--em)}
+.brand b{color:var(--em2);font-size:20px;letter-spacing:-.02em}
+.back{color:var(--muted);font-size:13px;display:inline-flex;align-items:center;gap:6px}
+.back:hover{color:var(--ink)}
+h1{font-size:30px;letter-spacing:-.03em;margin:14px 0 4px}
+.sub{color:var(--muted);font-size:15px;max-width:680px}
+.tabs{display:flex;gap:8px;margin:22px 0 18px;flex-wrap:wrap}
+.tab{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;border:1px solid var(--line2);background:rgba(255,255,255,.03);color:var(--ink2);cursor:pointer;font-weight:600;font-size:13.5px;transition:.15s}
+.tab:hover{border-color:var(--em);color:var(--ink)}
+.tab.active{background:var(--em-soft);border-color:var(--em);color:var(--em2)}
+.tab .material-symbols-outlined{font-size:19px}
+.panel{display:none}.panel.active{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:22px}
+.card+.card{margin-top:16px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}.wrap{padding:20px 16px 80px}}
+h2{font-size:20px;letter-spacing:-.02em;margin-bottom:4px}
+h3{font-size:16px;letter-spacing:-.01em}
+.lab{display:block;font-weight:600;font-size:12.5px;color:var(--ink2);margin:14px 0 7px}
+.kicker{font:600 10px/1 var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+input,select,textarea{width:100%;border:1px solid var(--line2);background:#050810;color:var(--ink);border-radius:10px;padding:11px 13px;font-size:13.5px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-soft)}
+textarea{min-height:80px;resize:vertical}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{padding:9px 13px;border-radius:10px;border:1px solid var(--line2);background:rgba(255,255,255,.03);color:var(--ink2);cursor:pointer;font-size:13px;font-weight:500;transition:.15s}
+.chip:hover{border-color:var(--em)}
+.chip.sel{background:var(--em-soft);border-color:var(--em);color:var(--em2);font-weight:700}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:10px;padding:12px 18px;font-weight:700;font-size:14px;cursor:pointer;border:1px solid transparent;transition:.15s}
+.primary{background:var(--em);color:#04140d}.primary:hover{background:var(--em2)}
+.ghost{background:rgba(255,255,255,.04);border-color:var(--line2);color:var(--ink)}
+.ghost:hover{border-color:var(--em);color:var(--em2)}
+.full{width:100%}
+.tag{display:inline-flex;align-items:center;gap:5px;font:600 10px/1 var(--mono);letter-spacing:.04em;text-transform:uppercase;padding:5px 9px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)}
+.tag.em{color:var(--em2);border-color:rgba(78,222,163,.4);background:var(--em-soft)}
+.muted{color:var(--muted)}.small{font-size:12.5px}
+pre.out{white-space:pre-wrap;font-family:var(--font);font-size:13px;line-height:1.62;color:var(--ink2);background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:16px;max-height:560px;overflow:auto}
+.recoHead{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.confWrap{min-width:200px}
+.bar{height:10px;border-radius:999px;background:rgba(255,255,255,.07);overflow:hidden;margin-top:6px}
+.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--em),var(--em2));border-radius:999px;transition:width .5s}
+.docList{list-style:none;display:grid;gap:7px;margin-top:8px}
+.docList li{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--ink2)}
+.docList li:before{content:'check_circle';font-family:'Material Symbols Outlined';color:var(--em2);font-size:17px;line-height:1.3}
+.path{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:10px}
+.path .step{padding:6px 11px;border-radius:8px;background:rgba(255,255,255,.04);border:1px solid var(--line2);font-size:12px;font-weight:600}
+.path .arrow{color:var(--soft);font-size:18px}
+.tplGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:6px}
+.tpl{text-align:left;padding:13px;border:1px solid var(--line2);background:rgba(255,255,255,.025);border-radius:11px;cursor:pointer;transition:.15s}
+.tpl:hover{border-color:var(--em);transform:translateY(-1px)}
+.tpl.sel{border-color:var(--em);background:var(--em-soft)}
+.tpl b{font-size:13.5px;display:block;margin-bottom:4px}
+.tpl small{color:var(--muted);font-size:11.5px}
+.catbar{display:flex;gap:7px;flex-wrap:wrap;margin:4px 0 8px}
+.cat{padding:7px 12px;border-radius:999px;border:1px solid var(--line2);background:rgba(255,255,255,.03);color:var(--ink2);cursor:pointer;font-size:12.5px;font-weight:600}
+.cat.active{background:var(--em-soft);border-color:var(--em);color:var(--em2)}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.toolbar .btn{flex:1;min-width:120px;padding:10px}
+.hide{display:none}
+.note{font-size:11.5px;color:var(--soft);margin-top:14px;line-height:1.5}
+.statline{display:flex;gap:18px;flex-wrap:wrap;margin-top:10px;color:var(--muted);font:600 11px/1 var(--mono);text-transform:uppercase;letter-spacing:.06em}
+.statline b{color:var(--em2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a class="brand" href="/app.html"><span class="logo"></span><b>CREDITOS</b></a>
+    <a class="back" href="/app.html"><span class="material-symbols-outlined" style="font-size:18px">arrow_back</span> Back to app</a>
+  </div>
+
+  <h1>Dispute Advisor</h1>
+  <p class="sub">Answer a few questions and get the most effective dispute strategy for your situation, the exact cited letter to send, and a ready-to-file CFPB complaint when a bureau won’t cooperate.</p>
+  <div class="statline">
+    <span>Templates <b id="statTpl">—</b></span>
+    <span>Categories <b id="statCat">—</b></span>
+    <span>Strategies <b id="statStrat">—</b></span>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="advisor"><span class="material-symbols-outlined">neurology</span> Strategy Advisor</div>
+    <div class="tab" data-tab="library"><span class="material-symbols-outlined">menu_book</span> Letter Library</div>
+    <div class="tab" data-tab="cfpb"><span class="material-symbols-outlined">account_balance</span> CFPB Complaint</div>
+  </div>
+
+  <!-- ════════ STRATEGY ADVISOR ════════ -->
+  <section class="panel active" id="panel-advisor">
+    <div class="card">
+      <span class="kicker">Smart questionnaire</span>
+      <h2 style="margin-top:6px">What are you dealing with?</h2>
+
+      <span class="lab">1 · What are you disputing?</span>
+      <div class="chips" id="q-type"></div>
+
+      <span class="lab">2 · What is wrong?</span>
+      <div class="chips" id="q-problem"></div>
+
+      <div class="grid2" style="margin-top:6px">
+        <div>
+          <span class="lab">3 · Have you disputed this before?</span>
+          <div class="chips" id="q-before"></div>
+        </div>
+        <div>
+          <span class="lab">4 · Which bureau?</span>
+          <div class="chips" id="q-bureau"></div>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:6px">
+        <div>
+          <span class="lab">How old is the item? <span class="muted small">(optional)</span></span>
+          <div class="chips" id="q-age"></div>
+        </div>
+        <div>
+          <span class="lab">Do you have documentation? <span class="muted small">(optional)</span></span>
+          <div class="chips" id="q-docs"></div>
+        </div>
+      </div>
+
+      <button class="btn primary full" style="margin-top:18px" onclick="runRecommend()">
+        <span class="material-symbols-outlined">auto_awesome</span> Recommend my strategy
+      </button>
+    </div>
+
+    <div class="card hide" id="recoCard">
+      <div class="recoHead">
+        <div>
+          <span class="kicker">Recommended strategy</span>
+          <h2 id="recoStrategy" style="margin-top:6px;color:var(--em2)">—</h2>
+          <div class="path" id="recoPath"></div>
+        </div>
+        <div class="confWrap">
+          <span class="kicker">Confidence</span>
+          <div style="font-size:28px;font-weight:800;color:var(--em2)" id="recoConf">—</div>
+          <div class="bar"><i id="recoBar" style="width:0%"></i></div>
+        </div>
+      </div>
+      <p id="recoReason" class="muted" style="margin-top:14px;font-size:14px"></p>
+      <span class="lab" style="margin-top:14px">Suggested supporting documents</span>
+      <ul class="docList" id="recoDocs"></ul>
+      <div class="toolbar">
+        <button class="btn primary" onclick="useRecommended()"><span class="material-symbols-outlined">draft</span> Generate the recommended letter</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ LETTER LIBRARY ════════ -->
+  <section class="panel" id="panel-library">
+    <div class="card">
+      <span class="kicker">Dispute letter library</span>
+      <h2 style="margin-top:6px">Pick a letter</h2>
+      <div class="catbar" id="catbar"></div>
+      <div class="tplGrid" id="tplGrid"></div>
+    </div>
+
+    <div class="card hide" id="genCard">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap">
+        <div>
+          <span class="kicker">Selected letter</span>
+          <h2 id="genLabel" style="margin-top:6px">—</h2>
+          <div id="genMeta" style="margin-top:8px;display:flex;gap:7px;flex-wrap:wrap"></div>
+        </div>
+      </div>
+      <div class="grid2" style="margin-top:14px">
+        <div>
+          <span class="lab">Your full name</span><input id="f-fullName" placeholder="Jordan Carter">
+          <span class="lab">Street address</span><input id="f-address" placeholder="123 Main St">
+          <span class="lab">City, State ZIP</span><input id="f-cityStateZip" placeholder="Austin, TX 78701">
+        </div>
+        <div>
+          <span class="lab">Creditor / company <span class="muted small">(if applicable)</span></span><input id="f-creditor" placeholder="Capital One">
+          <span class="lab">Account number</span><input id="f-accountNumber" placeholder="****1234">
+          <div class="grid2">
+            <div><span class="lab">Date of birth</span><input id="f-dob" placeholder="01/01/1990"></div>
+            <div><span class="lab">SSN (last 4)</span><input id="f-ssnLast4" maxlength="4" placeholder="1234"></div>
+          </div>
+          <span class="lab" id="bureauLab">Bureau</span><select id="f-bureau"><option>Experian</option><option>Equifax</option><option>TransUnion</option></select>
+        </div>
+      </div>
+      <button class="btn primary full" style="margin-top:16px" onclick="generateLetter()"><span class="material-symbols-outlined">edit_document</span> Generate letter</button>
+
+      <div id="letterWrap" class="hide" style="margin-top:18px">
+        <span class="lab">Your letter</span>
+        <pre class="out" id="letterOut"></pre>
+        <div class="toolbar">
+          <button class="btn ghost" onclick="copyEl('letterOut',this)"><span class="material-symbols-outlined">content_copy</span> Copy</button>
+          <button class="btn ghost" onclick="downloadText('letterOut','creditos-dispute-letter')"><span class="material-symbols-outlined">download</span> Download .txt</button>
+          <button class="btn ghost" onclick="printEl('letterOut')"><span class="material-symbols-outlined">print</span> Print / Save PDF</button>
+        </div>
+        <p class="note">CREDITOS is self-help software — not a credit repair organization, lender, or advisor. You may dispute inaccurate information yourself for free under the FCRA. Send disputes by certified mail and keep copies. Never include false statements.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ CFPB COMPLAINT ════════ -->
+  <section class="panel" id="panel-cfpb">
+    <div class="card">
+      <span class="kicker">CFPB complaint center</span>
+      <h2 style="margin-top:6px">Escalate to the CFPB</h2>
+      <p class="muted small" style="margin-top:4px">When a bureau or company won’t fix an inaccuracy, generate a professional complaint to file at consumerfinance.gov.</p>
+      <div class="grid2" style="margin-top:14px">
+        <div>
+          <span class="lab">Your name</span><input id="c-name" placeholder="Jordan Carter">
+          <span class="lab">City, State ZIP</span><input id="c-cityStateZip" placeholder="Austin, TX 78701">
+          <span class="lab">Email</span><input id="c-email" placeholder="you@example.com">
+          <span class="lab">Phone <span class="muted small">(optional)</span></span><input id="c-phone" placeholder="(512) 555-0100">
+        </div>
+        <div>
+          <span class="lab">Company you’re complaining about</span><input id="c-company" placeholder="Midland Credit Management">
+          <span class="lab">Account number <span class="muted small">(optional)</span></span><input id="c-account" placeholder="****1234">
+          <span class="lab">Issue category</span><input id="c-issue" placeholder="Incorrect information on your report">
+          <span class="lab">Requested resolution</span><textarea id="c-resolution" placeholder="Delete the inaccurate account from all three bureaus and confirm in writing."></textarea>
+        </div>
+      </div>
+      <span class="lab">What happened (one event per line: date — what happened)</span>
+      <textarea id="c-timeline" placeholder="03/01/2026 — Mailed a debt validation request by certified mail&#10;03/20/2026 — Collector continued reporting without validating"></textarea>
+      <div class="grid2">
+        <div><span class="lab">Violations (one per line)</span><textarea id="c-violations" placeholder="Failed to validate the debt (FDCPA §809)&#10;Reported inaccurate information (FCRA §623)"></textarea></div>
+        <div><span class="lab">Supporting evidence (one per line)</span><textarea id="c-evidence" placeholder="Certified mail receipt&#10;Copy of the disputed report entry"></textarea></div>
+      </div>
+      <button class="btn primary full" style="margin-top:16px" onclick="generateCfpb()"><span class="material-symbols-outlined">gavel</span> Generate CFPB complaint</button>
+
+      <div id="cfpbWrap" class="hide" style="margin-top:18px">
+        <span class="lab">Complaint narrative</span>
+        <pre class="out" id="cfpbOut"></pre>
+        <div class="toolbar">
+          <button class="btn ghost" onclick="copyEl('cfpbOut',this)"><span class="material-symbols-outlined">content_copy</span> Copy</button>
+          <button class="btn ghost" onclick="downloadText('cfpbOut','creditos-cfpb-complaint')"><span class="material-symbols-outlined">download</span> Download .txt</button>
+          <a class="btn primary" id="cfpbFile" target="_blank" rel="noopener"><span class="material-symbols-outlined">open_in_new</span> File at consumerfinance.gov</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+const API = '/api/disputes';
+let LIB = { categories: [], templates: [] };
+let lastReco = null;
+const sel = { type:'', problem:'', before:'', bureau:'All', age:'', docs:'' };
+
+// ── Questionnaire option sets ──
+const OPTS = {
+  type:    [['Late Payment','late'],['Collection','collection'],['Charge-Off','chargeoff'],['Inquiry','inquiry'],['Personal Info','personal'],['Identity Theft','identity'],['Other','other']],
+  problem: [['Not mine','not-mine'],['Incorrect balance','incorrect-balance'],['Incorrect date','incorrect-date'],['Duplicate','duplicate'],['Already paid','already-paid'],['Fraud','fraud'],['Other','other']],
+  before:  [['No','no'],['Yes','yes']],
+  bureau:  [['Experian','Experian'],['Equifax','Equifax'],['TransUnion','TransUnion'],['All three','All']],
+  age:     [['Recent','recent'],['Older (2y+)','old'],['Past 7 years','obsolete']],
+  docs:    [['Yes','yes'],['No','no']],
+};
+function buildChips(containerId, key, def){
+  const el = document.getElementById(containerId);
+  el.innerHTML = OPTS[key].map(([label,val]) =>
+    `<button class="chip${val===def?' sel':''}" data-val="${val}" onclick="pick('${containerId}','${key}','${val}',this)">${label}</button>`).join('');
+}
+function pick(containerId, key, val, btn){
+  sel[key] = val;
+  document.querySelectorAll('#'+containerId+' .chip').forEach(c=>c.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+// ── Tabs ──
+document.querySelectorAll('.tab').forEach(t => t.onclick = () => {
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');
+  document.getElementById('panel-'+t.dataset.tab).classList.add('active');
+});
+
+// ── Load library ──
+async function loadLibrary(){
+  try {
+    const r = await fetch(API+'/library');
+    LIB = await r.json();
+    document.getElementById('statTpl').textContent = LIB.counts.templates;
+    document.getElementById('statCat').textContent = LIB.counts.categories;
+    document.getElementById('statStrat').textContent = (LIB.strategies||[]).length;
+    renderCatbar();
+    renderTemplates('all');
+  } catch(e){ console.error('library load failed', e); }
+}
+function renderCatbar(){
+  const bar = document.getElementById('catbar');
+  bar.innerHTML = `<button class="cat active" data-cat="all" onclick="filterCat('all',this)">All</button>` +
+    LIB.categories.map(c=>`<button class="cat" data-cat="${c.id}" onclick="filterCat('${c.id}',this)">${c.label}</button>`).join('');
+}
+function filterCat(cat, btn){
+  document.querySelectorAll('.cat').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  renderTemplates(cat);
+}
+function renderTemplates(cat){
+  const list = cat==='all' ? LIB.templates : LIB.templates.filter(t=>t.category===cat);
+  document.getElementById('tplGrid').innerHTML = list.map(t=>
+    `<button class="tpl" data-id="${t.id}" onclick="selectTemplate('${t.id}',this)">
+       <b>${t.label}</b><small>${t.strategy} · ${(t.legalBasis||[]).join(', ')||'Self-help'}</small>
+     </button>`).join('');
+}
+
+let currentTpl = null;
+function selectTemplate(id, btn){
+  currentTpl = LIB.templates.find(t=>t.id===id);
+  if(!currentTpl) return;
+  document.querySelectorAll('.tpl').forEach(t=>t.classList.remove('sel'));
+  if(btn) btn.classList.add('sel');
+  document.getElementById('genCard').classList.remove('hide');
+  document.getElementById('genLabel').textContent = currentTpl.label;
+  const recip = (LIB.recipients||{})[currentTpl.recipient] || currentTpl.recipient;
+  document.getElementById('genMeta').innerHTML =
+    `<span class="tag em">${currentTpl.strategy}</span>`+
+    `<span class="tag"><span class="material-symbols-outlined" style="font-size:14px">forward_to_inbox</span> ${recip}</span>`+
+    (currentTpl.legalBasis||[]).map(l=>`<span class="tag">${l}</span>`).join('');
+  // Bureau selector only matters for bureau letters
+  document.getElementById('bureauLab').style.display = currentTpl.recipient==='bureau' ? '' : 'none';
+  document.getElementById('f-bureau').style.display = currentTpl.recipient==='bureau' ? '' : 'none';
+  document.getElementById('letterWrap').classList.add('hide');
+  document.getElementById('genCard').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+async function generateLetter(){
+  if(!currentTpl) return;
+  const data = {
+    fullName:    val('f-fullName'), address: val('f-address'), cityStateZip: val('f-cityStateZip'),
+    creditor:    val('f-creditor'), accountNumber: val('f-accountNumber'),
+    dob:         val('f-dob'), ssnLast4: val('f-ssnLast4'), bureau: val('f-bureau'),
+  };
+  const r = await fetch(API+'/generate', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({templateId:currentTpl.id, data})});
+  const j = await r.json();
+  if(!j.success){ alert(j.error||'Could not generate letter.'); return; }
+  document.getElementById('letterOut').textContent = j.letter;
+  document.getElementById('letterWrap').classList.remove('hide');
+  document.getElementById('letterWrap').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+// ── Recommendation ──
+async function runRecommend(){
+  const body = {
+    disputeType: sel.type, problem: sel.problem,
+    disputedBefore: sel.before==='yes', bureau: sel.bureau,
+    accountAge: sel.age || undefined, hasDocuments: sel.docs==='yes',
+  };
+  const r = await fetch(API+'/recommend', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const j = await r.json();
+  if(!j.success){ alert(j.error||'Pick at least one option.'); return; }
+  lastReco = j.recommendation;
+  const R = j.recommendation;
+  document.getElementById('recoCard').classList.remove('hide');
+  document.getElementById('recoStrategy').textContent = R.primary;
+  document.getElementById('recoConf').textContent = R.confidence+'%';
+  document.getElementById('recoBar').style.width = R.confidence+'%';
+  document.getElementById('recoReason').textContent = R.reason;
+  document.getElementById('recoDocs').innerHTML = (R.suggestedDocuments||[]).map(d=>`<li>${d}</li>`).join('');
+  document.getElementById('recoPath').innerHTML = (R.escalationPath||[]).map((s,i)=>
+    (i?'<span class="material-symbols-outlined arrow">chevron_right</span>':'')+`<span class="step">${s}</span>`).join('');
+  document.getElementById('recoCard').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+function useRecommended(){
+  if(!lastReco || !lastReco.recommendedTemplateId) return;
+  document.querySelector('.tab[data-tab="library"]').click();
+  // ensure the category is visible
+  renderTemplates('all');
+  document.querySelectorAll('.cat').forEach(c=>c.classList.toggle('active', c.dataset.cat==='all'));
+  selectTemplate(lastReco.recommendedTemplateId, document.querySelector(`.tpl[data-id="${lastReco.recommendedTemplateId}"]`));
+  if(sel.bureau && sel.bureau!=='All'){ const b=document.getElementById('f-bureau'); if(b) b.value = sel.bureau; }
+}
+
+// ── CFPB ──
+async function generateCfpb(){
+  const lines = id => val(id).split('\n').map(s=>s.trim()).filter(Boolean);
+  const timeline = lines('c-timeline').map(l=>{ const i=l.indexOf('—'); return i>0?{date:l.slice(0,i).trim(),event:l.slice(i+1).trim()}:{event:l}; });
+  const body = {
+    consumer:{ name:val('c-name'), cityStateZip:val('c-cityStateZip'), email:val('c-email'), phone:val('c-phone') },
+    company: val('c-company'), accountNumber: val('c-account'),
+    issueCategory: val('c-issue'), requestedResolution: val('c-resolution'),
+    timeline, violations: lines('c-violations'), evidence: lines('c-evidence'),
+  };
+  const r = await fetch(API+'/cfpb', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const j = await r.json();
+  if(!j.success){ alert(j.error||'Add a company or your name.'); return; }
+  document.getElementById('cfpbOut').textContent = j.complaint.narrative;
+  document.getElementById('cfpbFile').href = j.complaint.filingUrl;
+  document.getElementById('cfpbWrap').classList.remove('hide');
+  document.getElementById('cfpbWrap').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+// ── Utils ──
+function val(id){ return (document.getElementById(id).value||'').trim(); }
+function copyEl(id, btn){ navigator.clipboard.writeText(document.getElementById(id).textContent).then(()=>{ if(btn){const o=btn.innerHTML; btn.innerHTML='<span class="material-symbols-outlined">check</span> Copied'; setTimeout(()=>btn.innerHTML=o,1400);} }); }
+function downloadText(id, name){ const blob=new Blob([document.getElementById(id).textContent],{type:'text/plain'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name+'.txt'; a.click(); URL.revokeObjectURL(a.href); }
+function printEl(id){ const w=window.open('','_blank'); w.document.write('<pre style="font-family:Georgia,serif;white-space:pre-wrap;padding:40px;font-size:13px;line-height:1.6">'+document.getElementById(id).textContent.replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]))+'</pre>'); w.document.close(); w.print(); }
+
+// init
+['type','problem','before','bureau','age','docs'].forEach(k=>buildChips('q-'+k,k,k==='bureau'?'All':''));
+sel.bureau='All';
+loadLibrary();
+</script>
+</body>
+</html>

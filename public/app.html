@@ -140,6 +140,13 @@ textarea{min-height:96px;resize:vertical}
 
 /* ── Onboarding ── */
 .wizard{max-width:620px;margin:0 auto}
+.wizard, .wizard input, .wizard select, .wizard textarea, .wizard button{color:var(--ink)}
+.wizard .sub, .wizard .wizFoot, .wizard .opt small, .wizard label small, .wizard p small, .wizard .helpText{color:var(--muted)}
+.wizard .opt{background:rgba(255,255,255,.06);border-color:var(--line2)}
+.wizard .opt:hover{border-color:var(--em);background:rgba(16,185,129,.10)}
+.wizard .opt.sel{background:rgba(16,185,129,.16)}
+.wizard input,.wizard select,.wizard textarea{background:rgba(5,8,16,.92);border-color:rgba(255,255,255,.12)}
+.wizard .card{background:rgba(10,18,41,.74);border-color:rgba(255,255,255,.10)}
 .wizDots{display:flex;gap:7px;justify-content:center;margin-bottom:22px}
 .wizDots i{width:9px;height:9px;border-radius:50%;background:var(--line2);font-style:normal}
 .wizDots i.on{background:var(--em);transform:scale(1.2)}
@@ -192,8 +199,50 @@ textarea{min-height:96px;resize:vertical}
 .findRow .top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}
 .findRow p{color:var(--muted);font-size:13px}
 
+/* ── Dispute Playbook ── */
+.playbookHero{position:relative;overflow:hidden;border-color:rgba(78,222,163,.22);margin-bottom:16px}
+.playbookHero:before{content:'';position:absolute;inset:-1px;border-radius:inherit;padding:1px;background:linear-gradient(110deg,rgba(78,222,163,.24),rgba(59,130,246,.18),transparent 72%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.playbookHero>*{position:relative;z-index:1}
+.playbookMetrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.playbookMetric{padding:16px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.035)}
+.playbookMetric .metricNum{font-size:25px;line-height:1.05}
+.playbookLayout{display:grid;grid-template-columns:280px minmax(0,1fr) 320px;gap:16px;align-items:start}
+.playbookQueue{display:grid;gap:10px}
+.playbookAccount{width:100%;text-align:left;border:1px solid var(--line);background:rgba(255,255,255,.035);color:var(--ink);border-radius:12px;padding:13px;cursor:pointer;display:grid;gap:7px;transition:.15s}
+.playbookAccount:hover{border-color:rgba(78,222,163,.35);background:rgba(16,185,129,.08)}
+.playbookAccount.active{border-color:var(--em);background:var(--em-soft);box-shadow:0 0 0 1px rgba(78,222,163,.12)}
+.playbookAccount b{font-size:13.5px}.playbookAccount small{color:var(--muted);font-size:11.5px}
+.playbookScoreCard{display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.playbookScore{--p:70;width:128px;height:128px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#4EDEA3 calc(var(--p)*1%),#3B82F6 calc(var(--p)*1% + 12%),#1A2637 0);filter:drop-shadow(0 0 12px rgba(16,185,129,.18));flex:none}
+.playbookScore>div{width:102px;height:102px;border-radius:50%;background:#0B1424;border:1px solid var(--line);display:grid;place-items:center;text-align:center}
+.playbookScore b{font-size:28px;line-height:1}.playbookScore small{color:var(--muted);font-size:10px;font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase}
+.analysisGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.analysisField{padding:11px;border:1px solid var(--line);border-radius:11px;background:rgba(255,255,255,.025)}
+.analysisField span{display:block;font:600 9px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.analysisField b{font-size:13px;font-weight:600;color:var(--ink2)}
+.playbookSteps{counter-reset:pbStep;display:grid;gap:9px}
+.playbookStep{counter-increment:pbStep;display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:flex-start;padding:12px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.03)}
+.playbookStep:before{content:counter(pbStep);width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--em);color:#fff;font-weight:800;font-size:12px}
+.playbookStep strong{display:block;font-size:13.5px}.playbookStep small{display:block;color:var(--muted);font-size:12px;margin-top:3px}
+.docChecklist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.docGroup{border:1px solid var(--line);background:rgba(255,255,255,.025);border-radius:12px;padding:12px}
+.docGroup b{font-size:13px}.docGroup ul{list-style:none;display:grid;gap:5px;margin-top:8px;color:var(--ink2);font-size:12.5px}
+.docGroup li{display:flex;gap:6px;align-items:flex-start}.docGroup li:before{content:'check_circle';font-family:'Material Symbols Outlined';color:#4EDEA3;font-size:16px;line-height:1.2}
+.pbTimeline{padding-bottom:6px}.pbTimeline .stepNode{min-width:112px}
+.casePanel{position:sticky;top:86px;display:grid;gap:14px}
+.caseAnalyst{border-color:rgba(124,168,255,.22)}
+.factorGrid{display:grid;gap:8px;margin-top:10px}
+.factorRow{display:grid;grid-template-columns:1fr 42px;gap:9px;align-items:center;font-size:12.5px;color:var(--ink2)}
+.factorRow .track{height:6px;grid-column:1/-1}
+.caseFiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.caseFile{border:1px solid var(--line);background:rgba(255,255,255,.025);border-radius:12px;padding:12px;min-height:86px}
+.caseFile strong{display:block;font-size:13px}.caseFile small{color:var(--muted);font-size:11.5px}
+.noteBox{display:grid;gap:8px;margin-top:10px}
+@media(max-width:1180px){.playbookLayout{grid-template-columns:1fr}.casePanel{position:static}.playbookMetrics{grid-template-columns:repeat(2,minmax(0,1fr))}.caseFiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.playbookMetrics,.analysisGrid,.docChecklist,.caseFiles{grid-template-columns:1fr}.playbookScoreCard{align-items:flex-start}.playbookScore{width:112px;height:112px}.playbookScore>div{width:90px;height:90px}}
+
 /* ── Bottom mobile nav ── */
-.bottomNav{display:none;position:fixed;left:0;right:0;bottom:0;z-index:90;background:#0a0e16;border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom));grid-template-columns:repeat(5,1fr)}
+.bottomNav{display:none;position:fixed;left:0;right:0;bottom:0;z-index:90;background:#0a0e16;border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom));grid-template-columns:repeat(6,1fr)}
 .bottomNav button{border:0;background:none;display:grid;place-items:center;gap:2px;font-size:10.5px;font-weight:700;color:var(--muted);cursor:pointer;padding:5px 2px;border-radius:10px}
 .bottomNav button .ic{font-size:19px}
 .bottomNav button.active{color:#34d8a0}
@@ -256,6 +305,7 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
       <button class="navBtn active" data-page="home"><span class="material-symbols-outlined ic">dashboard</span> Dashboard</button>
       <button class="navBtn" data-page="onboarding" id="navOnboarding"><span class="material-symbols-outlined ic">ads_click</span> Goals & Plan <span class="navBadge" id="planBadge">5 min</span></button>
       <button class="navBtn" data-page="scanner"><span class="material-symbols-outlined ic">monitor_heart</span> Monitoring</button>
+      <button class="navBtn" data-page="playbook"><span class="material-symbols-outlined ic">psychology_alt</span> Dispute Playbook <span class="navBadge gold">AI</span></button>
       <button class="navBtn" data-page="disputes"><span class="material-symbols-outlined ic">timeline</span> Dispute Timeline <span class="navBadge" id="disputeCount"></span></button>
       <button class="navBtn" data-page="letters"><span class="material-symbols-outlined ic">report_problem</span> Negative Items</button>
       <button class="navBtn" data-page="simulator"><span class="material-symbols-outlined ic">model_training</span> Simulators</button>
@@ -393,6 +443,125 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
             <div class="empty" style="margin-top:12px">Findings appear here with report-quality context, priority levels, non-guaranteed estimates, and review-first dispute actions.</div>
           </div>
         </div>
+      </div>
+
+      <!-- ════════ DISPUTE PLAYBOOK ════════ -->
+      <div class="page" id="playbook">
+        <div class="card playbookHero">
+          <div class="heroHead" style="margin-bottom:0">
+            <div>
+              <h2>Dispute Playbook</h2>
+              <p>AI-guided tradeline analysis that recommends the right dispute path, scores the evidence, and keeps every escalation step organized from first letter through resolution.</p>
+            </div>
+            <div style="display:flex;gap:9px;flex-wrap:wrap">
+              <button class="primary" onclick="showPage('scanner')"><span class="material-symbols-outlined" style="font-size:18px;vertical-align:-4px">document_scanner</span> Analyze report</button>
+              <button class="ghost" onclick="renderPlaybook()"><span class="material-symbols-outlined" style="font-size:18px;vertical-align:-4px">refresh</span> Refresh</button>
+            </div>
+          </div>
+          <p id="pbDataNotice" style="color:var(--muted);font-size:12.5px;margin-top:12px"></p>
+        </div>
+
+        <div class="playbookMetrics">
+          <div class="playbookMetric"><div class="metricLab">Total Accounts Analyzed</div><div class="metricNum" id="pbTotalAccounts">0</div></div>
+          <div class="playbookMetric"><div class="metricLab">Active Disputes</div><div class="metricNum" id="pbActiveDisputes">0</div></div>
+          <div class="playbookMetric"><div class="metricLab">Recommended Actions</div><div class="metricNum" id="pbRecommendedActions">0</div></div>
+          <div class="playbookMetric"><div class="metricLab">Potential Reporting Issues</div><div class="metricNum" id="pbPotentialIssues">0</div></div>
+          <div class="playbookMetric"><div class="metricLab">Accounts Requiring Escalation</div><div class="metricNum" id="pbEscalationAccounts">0</div></div>
+          <div class="playbookMetric"><div class="metricLab">CFPB Eligible Cases</div><div class="metricNum" id="pbCfpbEligible">0</div></div>
+          <div class="playbookMetric"><div class="metricLab">Dispute Success Rate</div><div class="metricNum" id="pbSuccessRate">0%</div></div>
+          <div class="playbookMetric"><div class="metricLab">Recently Resolved Items</div><div class="metricNum" id="pbResolvedItems">0</div></div>
+        </div>
+
+        <div class="playbookLayout">
+          <div class="card">
+            <div class="stitchCardHead" style="margin-bottom:12px"><h3>Account Queue</h3><span class="chip info" id="pbQueueCount">0</span></div>
+            <div class="playbookQueue" id="pbAccountList"><div class="empty">Run a monitoring scan to analyze tradelines.</div></div>
+          </div>
+
+          <div style="display:grid;gap:16px">
+            <div class="card">
+              <div class="playbookScoreCard">
+                <div>
+                  <div class="kickerMono" style="font-size:10px;text-transform:uppercase">Recommended strategy</div>
+                  <h3 id="pbSelectedTitle" style="font-size:22px;margin-top:6px">Select an account</h3>
+                  <p id="pbSelectedSub" style="color:var(--muted);font-size:13px;margin-top:5px">Tradeline analysis appears here.</p>
+                  <div id="pbSelectedBadges" style="display:flex;gap:7px;flex-wrap:wrap;margin-top:12px"></div>
+                </div>
+                <div class="playbookScore" id="pbScoreRing" style="--p:0"><div><b id="pbScore">0</b><small id="pbProbability">Probability</small></div></div>
+              </div>
+              <div class="scannerState" style="margin-top:14px">
+                <strong id="pbRecommendedMethod">No strategy selected</strong>
+                <span id="pbRecommendationWhy">Choose an account to see why this method was selected.</span>
+                <span id="pbRiskWeakness" style="color:var(--amber)">Risk and weakness summary appears after analysis.</span>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="stitchCardHead"><h3>Tradeline Analysis Engine</h3><span class="kickerMono" style="font-size:9px">Account risk and dispute analysis</span></div>
+              <div class="analysisGrid" id="pbAnalysisFields"></div>
+              <div class="sectionTitle" style="margin:18px 0 10px"><h3>Playbook Score Factors</h3><span id="pbExpectedTimeline"></span></div>
+              <div class="factorGrid" id="pbFactors"></div>
+            </div>
+
+            <div class="card">
+              <div class="stitchCardHead"><h3>Recommended Action Plan</h3><span class="chip gold">6 steps</span></div>
+              <div class="playbookSteps" id="pbActionPlan"></div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
+                <button class="primary" onclick="preparePlaybookLetter()">Generate recommended letter</button>
+                <button class="ghost" onclick="trackSelectedPlaybookAccount()">Track this account</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="stitchCardHead"><h3>Document Checklist</h3><span class="kickerMono" style="font-size:9px">Auto-recommended evidence</span></div>
+              <div class="docChecklist" id="pbDocChecklist"></div>
+            </div>
+
+            <div class="card">
+              <div class="stitchCardHead"><h3>Dispute Timeline</h3><span class="kickerMono" style="font-size:9px">Progress workflow</span></div>
+              <div class="dtl pbTimeline" id="pbTimeline"></div>
+            </div>
+
+            <div class="card">
+              <div class="stitchCardHead"><h3>Case Management</h3><span class="kickerMono" style="font-size:9px">History and activity</span></div>
+              <div class="caseFiles" id="pbCaseFiles"></div>
+              <div class="noteBox">
+                <label>Case note<textarea id="pbNote" placeholder="Add analyst notes, bureau response details, or document reminders."></textarea></label>
+                <button class="ghost" onclick="savePlaybookNote()">Save note</button>
+                <div class="list" id="pbCaseNotes"></div>
+              </div>
+            </div>
+          </div>
+
+          <aside class="casePanel">
+            <div class="card caseAnalyst">
+              <div class="stitchCardHead"><h3>Case Analyst</h3><span class="chip info">AI</span></div>
+              <div class="list">
+                <div class="item"><div><strong>Summary of account issues</strong><small id="pbCaseSummary">Select an account.</small></div></div>
+                <div class="item"><div><strong>Recommended dispute strategy</strong><small id="pbCaseStrategy">—</small></div></div>
+                <div class="item"><div><strong>Why selected</strong><small id="pbCaseWhy">—</small></div></div>
+                <div class="item"><div><strong>Risks and weaknesses</strong><small id="pbCaseRisk">—</small></div></div>
+                <div class="item"><div><strong>Evidence needed</strong><small id="pbCaseEvidence">—</small></div></div>
+                <div class="item"><div><strong>Probability score</strong><small id="pbCaseProbability">—</small></div></div>
+                <div class="item"><div><strong>Suggested next action</strong><small id="pbCaseNext">—</small></div></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="stitchCardHead"><h3>Smart Follow-Up Engine</h3></div>
+              <div class="list" id="pbFollowupList"></div>
+              <button class="primary" style="width:100%;margin-top:12px" onclick="preparePlaybookLetter('followup')">Generate next letter</button>
+            </div>
+
+            <div class="card">
+              <div class="stitchCardHead"><h3>CFPB Escalation Playbook</h3></div>
+              <div id="pbEscalationBox" class="scannerState" style="padding:13px"></div>
+              <button class="ghost" style="width:100%;margin-top:12px" onclick="generatePlaybookCfpbPackage()">Generate CFPB package</button>
+            </div>
+          </aside>
+        </div>
+
+        <div class="disclaimer">CREDITOS is self-help software, not a law firm, credit repair organization, lender, or financial advisor. Review every detail before mailing or filing a complaint. Do not dispute accurate information as inaccurate.</div>
       </div>
 
       <!-- ════════ LETTERS ════════ -->
@@ -609,6 +778,28 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
             <button class="primary" style="width:100%" onclick="openMailingModal()">Set up mailing profile</button>
             <p style="color:var(--muted);font-size:12.5px;margin-top:10px">Required for certified-mail shipping and return address verification.</p>
           </div>
+          <div class="card"><h3>🗂️ Address book management</h3>
+            <p style="color:var(--muted);font-size:12.5px;margin-top:6px">Admins can add, edit, disable, and verify recipient records. System bureau records stay protected from client edits.</p>
+            <div id="mailingAdminSection" class="list" style="margin-top:13px"><div class="empty">Loading address book…</div></div>
+            <div style="display:grid;gap:10px;margin-top:13px">
+              <div class="formGrid">
+                <label>Recipient type<select id="adminRecipientType"><option value="custom">Custom</option><option value="original_creditor">Original Creditor</option><option value="collection_agency">Collection Agency</option><option value="experian">Experian</option><option value="equifax">Equifax</option><option value="transunion">TransUnion</option><option value="cfpb">CFPB</option></select></label>
+                <label>Recipient name<input id="adminRecipientName" placeholder="Recipient name"></label>
+                <label>Department<input id="adminRecipientDept" placeholder="Department"></label>
+                <label>Address line 1<input id="adminRecipientAddress1" placeholder="Street address"></label>
+                <label>Address line 2<input id="adminRecipientAddress2" placeholder="Suite / unit"></label>
+                <label>City<input id="adminRecipientCity" placeholder="City"></label>
+                <label>State<input id="adminRecipientState" placeholder="State"></label>
+                <label>ZIP<input id="adminRecipientPostalCode" placeholder="ZIP code"></label>
+                <label>Country<input id="adminRecipientCountry" placeholder="United States"></label>
+              </div>
+              <label>Notes<textarea id="adminRecipientNotes" placeholder="Verification notes, warnings, or source of address."></textarea></label>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <button class="primary" style="flex:1" onclick="saveAdminRecipient()">Save recipient</button>
+                <button class="ghost" style="flex:1" onclick="clearAdminRecipientForm()">Clear form</button>
+              </div>
+            </div>
+          </div>
           <div class="card"><h3>🔔 Notifications</h3>
             <div class="list" style="margin-top:13px">
               <label class="item" style="cursor:pointer"><span>Dispute deadline reminders</span><input type="checkbox" checked id="notifDeadlines" onchange="saveSettings()" style="width:18px;height:18px"></label>
@@ -636,6 +827,7 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
 <nav class="bottomNav" id="bottomNav">
   <button data-page="home" class="active"><span class="ic">🏠</span>Home</button>
   <button data-page="scanner"><span class="ic">🔍</span>Scan</button>
+  <button data-page="playbook"><span class="material-symbols-outlined ic">psychology_alt</span>Playbook</button>
   <button data-page="disputes"><span class="ic">📨</span>Disputes</button>
   <button data-page="funding"><span class="ic">💰</span>Funding</button>
   <button data-page="jordan"><span class="ic">🤝</span>Jordan</button>
@@ -744,19 +936,41 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
         <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:12px">
           <div>
             <h3>2 · Ship this letter</h3>
-            <p style="color:var(--muted);font-size:13px;margin-top:5px">Enter the bureau mailing address for the letter you want to send.</p>
+            <p style="color:var(--muted);font-size:13px;margin-top:5px">Choose a saved recipient or enter a custom address. The system keeps the defaults in the database so they can be updated safely.</p>
           </div>
           <span class="chip gold">$19.99 + $5.50</span>
         </div>
-        <div class="formGrid">
-          <label>Recipient name<input id="mailRecipientName" placeholder="Credit bureau or recipient name"></label>
-          <label>Organization<input id="mailRecipientOrg" placeholder="Optional organization name"></label>
-          <label>Address line 1<input id="mailRecipientAddress1" placeholder="Mailing address line 1"></label>
-          <label>Address line 2<input id="mailRecipientAddress2" placeholder="Mailing address line 2"></label>
-          <label>City<input id="mailRecipientCity" placeholder="City"></label>
-          <label>State<input id="mailRecipientState" placeholder="State"></label>
-          <label>ZIP / postal code<input id="mailRecipientPostalCode" placeholder="ZIP code"></label>
-          <label>Country<input id="mailRecipientCountry" placeholder="United States"></label>
+        <div style="display:grid;gap:10px;margin-top:8px">
+          <div class="item" style="align-items:flex-start">
+            <div>
+              <strong>Recipient mode</strong>
+              <small>Saved recipient, custom address, or batch shipping for all three bureaus.</small>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+              <button class="ghost" type="button" onclick="setMailingMode('saved')">Select saved</button>
+              <button class="ghost" type="button" onclick="setMailingMode('custom')">Custom</button>
+              <button class="ghost" type="button" onclick="setMailingMode('all_three')">All three bureaus</button>
+            </div>
+          </div>
+          <div id="mailingPresetCards" class="grid grid3"></div>
+          <div id="mailRecipientBookHint" class="scannerState" style="padding:14px">
+            <strong>Loading address book…</strong>
+            <span>We’re fetching your saved recipients and the built-in bureau list.</span>
+          </div>
+          <label>Saved recipient<select id="mailRecipientSelect" onchange="onRecipientSelectChange()"></select></label>
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer"><input type="checkbox" id="mailEditForShipment" onchange="toggleRecipientEdit(this.checked)" style="width:18px;height:18px"> Edit for this shipment</label>
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer"><input type="checkbox" id="mailSaveCustomRecipient" onchange="saveCustomRecipientHint()" style="width:18px;height:18px"> Save this custom address for future disputes</label>
+          <div class="formGrid" id="mailRecipientForm">
+            <label>Recipient name<input id="mailRecipientName" placeholder="Credit bureau or recipient name"></label>
+            <label>Department<input id="mailRecipientDept" placeholder="Dispute department"></label>
+            <label>Address line 1<input id="mailRecipientAddress1" placeholder="Mailing address line 1"></label>
+            <label>Address line 2<input id="mailRecipientAddress2" placeholder="Mailing address line 2"></label>
+            <label>City<input id="mailRecipientCity" placeholder="City"></label>
+            <label>State<input id="mailRecipientState" placeholder="State"></label>
+            <label>ZIP / postal code<input id="mailRecipientPostalCode" placeholder="ZIP code"></label>
+            <label>Country<input id="mailRecipientCountry" placeholder="United States"></label>
+          </div>
+          <p id="mailRecipientAdminWarning" style="color:var(--amber);font-size:12px">Verify bureau mailing addresses before live certified-mail use. Credit bureau addresses can change.</p>
         </div>
         <label style="margin-top:12px">Letter preview<textarea id="mailLetterText" readonly style="min-height:180px"></textarea></label>
         <p id="mailingMsg" style="color:var(--muted);font-size:13px;min-height:18px;margin-top:8px"></p>
@@ -794,7 +1008,7 @@ let _runtimeStatus = null;
 const $ = id => document.getElementById(id);
 function escapeHtml(v){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2600)}
-const CLOUD_STATE_KEYS=['onboarding','onboardingDraft','actionsDone','wins','badges','streak','lastScan','vault','business','checkin','prefs','vendors','tourSeen','disputes','mailingProfile'];
+const CLOUD_STATE_KEYS=['onboarding','onboardingDraft','actionsDone','wins','badges','streak','lastScan','vault','business','checkin','prefs','vendors','tourSeen','disputes','mailingProfile','playbookNotes'];
 let _cloudSyncTimer=null,_cloudRetryTimer=null,_hydratingCloud=false,_lastHydratedUser=null,_cloudSyncFailed=false;
 function store(key, val){
   if(val===undefined){ try{return JSON.parse(localStorage.getItem('creditos.'+key))}catch{return null} }
@@ -878,6 +1092,7 @@ async function hydrateCloudState(session){
 const api = {
   headers(){ const h={'Content-Type':'application/json'}; const t=getAuthToken(); if(t)h['Authorization']=`Bearer ${t}`; return h; },
   async post(path,body){ const res=await fetch(path,{method:'POST',headers:this.headers(),body:JSON.stringify(body)}); const data=await res.json().catch(()=>({error:'Invalid server response.'})); if(!res.ok){const e=new Error(data.error||'Request failed.');e.status=res.status;throw e;} return data; },
+  async patch(path,body){ const res=await fetch(path,{method:'PATCH',headers:this.headers(),body:JSON.stringify(body)}); const data=await res.json().catch(()=>({error:'Invalid server response.'})); if(!res.ok){const e=new Error(data.error||'Request failed.');e.status=res.status;throw e;} return data; },
   async get(path){ const res=await fetch(path,{headers:this.headers()}); const data=await res.json().catch(()=>({error:'Invalid server response.'})); if(!res.ok){const e=new Error(data.error||'Request failed.');e.status=res.status;throw e;} return data; }
 };
 
@@ -885,6 +1100,7 @@ function normalizeMailingAddress(address = {}) {
   return {
     fullName: String(address.fullName || address.name || '').trim(),
     organization: String(address.organization || '').trim(),
+    department: String(address.department || '').trim(),
     address1: String(address.address1 || address.line1 || '').trim(),
     address2: String(address.address2 || address.line2 || '').trim(),
     city: String(address.city || '').trim(),
@@ -893,6 +1109,16 @@ function normalizeMailingAddress(address = {}) {
     country: String(address.country || 'United States').trim() || 'United States'
   };
 }
+
+const MAILING_PRESET_TYPES = ['experian', 'equifax', 'transunion', 'cfpb', 'original_creditor', 'collection_agency', 'custom'];
+let _mailingRecipients = [];
+let _mailingRecipientsLoaded = false;
+let _mailingCanManageSystem = false;
+let _mailingMode = 'saved';
+let _mailingSelectionId = '';
+let _mailingEditForShipment = false;
+window._adminEditingRecipientId = null;
+
 function mailingProfileState(){
   const profile = store('mailingProfile') || {};
   return {
@@ -950,32 +1176,396 @@ function writeMailingProfile(profile) {
   renderMailingSummary();
   return next;
 }
-function fillMailingModal(state = {}, letterText = '') {
-  const profile = state.profile || mailingProfileState();
-  const recipient = normalizeMailingAddress(state.recipientAddress || profile.recipientAddress || {});
-  const billing = normalizeMailingAddress(profile.billingAddress || {});
-  $('mailFullName').value = profile.fullName || billing.fullName || '';
-  $('mailAddress1').value = billing.address1 || '';
-  $('mailAddress2').value = billing.address2 || '';
-  $('mailCity').value = billing.city || '';
-  $('mailState').value = billing.state || '';
-  $('mailPostalCode').value = billing.postalCode || '';
-  $('mailCountry').value = billing.country || 'United States';
-  $('mailRecipientName').value = recipient.fullName || recipient.organization || '';
-  $('mailRecipientOrg').value = recipient.organization || '';
-  $('mailRecipientAddress1').value = recipient.address1 || '';
-  $('mailRecipientAddress2').value = recipient.address2 || '';
-  $('mailRecipientCity').value = recipient.city || '';
-  $('mailRecipientState').value = recipient.state || '';
-  $('mailRecipientPostalCode').value = recipient.postalCode || '';
-  $('mailRecipientCountry').value = recipient.country || 'United States';
-  $('mailLetterText').value = letterText || state.letterText || '';
-  $('mailingMsg').textContent = state.message || 'Add your profile details, then continue to checkout.';
-  renderMailingSummary();
+
+function normalizeRecipientBookRow(row = {}) {
+  return {
+    id: row.id || '',
+    recipient_type: String(row.recipient_type || 'custom').trim(),
+    recipient_name: String(row.recipient_name || '').trim(),
+    department: String(row.department || '').trim(),
+    address_line_1: String(row.address_line_1 || '').trim(),
+    address_line_2: String(row.address_line_2 || '').trim(),
+    city: String(row.city || '').trim(),
+    state: String(row.state || '').trim(),
+    postal_code: String(row.postal_code || '').trim(),
+    country: String(row.country || 'United States').trim() || 'United States',
+    is_default: !!row.is_default,
+    is_active: row.is_active !== false,
+    is_system_recipient: !!row.is_system_recipient,
+    last_verified_at: row.last_verified_at || null,
+    notes: row.notes || '',
+    label: row.label || row.recipient_name || row.department || row.recipient_type || 'Recipient'
+  };
 }
+
+function recipientTypeLabel(type) {
+  const map = {
+    experian: 'Experian',
+    equifax: 'Equifax',
+    transunion: 'TransUnion',
+    cfpb: 'CFPB',
+    original_creditor: 'Original Creditor',
+    collection_agency: 'Collection Agency',
+    custom: 'Custom'
+  };
+  return map[String(type || '').toLowerCase()] || 'Custom';
+}
+
+function presetClassForType(type) {
+  return ['experian', 'equifax', 'transunion', 'cfpb'].includes(String(type || '').toLowerCase()) ? 'chip info' : 'chip gray';
+}
+
+async function loadMailingRecipients(force = false) {
+  if (_mailingRecipientsLoaded && !force) return _mailingRecipients;
+  if (!getAuthToken()) return [];
+  try {
+    const data = await api.get('/api/mailing/recipients');
+    _mailingRecipients = Array.isArray(data?.recipients) ? data.recipients.map(normalizeRecipientBookRow) : [];
+    _mailingCanManageSystem = !!data?.canManageSystem;
+    _mailingRecipientsLoaded = true;
+    renderMailingRecipientsUI();
+    renderMailingAdminSection();
+    return _mailingRecipients;
+  } catch (e) {
+    _mailingRecipients = [];
+    _mailingRecipientsLoaded = false;
+    const hint = $('mailRecipientBookHint');
+    if (hint) hint.innerHTML = `<strong>Address book unavailable</strong><span>${escapeHtml(e.message || 'Could not load saved recipients.')}</span>`;
+    return [];
+  }
+}
+
+function mailingRecipientsByType(type) {
+  return _mailingRecipients.filter(r => String(r.recipient_type || '').toLowerCase() === String(type || '').toLowerCase());
+}
+
+function selectedRecipientRow() {
+  return _mailingRecipients.find(r => r.id === _mailingSelectionId) || null;
+}
+
+function allThreeRecipientRows() {
+  return ['experian', 'equifax', 'transunion'].map(type => mailingRecipientsByType(type)[0]).filter(Boolean);
+}
+
+function renderMailingRecipientsUI() {
+  const hint = $('mailRecipientBookHint');
+  const cards = $('mailingPresetCards');
+  const select = $('mailRecipientSelect');
+  const warning = $('mailRecipientAdminWarning');
+  if (warning) warning.textContent = 'Verify bureau mailing addresses before live certified-mail use. Credit bureau addresses can change.';
+
+  if (hint) {
+    hint.innerHTML = _mailingRecipients.length
+      ? `<strong>Address book loaded</strong><span>${_mailingRecipients.filter(r => r.is_system_recipient).length} saved system recipients and ${_mailingRecipients.filter(r => !r.is_system_recipient).length} custom recipients.</span>`
+      : `<strong>Loading address book…</strong><span>We’re fetching your saved recipients and the built-in bureau list.</span>`;
+  }
+
+  if (select) {
+    const options = [
+      `<option value="">Choose a saved recipient</option>`,
+      ..._mailingRecipients.map(r => `<option value="${escapeHtml(r.id)}">${escapeHtml(`${recipientTypeLabel(r.recipient_type)} · ${r.recipient_name}`)}</option>`)
+    ];
+    select.innerHTML = options.join('');
+    if (_mailingSelectionId) select.value = _mailingSelectionId;
+  }
+
+  if (cards) {
+    const quickTypes = ['experian', 'equifax', 'transunion', 'cfpb', 'custom'];
+    cards.innerHTML = quickTypes.map(type => {
+      const rec = type === 'custom'
+        ? _mailingRecipients.find(r => !r.is_system_recipient && r.recipient_type === 'custom')
+        : mailingRecipientsByType(type)[0];
+      const active = rec?.is_active !== false;
+      const label = type === 'custom' ? 'Custom' : recipientTypeLabel(type);
+      const sub = type === 'custom'
+        ? 'Add and save your own creditor or collector address.'
+        : rec ? rec.address_line_1 || 'Ready to load from address book.' : 'Not loaded yet.';
+      return `<button class="opt ${_mailingMode==='saved' && _mailingSelectionId===rec?.id ? 'sel' : ''}" onclick="selectMailingPreset('${type}')">
+        <span class="em">${type === 'custom' ? '✎' : '📬'}</span>
+        <span>${escapeHtml(label)}<small>${escapeHtml(sub)}</small></span>
+        <span class="${presetClassForType(type)}">${active ? 'Ready' : 'Inactive'}</span>
+      </button>`;
+    }).join('');
+  }
+
+  if (_mailingMode === 'all_three') {
+    const trip = allThreeRecipientRows();
+    $('mailRecipientForm').style.opacity = '0.72';
+    $('mailRecipientSelect').disabled = true;
+    $('mailSaveCustomRecipient').checked = false;
+    $('mailSaveCustomRecipient').disabled = true;
+    $('mailEditForShipment').disabled = true;
+    if (trip.length === 3) {
+      fillMailingRecipientForm(trip[0]);
+    }
+  } else {
+    $('mailRecipientSelect').disabled = false;
+    $('mailSaveCustomRecipient').disabled = false;
+    $('mailEditForShipment').disabled = false;
+    $('mailRecipientForm').style.opacity = _mailingEditForShipment || _mailingMode === 'custom' ? '1' : '0.8';
+  }
+}
+
+function renderMailingAdminSection() {
+  const el = $('mailingAdminSection');
+  if (!el) return;
+  if (!_mailingCanManageSystem) {
+    el.innerHTML = '<div class="empty">Admin address-book management is available to admins only.</div>';
+    return;
+  }
+  const rows = _mailingRecipients.map(r => `
+    <div class="item" style="align-items:flex-start">
+      <div>
+        <strong>${escapeHtml(recipientTypeLabel(r.recipient_type))} · ${escapeHtml(r.recipient_name)}</strong>
+        <small>${escapeHtml([r.department, r.address_line_1, r.city, r.state, r.postal_code].filter(Boolean).join(' · '))}</small>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="ghost" onclick="editRecipientAdmin('${escapeHtml(r.id)}')">Edit</button>
+        <button class="ghost" onclick="toggleRecipientActive('${escapeHtml(r.id)}', ${!r.is_active})">${r.is_active ? 'Disable' : 'Enable'}</button>
+      </div>
+    </div>`).join('');
+  el.innerHTML = rows || '<div class="empty">No recipients yet.</div>';
+}
+
+function clearAdminRecipientForm() {
+  ['adminRecipientType','adminRecipientName','adminRecipientDept','adminRecipientAddress1','adminRecipientAddress2','adminRecipientCity','adminRecipientState','adminRecipientPostalCode','adminRecipientCountry','adminRecipientNotes'].forEach(id => {
+    const el = $(id);
+    if (!el) return;
+    if (el.tagName === 'SELECT') el.value = id === 'adminRecipientType' ? 'custom' : '';
+    else el.value = '';
+  });
+  window._adminEditingRecipientId = null;
+}
+
+function recipientTypeFromAdmin() {
+  return String($('adminRecipientType')?.value || 'custom').trim();
+}
+
+async function saveAdminRecipient() {
+  if (!_mailingCanManageSystem) {
+    toast('Admin access required.');
+    return;
+  }
+  const payload = {
+    recipient_type: recipientTypeFromAdmin(),
+    recipient_name: String($('adminRecipientName')?.value || '').trim(),
+    department: String($('adminRecipientDept')?.value || '').trim(),
+    address_line_1: String($('adminRecipientAddress1')?.value || '').trim(),
+    address_line_2: String($('adminRecipientAddress2')?.value || '').trim(),
+    city: String($('adminRecipientCity')?.value || '').trim(),
+    state: String($('adminRecipientState')?.value || '').trim(),
+    postal_code: String($('adminRecipientPostalCode')?.value || '').trim(),
+    country: String($('adminRecipientCountry')?.value || 'United States').trim(),
+    notes: String($('adminRecipientNotes')?.value || '').trim(),
+    is_system_recipient: recipientTypeFromAdmin() !== 'custom',
+    is_active: true,
+    is_default: false
+  };
+  try {
+    const data = window._adminEditingRecipientId
+      ? await api.patch(`/api/mailing/recipients/${window._adminEditingRecipientId}`, payload)
+      : await api.post('/api/mailing/recipients', payload);
+    if (data?.recipient) {
+      toast('Recipient saved ✓');
+      clearAdminRecipientForm();
+      window._adminEditingRecipientId = null;
+      await loadMailingRecipients(true);
+    }
+  } catch (e) {
+    toast(e.message || 'Could not save recipient.');
+  }
+}
+
+async function editRecipientAdmin(id) {
+  const row = _mailingRecipients.find(r => r.id === id);
+  if (!row) return;
+  if (row.is_system_recipient && !_mailingCanManageSystem) {
+    toast('Admin access required.');
+    return;
+  }
+  $('adminRecipientType').value = row.recipient_type || 'custom';
+  $('adminRecipientName').value = row.recipient_name || '';
+  $('adminRecipientDept').value = row.department || '';
+  $('adminRecipientAddress1').value = row.address_line_1 || '';
+  $('adminRecipientAddress2').value = row.address_line_2 || '';
+  $('adminRecipientCity').value = row.city || '';
+  $('adminRecipientState').value = row.state || '';
+  $('adminRecipientPostalCode').value = row.postal_code || '';
+  $('adminRecipientCountry').value = row.country || 'United States';
+  $('adminRecipientNotes').value = row.notes || '';
+  window._adminEditingRecipientId = id;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  toast('Recipient loaded into the admin form.');
+}
+
+async function toggleRecipientActive(id, nextActive) {
+  try {
+    await api.patch(`/api/mailing/recipients/${id}`, { is_active: !!nextActive });
+    await loadMailingRecipients(true);
+    toast(nextActive ? 'Recipient enabled ✓' : 'Recipient disabled ✓');
+  } catch (e) {
+    toast(e.message || 'Could not update recipient.');
+  }
+}
+
+function fillMailingRecipientForm(recipient = {}) {
+  const profile = mailingProfileState();
+  const rec = normalizeRecipientBookRow(recipient);
+  $('mailRecipientName').value = rec.recipient_name || rec.label || '';
+  $('mailRecipientDept').value = rec.department || '';
+  $('mailRecipientAddress1').value = rec.address_line_1 || '';
+  $('mailRecipientAddress2').value = rec.address_line_2 || '';
+  $('mailRecipientCity').value = rec.city || '';
+  $('mailRecipientState').value = rec.state || '';
+  $('mailRecipientPostalCode').value = rec.postal_code || '';
+  $('mailRecipientCountry').value = rec.country || 'United States';
+  $('mailLetterText').value = $('mailLetterText').value || '';
+  $('mailFullName').value = profile.fullName || $('mailFullName').value || '';
+  $('mailAddress1').value = profile.billingAddress.address1 || $('mailAddress1').value || '';
+  $('mailAddress2').value = profile.billingAddress.address2 || $('mailAddress2').value || '';
+  $('mailCity').value = profile.billingAddress.city || $('mailCity').value || '';
+  $('mailState').value = profile.billingAddress.state || $('mailState').value || '';
+  $('mailPostalCode').value = profile.billingAddress.postalCode || $('mailPostalCode').value || '';
+  $('mailCountry').value = profile.billingAddress.country || $('mailCountry').value || 'United States';
+}
+
+function setMailingMode(mode) {
+  _mailingMode = mode;
+  _mailingEditForShipment = mode === 'custom';
+  if ($('mailEditForShipment')) $('mailEditForShipment').checked = _mailingEditForShipment;
+  if ($('mailSaveCustomRecipient')) $('mailSaveCustomRecipient').checked = mode === 'custom';
+  renderMailingRecipientsUI();
+  if (mode === 'all_three') {
+    const trip = allThreeRecipientRows();
+    if (trip.length) fillMailingRecipientForm(trip[0]);
+    if ($('mailingMsg')) $('mailingMsg').textContent = trip.length === 3 ? 'All three bureaus will generate separate mail jobs.' : 'Select all three bureau recipients from the address book first.';
+    return;
+  }
+  if (mode === 'saved') {
+    const row = selectedRecipientRow() || _mailingRecipients.find(r => r.is_default) || _mailingRecipients[0] || null;
+    if (row) {
+      _mailingSelectionId = row.id;
+      if ($('mailRecipientSelect')) $('mailRecipientSelect').value = row.id;
+      fillMailingRecipientForm(row);
+      lockRecipientFields(true);
+    }
+    if ($('mailingMsg')) $('mailingMsg').textContent = row ? 'Saved recipient loaded. Toggle edit for this shipment if needed.' : 'Choose a saved recipient to continue.';
+    return;
+  }
+  lockRecipientFields(false);
+  if ($('mailingMsg')) $('mailingMsg').textContent = 'Enter a custom recipient address and save it if you want to reuse it later.';
+}
+
+function lockRecipientFields(locked) {
+  ['mailRecipientName','mailRecipientDept','mailRecipientAddress1','mailRecipientAddress2','mailRecipientCity','mailRecipientState','mailRecipientPostalCode','mailRecipientCountry'].forEach(id => {
+    const el = $(id);
+    if (el) el.readOnly = !!locked;
+  });
+}
+
+function selectMailingPreset(type) {
+  if (type === 'custom') {
+    _mailingMode = 'custom';
+    _mailingSelectionId = '';
+    lockRecipientFields(false);
+    fillMailingRecipientForm({});
+    if ($('mailSaveCustomRecipient')) $('mailSaveCustomRecipient').checked = true;
+    renderMailingRecipientsUI();
+    return;
+  }
+  if (type === 'all_three') {
+    _mailingMode = 'all_three';
+    _mailingSelectionId = '';
+    setMailingMode('all_three');
+    return;
+  }
+  const row = mailingRecipientsByType(type)[0];
+  if (!row) {
+    _mailingMode = 'custom';
+    lockRecipientFields(false);
+    if ($('mailingMsg')) $('mailingMsg').textContent = `${recipientTypeLabel(type)} is not loaded yet.`;
+    return;
+  }
+  _mailingMode = 'saved';
+  _mailingSelectionId = row.id;
+  if ($('mailRecipientSelect')) $('mailRecipientSelect').value = row.id;
+  fillMailingRecipientForm(row);
+  lockRecipientFields(true);
+  if ($('mailingMsg')) $('mailingMsg').textContent = `${row.recipient_name} loaded from the address book.`;
+  renderMailingRecipientsUI();
+}
+
+function onRecipientSelectChange() {
+  const row = selectedRecipientRow() || _mailingRecipients.find(r => r.id === $('mailRecipientSelect').value);
+  _mailingSelectionId = row?.id || '';
+  if (!row) return;
+  _mailingMode = 'saved';
+  fillMailingRecipientForm(row);
+  lockRecipientFields(true);
+  renderMailingRecipientsUI();
+}
+
+function toggleRecipientEdit(checked) {
+  _mailingEditForShipment = !!checked;
+  if (_mailingMode === 'saved') {
+    lockRecipientFields(!checked);
+    if ($('mailingMsg')) $('mailingMsg').textContent = checked ? 'Fields are unlocked for this shipment only.' : 'Fields are locked to the saved recipient.';
+  }
+}
+
+function saveCustomRecipientHint() {
+  if ($('mailingMsg')) {
+    $('mailingMsg').textContent = $('mailSaveCustomRecipient')?.checked
+      ? 'This custom recipient will be saved after checkout.'
+      : 'This custom recipient will be used only for this shipment.';
+  }
+}
+
 function openMailingModal(state = {}) {
-  fillMailingModal(state, state.letterText || $('letterPreview')?.textContent || '');
+  const letterText = state.letterText || $('letterPreview')?.textContent || '';
+  const profile = mailingProfileState();
+  $('mailLetterText').value = letterText;
+  $('mailingMsg').textContent = state.message || 'Choose a recipient and continue to secure checkout.';
+  $('mailFullName').value = profile.fullName || $('mailFullName').value || '';
+  $('mailAddress1').value = profile.billingAddress.address1 || $('mailAddress1').value || '';
+  $('mailAddress2').value = profile.billingAddress.address2 || $('mailAddress2').value || '';
+  $('mailCity').value = profile.billingAddress.city || $('mailCity').value || '';
+  $('mailState').value = profile.billingAddress.state || $('mailState').value || '';
+  $('mailPostalCode').value = profile.billingAddress.postalCode || $('mailPostalCode').value || '';
+  $('mailCountry').value = profile.billingAddress.country || $('mailCountry').value || 'United States';
   $('mailingModal').classList.add('show');
+  loadMailingRecipients(true).then(() => {
+    const preselected = state.recipientType ? mailingRecipientsByType(state.recipientType)[0] : null;
+    if (preselected) {
+      _mailingSelectionId = preselected.id;
+      if ($('mailRecipientSelect')) $('mailRecipientSelect').value = preselected.id;
+      fillMailingRecipientForm(preselected);
+      lockRecipientFields(true);
+      _mailingMode = 'saved';
+    } else {
+      const first = _mailingRecipients.find(r => r.is_default) || _mailingRecipients[0];
+      if (first && !_mailingSelectionId) {
+        _mailingSelectionId = first.id;
+        if ($('mailRecipientSelect')) $('mailRecipientSelect').value = first.id;
+        fillMailingRecipientForm(first);
+        lockRecipientFields(true);
+        _mailingMode = 'saved';
+      }
+    }
+    if (state.recipientAddress) {
+      $('mailRecipientName').value = state.recipientAddress.fullName || state.recipientAddress.organization || $('mailRecipientName').value;
+      $('mailRecipientDept').value = state.recipientAddress.department || $('mailRecipientDept').value;
+      $('mailRecipientAddress1').value = state.recipientAddress.address1 || $('mailRecipientAddress1').value;
+      $('mailRecipientAddress2').value = state.recipientAddress.address2 || $('mailRecipientAddress2').value;
+      $('mailRecipientCity').value = state.recipientAddress.city || $('mailRecipientCity').value;
+      $('mailRecipientState').value = state.recipientAddress.state || $('mailRecipientState').value;
+      $('mailRecipientPostalCode').value = state.recipientAddress.postalCode || $('mailRecipientPostalCode').value;
+      $('mailRecipientCountry').value = state.recipientAddress.country || $('mailRecipientCountry').value;
+    }
+    renderMailingRecipientsUI();
+    renderMailingAdminSection();
+  });
+  renderMailingSummary();
 }
 function closeMailingModal() {
   $('mailingModal').classList.remove('show');
@@ -994,7 +1584,8 @@ function readMailingForm() {
     }),
     recipientAddress: normalizeMailingAddress({
       fullName: String($('mailRecipientName')?.value || '').trim(),
-      organization: String($('mailRecipientOrg')?.value || '').trim(),
+      organization: String($('mailRecipientName')?.value || '').trim(),
+      department: String($('mailRecipientDept')?.value || '').trim(),
       address1: String($('mailRecipientAddress1')?.value || '').trim(),
       address2: String($('mailRecipientAddress2')?.value || '').trim(),
       city: String($('mailRecipientCity')?.value || '').trim(),
@@ -1002,6 +1593,20 @@ function readMailingForm() {
       postalCode: String($('mailRecipientPostalCode')?.value || '').trim(),
       country: String($('mailRecipientCountry')?.value || 'United States').trim()
     })
+  };
+}
+function currentRecipientPayload() {
+  const form = readMailingForm();
+  const selected = selectedRecipientRow();
+  return {
+    recipient_mode: _mailingMode,
+    recipient_address_book_id: _mailingMode === 'saved' && selected ? selected.id : null,
+    recipient_type: selected?.recipient_type || 'custom',
+    custom_recipient_address: form.recipientAddress,
+    save_custom_recipient: !!$('mailSaveCustomRecipient')?.checked,
+    recipient_experian_id: mailingRecipientsByType('experian')[0]?.id || null,
+    recipient_equifax_id: mailingRecipientsByType('equifax')[0]?.id || null,
+    recipient_transunion_id: mailingRecipientsByType('transunion')[0]?.id || null
   };
 }
 async function fileToDataUrl(file) {
@@ -1082,13 +1687,20 @@ async function continueCertifiedMail() {
     if (msg) msg.textContent = 'Add the recipient mailing address for this dispute letter.';
     return;
   }
+  if (_mailingMode === 'all_three') {
+    const trip = allThreeRecipientRows();
+    if (trip.length < 3) {
+      if (msg) msg.textContent = 'Load Experian, Equifax, and TransUnion before sending all three.';
+      return;
+    }
+  }
   if (msg) msg.textContent = 'Starting secure checkout…';
   try {
     const payload = {
       letterText,
-      recipientAddress,
       disputeId: window._pendingDispute?.id || null,
-      letterId: window._pendingLetterId || null
+      letterId: window._pendingLetterId || null,
+      ...currentRecipientPayload()
     };
     const data = await api.post('/api/mailing/checkout', payload);
     if (data?.url) {
@@ -1203,7 +1815,7 @@ async function completePasswordReset(){
 }
 
 // ── Navigation ─────────────────────────────────────────────────
-const PAGE_TITLES={home:'Dashboard',onboarding:'Goals & Plan',scanner:'Monitoring',letters:'Negative Items',disputes:'Dispute Timeline',simulator:'Simulators',funding:'Funding Center',business:'Business Credit',jordan:'Jordan AI',crm:'Client CRM',vendors:'Vendor Tracker',settings:'Settings'};
+const PAGE_TITLES={home:'Dashboard',onboarding:'Goals & Plan',scanner:'Monitoring',playbook:'Dispute Playbook',letters:'Negative Items',disputes:'Dispute Timeline',simulator:'Simulators',funding:'Funding Center',business:'Business Credit',jordan:'Jordan AI',crm:'Client CRM',vendors:'Vendor Tracker',settings:'Settings'};
 function openMenu(){document.body.classList.add('menu-open')}
 function closeMenu(){document.body.classList.remove('menu-open')}
 function toggleMenu(){document.body.classList.contains('menu-open')?closeMenu():openMenu()}
@@ -1221,6 +1833,7 @@ function showPage(id){
   closeMenu(); window.scrollTo(0,0);
   if(id==='onboarding') renderWizard();
   if(id==='home') renderDashboard();
+  if(id==='playbook') renderPlaybook();
   if(id==='disputes') renderDisputes();
   if(id==='funding') renderFundingPage();
   if(id==='business') renderBusiness();
@@ -1939,6 +2552,7 @@ async function shipCurrentLetter(){
   window._pendingLetterId = p.id || null;
   openMailingModal({
     letterText: text,
+    recipientType: String(p.bureau || 'Experian').toLowerCase(),
     recipientAddress: {
       fullName: p.bureau || 'Credit Bureau',
       organization: p.bureau || 'Credit Bureau',
@@ -2408,6 +3022,8 @@ function renderSettings(){
   if(prefs.deadlines!==undefined)$('notifDeadlines').checked=prefs.deadlines;
   if(prefs.checkin!==undefined)$('notifCheckin').checked=prefs.checkin;
   renderMailingSummary();
+  if(_session) loadMailingRecipients().then(()=>renderMailingAdminSection()).catch(()=>{});
+  else renderMailingAdminSection();
   renderServiceStatus();
 }
 function saveSettings(){
