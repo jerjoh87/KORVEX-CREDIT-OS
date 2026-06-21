@@ -3,13 +3,16 @@
 //  routes/disputes.js
 //
 //  GET  /api/disputes/library    — categorized dispute-letter library
-//  POST /api/disputes/recommend  — questionnaire → strategy recommendation
+//  POST /api/disputes/recommend  — questionnaire → strategy recommendation (+score/plan)
+//  POST /api/disputes/playbook   — structured tradeline → full AI Playbook analysis
 //  POST /api/disputes/generate   — template id + data → ready-to-send letter
 //  POST /api/disputes/cfpb       — structured input → CFPB complaint narrative
 //
-//  All endpoints are deterministic and stateless (no AI, no DB, no credits).
-//  They transform the inputs the caller provides and expose no user data, so
-//  they sit behind the global /api rate limiter but do not require auth.
+//  Endpoints are deterministic, stateless, and unauthenticated — they transform
+//  caller-provided inputs and expose no stored user data, sitting behind the
+//  global /api rate limiter. The one exception is /playbook with `ai:true`,
+//  which makes a single Gemini call to write the Case Analyst narrative and
+//  falls back to the deterministic analyst on any error.
 // ─────────────────────────────────────────────
 import { Router } from 'express';
 import {
@@ -17,8 +20,33 @@ import {
   listTemplates, templatesByCategory, getTemplate, renderLetter,
 } from '../lib/disputeLibrary.js';
 import { recommendStrategy, buildCfpbComplaint, STRATEGIES } from '../lib/disputeStrategy.js';
+import { buildPlaybook, enrichRecommendation, caseAnalystPrompt } from '../lib/disputePlaybook.js';
+import { callGemini, geminiConfigured, toGeminiText } from '../lib/gemini.js';
 
 const router = Router();
+
+// Compose the optional live-LLM Case Analyst narrative. Races a hard timeout so
+// a slow Gemini call can never hang the request; any failure → deterministic.
+async function aiCaseAnalyst(playbook, timeoutMs = 12000) {
+  const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), timeoutMs));
+  const resp = await Promise.race([
+    callGemini({ max_tokens: 700, temperature: 0.3, responseMimeType: 'application/json', prompt: caseAnalystPrompt(playbook) }),
+    timeout,
+  ]);
+  if (!resp.ok) throw new Error(`Gemini ${resp.status}`);
+  const data = await resp.json();
+  const parsed = JSON.parse(toGeminiText(data).replace(/```json|```/g, '').trim());
+  // Merge AI prose over the deterministic skeleton so required fields always exist.
+  return {
+    ...playbook.caseAnalyst,
+    summary: parsed.summary || playbook.caseAnalyst.summary,
+    whyStrategy: parsed.whyStrategy || playbook.caseAnalyst.whyStrategy,
+    risks: Array.isArray(parsed.risks) && parsed.risks.length ? parsed.risks : playbook.caseAnalyst.risks,
+    evidenceNeeded: Array.isArray(parsed.evidenceNeeded) && parsed.evidenceNeeded.length ? parsed.evidenceNeeded : playbook.caseAnalyst.evidenceNeeded,
+    suggestedNextAction: parsed.suggestedNextAction || playbook.caseAnalyst.suggestedNextAction,
+    source: 'ai',
+  };
+}
 
 // GET /api/disputes/library — full library (or one category via ?category=)
 router.get('/library', (req, res) => {
@@ -35,13 +63,40 @@ router.get('/library', (req, res) => {
   });
 });
 
-// POST /api/disputes/recommend — smart questionnaire → recommended strategy
+// POST /api/disputes/recommend — smart questionnaire → recommended strategy,
+// enriched with the playbook strength score, action plan, and document checklist.
 router.post('/recommend', (req, res) => {
   const b = req.body || {};
   if (!b.disputeType && !b.problem) {
     return res.status(400).json({ success: false, error: 'Provide at least disputeType or problem.' });
   }
-  res.json({ success: true, recommendation: recommendStrategy(b) });
+  res.json({ success: true, recommendation: enrichRecommendation(recommendStrategy(b), b) });
+});
+
+// POST /api/disputes/playbook — structured tradeline → full per-account analysis:
+// detected reporting issues, recommended strategy, strength score + factor
+// breakdown, the 6-step action plan, a document checklist, and a Case Analyst
+// summary. Pass { ai: true } to have Gemini write the analyst narrative.
+router.post('/playbook', async (req, res) => {
+  const body = req.body || {};
+  const account = body.account && typeof body.account === 'object' ? body.account : body;
+  if (!account || typeof account !== 'object' || !Object.keys(account).length) {
+    return res.status(400).json({ success: false, error: 'Provide tradeline/account details to analyze.' });
+  }
+
+  const playbook = buildPlaybook(account);
+  playbook.caseAnalyst.source = 'deterministic';
+
+  if (body.ai === true && geminiConfigured()) {
+    try {
+      playbook.caseAnalyst = await aiCaseAnalyst(playbook);
+    } catch (e) {
+      console.error('[disputes/playbook] AI analyst fell back:', e.message);
+      playbook.caseAnalyst.source = 'fallback';
+    }
+  }
+
+  res.json({ success: true, playbook });
 });
 
 // POST /api/disputes/generate — fill a template into a ready-to-send letter
