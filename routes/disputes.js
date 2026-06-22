@@ -27,10 +27,12 @@ const router = Router();
 
 // Compose the optional live-LLM Case Analyst narrative. Races a hard timeout so
 // a slow Gemini call can never hang the request; any failure → deterministic.
-async function aiCaseAnalyst(playbook, timeoutMs = 12000) {
+async function aiCaseAnalyst(playbook, timeoutMs = 30000) {
   const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), timeoutMs));
   const resp = await Promise.race([
-    callGemini({ max_tokens: 700, temperature: 0.3, responseMimeType: 'application/json', prompt: caseAnalystPrompt(playbook) }),
+    // gemini-3.5-flash is a thinking model — thinking tokens count against the
+    // output budget, so give it enough room to both reason and emit the JSON.
+    callGemini({ max_tokens: 2048, temperature: 0.3, responseMimeType: 'application/json', prompt: caseAnalystPrompt(playbook) }),
     timeout,
   ]);
   if (!resp.ok) throw new Error(`Gemini ${resp.status}`);
@@ -93,6 +95,7 @@ router.post('/playbook', async (req, res) => {
     } catch (e) {
       console.error('[disputes/playbook] AI analyst fell back:', e.message);
       playbook.caseAnalyst.source = 'fallback';
+      playbook.caseAnalyst.fallbackReason = e.message;
     }
   }
 
