@@ -9,6 +9,7 @@
 // ─────────────────────────────────────────────
 import { Router } from 'express';
 import { requireAuth, supabaseAdmin } from '../lib/server-state.js';
+import { isAdminUser } from '../lib/admin.js';
 import { isUnlimitedPlan } from '../lib/billing.js';
 import { callGemini, geminiConfigured, toGeminiText } from '../lib/gemini.js';
 
@@ -175,8 +176,9 @@ router.post('/analyze-credit', requireAuth, async (req, res) => {
 
   // ── Credit check (skipped when Supabase is not configured) ────────────────
   let creditsRemaining = null;
+  const testAdmin = await isAdminUser(req.user?.id, req.user?.email || null);
 
-  if (supabaseAdmin) {
+  if (supabaseAdmin && !testAdmin) {
     // Deduct 1 credit atomically before hitting Gemini
     let ok;
     try {
@@ -201,7 +203,7 @@ router.post('/analyze-credit', requireAuth, async (req, res) => {
         .single();
 
       const unlimited = isUnlimitedPlan(profile?.plan);
-      creditsRemaining = unlimited ? null : (profile?.credits ?? 0);
+      creditsRemaining = unlimited || testAdmin ? null : (profile?.credits ?? 0);
     } catch {
       // Non-fatal — client will refetch balance on next load
     }
@@ -212,7 +214,7 @@ router.post('/analyze-credit', requireAuth, async (req, res) => {
     const analysis = await runAiScan(reportText);
     res.json({
       success: true,
-      source: supabaseAdmin ? 'ai' : 'ai-local',
+      source: testAdmin ? 'ai-admin' : (supabaseAdmin ? 'ai' : 'ai-local'),
       analysis,
       credits_remaining: creditsRemaining
     });

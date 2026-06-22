@@ -19,6 +19,7 @@
 import { Router } from 'express';
 import Stripe from 'stripe';
 import { requireAuth, supabaseAdmin } from '../lib/server-state.js';
+import { isAdminUser } from '../lib/admin.js';
 import {
   getPlanFromCheckoutSession,
   getPlanFromSubscription,
@@ -436,10 +437,11 @@ router.get('/balance', requireAuth, async (req, res) => {
       .eq('id', req.user.id).single();
     if (error) return res.status(404).json({ error: 'Profile not found.' });
     const unlimited = isUnlimitedPlan(data.plan);
+    const testAdmin = await isAdminUser(req.user?.id, req.user?.email || null);
     res.json({
-      credits:        unlimited ? 999 : data.credits,
+      credits:        (unlimited || testAdmin) ? 999 : data.credits,
       plan:           data.plan || 'free',
-      unlimited,
+      unlimited: unlimited || testAdmin,
       premium_access: hasPremiumAccess(data.plan, data.subscription_status),
       payment_failed: data.payment_failed || false,
       subscription_status: data.subscription_status || null,
@@ -447,7 +449,7 @@ router.get('/balance', requireAuth, async (req, res) => {
       trial_ends_at: data.trial_ends_at || null,
       next_bill_at: data.next_bill_at || null,
       canceled_at: data.canceled_at || null,
-      can_manage_billing: !!data.stripe_customer_id
+      can_manage_billing: !!data.stripe_customer_id || testAdmin
     });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });

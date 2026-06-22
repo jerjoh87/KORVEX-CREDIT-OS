@@ -53,6 +53,14 @@ function normalizeOrigin(value) {
   }
 }
 
+function normalizeHost(value) {
+  try {
+    return new URL(String(value || '')).hostname.toLowerCase().replace(/^www\./, '');
+  } catch {
+    return String(value || '').trim().toLowerCase().replace(/^www\./, '');
+  }
+}
+
 function resolveAllowedOrigins() {
   const origins = new Set([
     'http://localhost:3000',
@@ -101,7 +109,17 @@ function isAllowedOrigin(origin, req) {
   if (allowedOrigins.includes(origin)) return true;
   const host = req.headers.host;
   if (host) {
-    try { if (new URL(origin).host === host) return true; } catch { /* malformed Origin */ }
+    try {
+      const originHost = normalizeHost(origin);
+      const requestHost = normalizeHost(host);
+      if (originHost === requestHost) return true;
+      if (originHost.replace(/^www\./, '') === requestHost.replace(/^www\./, '')) return true;
+      if (originHost.endsWith('.vercel.app') && requestHost.endsWith('.vercel.app')) {
+        const originApp = originHost.split('.')[0];
+        const requestApp = requestHost.split('.')[0];
+        if (originApp === requestApp || originApp.startsWith(requestApp) || requestApp.startsWith(originApp)) return true;
+      }
+    } catch { /* malformed Origin */ }
   }
   return false;
 }
@@ -157,6 +175,7 @@ app.get('/api/runtime-status', (req, res) => {
   res.json({
     ok: true,
     appUrl: process.env.APP_BASE_URL || process.env.APP_URL || null,
+    testAdminMode: String(process.env.TEST_ADMIN_MODE || '').toLowerCase() === 'true',
     services: {
       supabase: !!supabaseAdmin,
       stripe: !!process.env.STRIPE_SECRET_KEY,

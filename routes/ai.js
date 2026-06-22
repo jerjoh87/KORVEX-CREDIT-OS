@@ -13,6 +13,7 @@
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import { requireAuth, supabaseAdmin } from '../lib/server-state.js';
+import { isAdminUser } from '../lib/admin.js';
 import { callGemini, geminiConfigured, toGeminiText } from '../lib/gemini.js';
 
 const router = Router();
@@ -44,6 +45,10 @@ async function deductCredits(userId, amount) {
   return data === true;
 }
 
+async function bypassCreditChecks(req) {
+  return isAdminUser(req.user?.id, req.user?.email || null);
+}
+
 // ── Helper: require enough credits or 402 ─────────────────────────────────────
 function withCredits(cost) {
   return async (req, res, next) => {
@@ -51,6 +56,10 @@ function withCredits(cost) {
       return res.status(503).json({ error: 'Auth service unavailable (Supabase not configured).' });
     }
     try {
+      if (await bypassCreditChecks(req)) {
+        req.testAdmin = true;
+        return next();
+      }
       const ok = await deductCredits(req.user.id, cost);
       if (!ok) return res.status(402).json({
         error: 'Insufficient credits.',
@@ -218,9 +227,9 @@ Only populate a bureau score when that exact bureau score is explicitly present 
     try {
       const clean = text.replace(/```json|```/g, '').trim();
       const parsed = JSON.parse(clean);
-      res.json({ success: true, scan: parsed });
+      res.json({ success: true, scan: parsed, source: req.testAdmin ? 'ai-admin' : 'ai' });
     } catch {
-      res.json({ success: true, scan: null, raw: text });
+      res.json({ success: true, scan: null, raw: text, source: req.testAdmin ? 'ai-admin' : 'ai' });
     }
   } catch (e) {
     console.error('[/scan]', e.message);

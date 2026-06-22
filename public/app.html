@@ -933,6 +933,7 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
     <button class="primary" style="width:100%" onclick="submitAuth('signin')">Sign in</button>
     <button class="ghost" style="width:100%" onclick="submitAuth('signup')">Create free account</button>
     <button class="ghost" style="width:100%" onclick="sendMagicLink()">Email me a magic sign-in link</button>
+    <button class="ghost hidden" id="testAdminBtn" style="width:100%" onclick="enableTestAdminAccess()">Enable test admin access</button>
     <button style="border:0;background:none;color:var(--muted);font-size:12.5px;cursor:pointer;text-decoration:underline" onclick="forgotPassword()">Forgot password?</button>
     <p style="color:var(--soft);font-size:11px;text-align:center">🔒 Protected with bank-level encryption</p>
   </div>
@@ -1083,6 +1084,7 @@ let _plan     = { plan: 'free', credits: null, unlimited: false, premiumAccess: 
 let _runtimeStatus = null;
 let _appBaseUrl = location.origin;
 let _launchVerification = { admin: false, checks: [], recentEvents: [], counts: { pass: 0, fail: 0, blocked: 0 }, loading: false, error: null };
+let _testAdminEnabled = false;
 
 // ── Tiny helpers ───────────────────────────────────────────────
 const $ = id => document.getElementById(id);
@@ -1099,6 +1101,33 @@ function store(key, val){
 function clearStore(key){ localStorage.removeItem('creditos.'+key); if(CLOUD_STATE_KEYS.includes(key))scheduleCloudStateSync(); }
 function daysBetween(a,b){ return Math.round((b-a)/86400000); }
 function getAuthToken(){ return _session?.access_token || null; }
+function testAdminFeatureAvailable(){
+  return location.hostname === 'localhost' || location.hostname === '127.0.0.1' || !!_runtimeStatus?.testAdminMode;
+}
+function syncTestAdminState(session){
+  const savedEmail = String(store('testAdminEmail') || '').trim().toLowerCase();
+  const sessionEmail = String(session?.user?.email || '').trim().toLowerCase();
+  _testAdminEnabled = !!savedEmail && !!sessionEmail && savedEmail === sessionEmail && testAdminFeatureAvailable();
+  return _testAdminEnabled;
+}
+function updateTestAdminUI(){
+  const btn = $('testAdminBtn');
+  if (btn) btn.classList.toggle('hidden', !testAdminFeatureAvailable());
+}
+function enableTestAdminAccess(){
+  if (!testAdminFeatureAvailable()) {
+    toast('Test admin mode is not enabled on this deployment.');
+    return;
+  }
+  const current = $('authEmail')?.value?.trim() || store('testAdminEmail') || '';
+  const email = (prompt('Enter the email for your temporary admin test account:', current) || '').trim();
+  if (!email) return;
+  store('testAdminEmail', email);
+  if ($('authEmail')) $('authEmail').value = email;
+  if ($('authMsg')) $('authMsg').textContent = 'Saved. Sign in with this email to unlock unlimited testing.';
+  openAuthModal();
+  toast('Test admin email saved.');
+}
 function scheduleCloudStateSync(){
   if(!_supabase||!_session)return;
   clearTimeout(_cloudSyncTimer);
@@ -1801,6 +1830,8 @@ async function continueCertifiedMail() {
 // ── Auth ───────────────────────────────────────────────────────
 function updateAuthUI(session){
   const btn=$('authBtn');
+  syncTestAdminState(session);
+  updateTestAdminUI();
   if(session){ btn.textContent='Sign out'; btn.onclick=doSignOut; $('setEmail').textContent=session.user?.email||'—';setCloudStatus('Loading your saved progress…'); }
   else { btn.textContent='Sign in'; btn.onclick=openAuthModal; $('setEmail').textContent='not signed in';setCloudStatus('Sign in to enable cross-device sync.'); }
   loadDashboardMetrics(); loadCRMClients(); loadLetterHistory(); renderDisputes();
@@ -3834,10 +3865,11 @@ async function loadDashboardMetrics(){
 async function loadRuntimeStatus(){
   try{
     const data=await api.get('/api/runtime-status');
-    _runtimeStatus=data?.services || null;
+    _runtimeStatus={...(data?.services||{}), testAdminMode: !!data?.testAdminMode};
     if (data?.appUrl) _appBaseUrl = String(data.appUrl).trim().replace(/\/+$/, '');
+    updateTestAdminUI();
   }catch{
-    _runtimeStatus={supabase:null,stripe:null,click2mail:null,gemini:null,ocr:'browser',pdf:'browser'};
+    _runtimeStatus={supabase:null,stripe:null,click2mail:null,gemini:null,ocr:'browser',pdf:'browser',testAdminMode:false};
   }
   renderSettings();
 }
