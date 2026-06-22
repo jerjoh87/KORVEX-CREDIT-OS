@@ -418,8 +418,14 @@ function downloadCfpbPackage(){
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
   a.download=lastCfpbPackage.filename||'creditos-cfpb-package.md';
+  a.rel='noopener';
+  a.style.display='none';
+  document.body.appendChild(a);
   a.click();
-  URL.revokeObjectURL(a.href);
+  setTimeout(()=>{
+    URL.revokeObjectURL(a.href);
+    a.remove();
+  }, 1000);
 }
 
 // ── Utils ──
