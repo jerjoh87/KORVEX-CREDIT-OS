@@ -251,6 +251,7 @@ pre.out{white-space:pre-wrap;font-family:var(--font);font-size:13px;line-height:
         <div class="toolbar">
           <button class="btn ghost" onclick="copyEl('cfpbOut',this)"><span class="material-symbols-outlined">content_copy</span> Copy</button>
           <button class="btn ghost" onclick="downloadText('cfpbOut','creditos-cfpb-complaint')"><span class="material-symbols-outlined">download</span> Download .txt</button>
+          <button class="btn ghost" id="cfpbPackageBtn" onclick="downloadCfpbPackage()" style="display:none"><span class="material-symbols-outlined">package_2</span> Download package</button>
           <a class="btn primary" id="cfpbFile" target="_blank" rel="noopener"><span class="material-symbols-outlined">open_in_new</span> File at consumerfinance.gov</a>
         </div>
       </div>
@@ -262,6 +263,7 @@ pre.out{white-space:pre-wrap;font-family:var(--font);font-size:13px;line-height:
 const API = '/api/disputes';
 let LIB = { categories: [], templates: [] };
 let lastReco = null;
+let lastCfpbPackage = null;
 const sel = { type:'', problem:'', before:'', bureau:'All', age:'', docs:'' };
 
 // ── Questionnaire option sets ──
@@ -404,8 +406,20 @@ async function generateCfpb(){
   if(!j.success){ alert(j.error||'Add a company or your name.'); return; }
   document.getElementById('cfpbOut').textContent = j.complaint.narrative;
   document.getElementById('cfpbFile').href = j.complaint.filingUrl;
+  lastCfpbPackage = j.package || null;
+  document.getElementById('cfpbPackageBtn').style.display = lastCfpbPackage ? '' : 'none';
   document.getElementById('cfpbWrap').classList.remove('hide');
   document.getElementById('cfpbWrap').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function downloadCfpbPackage(){
+  if(!lastCfpbPackage?.content){ alert('Generate the complaint first.'); return; }
+  const blob=new Blob([lastCfpbPackage.content],{type:lastCfpbPackage.mimeType||'text/markdown'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=lastCfpbPackage.filename||'creditos-cfpb-package.md';
+  a.click();
+  URL.revokeObjectURL(a.href);
 }
 
 // ── Utils ──

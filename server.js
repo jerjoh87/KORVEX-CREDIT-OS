@@ -20,6 +20,7 @@ import aiRoutes from './routes/ai.js';
 import creditsRoutes from './routes/credits.js';
 import creditApiRoutes from './routes/creditApi.js';
 import launchRoutes from './routes/launch.js';
+import caseRoutes from './routes/cases.js';
 import mailingRoutes from './routes/mailing.js';
 import disputeRoutes from './routes/disputes.js';
 import responseRoutes from './routes/responses.js';
@@ -190,6 +191,7 @@ app.get('/api/runtime-status', (req, res) => {
 // ── Routes ───────────────────────────────────────────────────────────────────
 app.use('/api/ai',       aiRoutes);
 app.use('/api/credits',  creditsRoutes);
+app.use('/api/cases',    caseRoutes);
 app.use('/api/launch',   launchRoutes);
 app.use('/api/mailing',  mailingRoutes);
 app.use('/api/disputes', disputeRoutes);

@@ -492,6 +492,13 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
           <div class="playbookMetric"><div class="metricLab">Recently Resolved Items</div><div class="metricNum" id="pbResolvedItems">0</div></div>
         </div>
 
+        <div class="card">
+          <div class="stitchCardHead" style="margin-bottom:12px"><h3>Case management & tracking</h3><span class="chip info" id="caseDashboardSync">Loading…</span></div>
+          <div class="billingDisclosure" id="caseDashboardMetrics" style="grid-template-columns:repeat(4,minmax(0,1fr))"></div>
+          <div class="list" id="caseDashboardList" style="margin-top:13px"></div>
+          <p id="caseDashboardNote" style="color:var(--muted);font-size:12.5px;margin-top:10px">Your real dispute case status, deadlines, and success rate will appear here.</p>
+        </div>
+
         <div class="playbookLayout">
           <div class="card">
             <div class="stitchCardHead" style="margin-bottom:12px"><h3>Account Queue</h3><span class="chip info" id="pbQueueCount">0</span></div>
@@ -888,6 +895,45 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
             <p id="launchVerificationNote" style="color:var(--muted);font-size:12.5px;margin-top:10px">Loading launch proof status…</p>
             <button class="ghost" style="width:100%;margin-top:10px" onclick="loadLaunchVerificationDashboard()">Refresh proof status</button>
           </div>
+          <div class="card"><h3>⚙️ Case automation & templates</h3>
+            <p style="color:var(--muted);font-size:13px;margin:10px 0 7px">Admin-only follow-up rules and dispute template management. If you’re not an admin, you’ll still see the live template library summary.</p>
+            <div class="billingDisclosure" id="caseAutomationSummary" style="margin-top:13px;grid-template-columns:repeat(3,minmax(0,1fr))"></div>
+            <div class="list" id="caseAutomationList" style="margin-top:13px"></div>
+            <div style="display:grid;gap:10px;margin-top:13px">
+              <div class="card" style="padding:14px">
+                <h3 style="font-size:15px">Template editor</h3>
+                <div class="formGrid" style="margin-top:10px">
+                  <label>Template key<input id="caseTemplateKey" placeholder="mov_follow_up"></label>
+                  <label>Label<input id="caseTemplateLabel" placeholder="30-day follow-up"></label>
+                  <label>Category<input id="caseTemplateCategory" placeholder="follow-up"></label>
+                  <label>Recipient<input id="caseTemplateRecipient" placeholder="bureau"></label>
+                  <label>Strategy<input id="caseTemplateStrategy" placeholder="Method of Verification"></label>
+                </div>
+                <label style="margin-top:10px">Legal basis (one per line)<textarea id="caseTemplateLegalBasis" placeholder="FCRA §611(a)(7)&#10;FCRA §623"></textarea></label>
+                <label style="margin-top:10px">Suggested documents (one per line)<textarea id="caseTemplateDocs" placeholder="Certified mail receipt&#10;Bureau response"></textarea></label>
+                <label style="margin-top:10px">Body template<textarea id="caseTemplateBody" placeholder="Write the template text with placeholders."></textarea></label>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+                  <button class="primary" style="flex:1" onclick="saveCaseTemplate()">Save template</button>
+                  <button class="ghost" style="flex:1" onclick="clearCaseTemplateForm()">Clear template form</button>
+                </div>
+              </div>
+              <div class="card" style="padding:14px">
+                <h3 style="font-size:15px">Follow-up rule editor</h3>
+                <div class="formGrid" style="margin-top:10px">
+                  <label>Rule name<input id="caseRuleName" placeholder="First follow-up"></label>
+                  <label>Trigger stage<input id="caseRuleTrigger" placeholder="mailed"></label>
+                  <label>Delay days<input id="caseRuleDelay" type="number" placeholder="21"></label>
+                  <label>Template key<input id="caseRuleTemplate" placeholder="mov"></label>
+                  <label>Scope<input id="caseRuleScope" placeholder="global"></label>
+                </div>
+                <label style="margin-top:10px">Rule notes<textarea id="caseRuleNotes" placeholder="What happens when this rule triggers?"></textarea></label>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+                  <button class="primary" style="flex:1" onclick="saveFollowupRule()">Save rule</button>
+                  <button class="ghost" style="flex:1" onclick="clearFollowupRuleForm()">Clear rule form</button>
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="card"><h3>🔒 Data & privacy</h3>
             <p style="color:var(--muted);font-size:13px;margin:10px 0 7px">Credit report contents are analyzed and never stored or sold. Scan metadata, your plan, and progress sync to your account.</p>
             <p id="cloudSyncStatus" style="color:var(--muted);font-size:12px;margin-bottom:13px">Sign in to enable cross-device sync.</p>
@@ -1085,6 +1131,8 @@ let _runtimeStatus = null;
 let _appBaseUrl = location.origin;
 let _launchVerification = { admin: false, checks: [], recentEvents: [], counts: { pass: 0, fail: 0, blocked: 0 }, loading: false, error: null };
 let _testAdminEnabled = false;
+let _caseDashboard = { loading: false, cases: [], events: [], deadlines: [], templates: [], followupRules: [], metrics: { active_cases: 0, closed_cases: 0, successful_cases: 0, no_response_cases: 0, overdue_cases: 0, success_rate: 0 } };
+let _caseAutomationAdmin = { loading: false, templates: [], rules: [], error: null };
 
 // ── Tiny helpers ───────────────────────────────────────────────
 const $ = id => document.getElementById(id);
@@ -3387,6 +3435,7 @@ async function renderPlaybook(){
   _playbookAnalyses=new Map(_playbookAccounts.map(account=>[account.id,analyzePlaybookAccount(account)]));
   if(!_playbookSelectedId||!_playbookAccounts.some(a=>a.id===_playbookSelectedId))_playbookSelectedId=_playbookAccounts[0]?.id||null;
   renderPlaybookMetrics(disputes);
+  loadCaseDashboard().catch(()=>{});
   renderPlaybookAccountList();
   renderSelectedPlaybookAccount();
 }
@@ -3516,9 +3565,9 @@ function renderPlaybookFollowups(analysis){
 function renderPlaybookEscalation(account,analysis){
   const el=$('pbEscalationBox');
   if(analysis.cfpbEligible){
-    el.innerHTML=`<strong>Escalation Recommended</strong><span>Reason: ${escapeHtml(analysis.reason)}</span><strong>Supporting Evidence Summary</strong><span>${escapeHtml(pbDocsFromAccount(account).join(', ')||'Add prior disputes, bureau responses, and certified mail receipts before filing.')}</span><strong>Package to generate</strong><span>CFPB Complaint Draft, Timeline Summary, Supporting Document Package, and Creditor History Summary.</span>`;
+    el.innerHTML=`<strong>Escalation Recommended</strong><span>Reason: ${escapeHtml(analysis.reason)}</span><strong>Supporting Evidence Summary</strong><span>${escapeHtml(pbDocsFromAccount(account).join(', ')||'Add prior disputes, bureau responses, and certified mail receipts before filing.')}</span><strong>Package to generate</strong><span>CFPB Complaint Draft, Timeline Summary, Supporting Document Package, and Creditor History Summary.</span><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="ghost" onclick="window.open('/dispute-advisor.html#panel-cfpb','_blank')">Open CFPB center</button><button class="primary" onclick="generatePlaybookCfpbPackage()">Generate CFPB package</button></div>`;
   }else{
-    el.innerHTML=`<strong>Escalation not recommended yet</strong><span>Reason: complete the current dispute step first, then escalate if the bureau verifies without a meaningful explanation or misses the response window.</span>`;
+    el.innerHTML=`<strong>Escalation not recommended yet</strong><span>Reason: complete the current dispute step first, then escalate if the bureau verifies without a meaningful explanation or misses the response window.</span><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="ghost" onclick="window.open('/dispute-advisor.html#panel-cfpb','_blank')">Open CFPB center</button></div>`;
   }
 }
 function renderPlaybookCaseFiles(account,analysis){
@@ -3874,6 +3923,165 @@ async function loadRuntimeStatus(){
   renderSettings();
 }
 
+function renderCaseDashboard(){
+  const sync=$('caseDashboardSync');
+  const metrics=$('caseDashboardMetrics');
+  const list=$('caseDashboardList');
+  const note=$('caseDashboardNote');
+  if(!sync||!metrics||!list||!note)return;
+  const d=_caseDashboard||{};
+  const cases=Array.isArray(d.cases)?d.cases:[];
+  const events=Array.isArray(d.events)?d.events:[];
+  const deadlines=Array.isArray(d.deadlines)?d.deadlines:[];
+  const metricsData=d.metrics||{};
+  const stat=(label,value,tone='gray')=>`<div><small>${escapeHtml(label)}</small><b>${escapeHtml(value)}</b><span class="tag ${tone}" style="margin-top:8px">${escapeHtml(label)}</span></div>`;
+  metrics.innerHTML=[
+    stat('Active cases', metricsData.active_cases ?? 0, 'blue'),
+    stat('Closed cases', metricsData.closed_cases ?? 0, 'up'),
+    stat('Success rate', `${metricsData.success_rate ?? 0}%`, (metricsData.success_rate ?? 0) >= 70 ? 'up' : 'warn'),
+    stat('Overdue deadlines', metricsData.overdue_cases ?? 0, (metricsData.overdue_cases ?? 0) > 0 ? 'red' : 'gray')
+  ].join('');
+  $('pbActiveDisputes').textContent = metricsData.active_cases ?? 0;
+  $('pbSuccessRate').textContent = `${metricsData.success_rate ?? 0}%`;
+  $('pbResolvedItems').textContent = metricsData.successful_cases ?? 0;
+  const recentCases = cases.slice(0, 5);
+  list.innerHTML = recentCases.length
+    ? recentCases.map(row => `<div class="item"><div><strong>${escapeHtml(row.creditor || row.client_name || 'Untitled case')}</strong><small>${escapeHtml([row.bureau, row.category, row.strategy].filter(Boolean).join(' · ') || 'Case details unavailable')} · ${escapeHtml(String(row.status || 'open').replace(/_/g, ' '))}${row.response_due_at ? ` · due ${escapeHtml(exactDate(row.response_due_at))}` : ''}</small></div><span class="tag ${['resolved','closed'].includes(String(row.status||'').toLowerCase()) ? 'up' : row.response_due_at && new Date(row.response_due_at).getTime() < Date.now() ? 'red' : 'blue'}">${escapeHtml(row.outcome || row.status || 'open')}</span></div>`).join('')
+    : '<div class="empty">No case records yet. Open a dispute or response and CREDITOS will start tracking it here.</div>';
+  const openDeadlines = deadlines.filter(d => !['read', 'dismissed'].includes(String(d.status || '').toLowerCase())).length;
+  sync.textContent = d.synced ? `Synced ${d.synced} dispute${d.synced===1?'':'s'}` : 'Ready';
+  note.textContent = cases.length
+    ? `${cases.length} case${cases.length===1?'':'s'} tracked · ${events.length} timeline event${events.length===1?'':'s'} · ${openDeadlines} deadline alert${openDeadlines===1?'':'s'}`
+    : 'Case records will populate after a dispute is synced or a response is uploaded.';
+}
+
+function renderCaseAutomationAdmin(){
+  const summary = $('caseAutomationSummary');
+  const list = $('caseAutomationList');
+  if(!summary||!list)return;
+  const d = _caseAutomationAdmin || {};
+  const templates = Array.isArray(d.templates) ? d.templates : [];
+  const rules = Array.isArray(d.rules) ? d.rules : [];
+  const stat=(label,value)=>`<div><small>${escapeHtml(label)}</small><b>${escapeHtml(value)}</b></div>`;
+  summary.innerHTML = [
+    stat('Templates', templates.length),
+    stat('Follow-up rules', rules.length),
+    stat('Status', d.error ? 'Blocked' : d.loading ? 'Loading' : 'Ready')
+  ].join('');
+  const rows = [
+    '<div class="item"><div><strong>Template library</strong><small>Admin-created templates stay visible here.</small></div><span class="tag blue">CRUD</span></div>',
+    ...templates.slice(0, 6).map(t => `<div class="item"><div><strong>${escapeHtml(t.label || t.template_key)}</strong><small>${escapeHtml([t.category, t.recipient, t.strategy].filter(Boolean).join(' · ') || 'Template')}</small></div><span class="tag ${t.is_active ? 'up' : 'gray'}">${t.is_active ? 'Active' : 'Inactive'}</span></div>`),
+    '<div class="item"><div><strong>Follow-up rules</strong><small>Delay-based triggers for deadline nudges and next-round prompts.</small></div><span class="tag blue">Rules</span></div>',
+    ...rules.slice(0, 6).map(r => `<div class="item"><div><strong>${escapeHtml(r.name || r.template_key)}</strong><small>${escapeHtml(`${r.trigger_stage || 'stage'} · ${r.delay_days || 0} day${Number(r.delay_days)===1?'':'s'}`)}</small></div><span class="tag ${r.is_enabled ? 'up' : 'gray'}">${r.is_enabled ? 'Enabled' : 'Disabled'}</span></div>`)
+  ];
+  if (d.error) rows.unshift(`<div class="item"><div><strong>Admin access blocked</strong><small>${escapeHtml(d.error)}</small></div><span class="tag amber">Check role</span></div>`);
+  list.innerHTML = rows.join('') || '<div class="empty">No templates yet.</div>';
+}
+
+async function loadCaseAutomationAdmin(){
+  if(!_supabase||!_session){
+    _caseAutomationAdmin={loading:false,templates:[],rules:[],error:'Sign in to load case automation.'};
+    renderCaseAutomationAdmin();
+    return;
+  }
+  _caseAutomationAdmin.loading = true;
+  _caseAutomationAdmin.error = null;
+  renderCaseAutomationAdmin();
+  try{
+    const [templatesData, rulesData] = await Promise.all([
+      api.get('/api/cases/admin/templates'),
+      api.get('/api/cases/admin/followup-rules')
+    ]);
+    _caseAutomationAdmin = {
+      loading: false,
+      templates: templatesData.templates || [],
+      rules: rulesData.rules || [],
+      error: null
+    };
+  }catch(e){
+    _caseAutomationAdmin = {
+      loading: false,
+      templates: [],
+      rules: [],
+      error: e.status === 403 ? 'Admin access is required for CRUD actions.' : (e.message || 'Could not load admin data.')
+    };
+  }
+  renderCaseAutomationAdmin();
+}
+
+function splitLines(value){
+  return String(value || '').split('\n').map(s=>s.trim()).filter(Boolean);
+}
+
+function clearCaseTemplateForm(){
+  ['caseTemplateKey','caseTemplateLabel','caseTemplateCategory','caseTemplateRecipient','caseTemplateStrategy','caseTemplateLegalBasis','caseTemplateDocs','caseTemplateBody'].forEach(id=>{ const el=$(id); if(el) el.value=''; });
+}
+
+async function saveCaseTemplate(){
+  if(!_supabase||!_session){openAuthModal();return}
+  const body={
+    template_key: $('caseTemplateKey')?.value?.trim(),
+    label: $('caseTemplateLabel')?.value?.trim(),
+    category: $('caseTemplateCategory')?.value?.trim(),
+    recipient: $('caseTemplateRecipient')?.value?.trim(),
+    strategy: $('caseTemplateStrategy')?.value?.trim(),
+    legal_basis: splitLines($('caseTemplateLegalBasis')?.value),
+    suggested_documents: splitLines($('caseTemplateDocs')?.value),
+    body_template: $('caseTemplateBody')?.value?.trim(),
+    metadata: { source: 'settings-admin' }
+  };
+  try{
+    await api.post('/api/cases/admin/templates', body);
+    toast('Template saved ✓');
+    await loadCaseAutomationAdmin();
+  }catch(e){ toast(e.message || 'Could not save template.'); }
+}
+
+function clearFollowupRuleForm(){
+  ['caseRuleName','caseRuleTrigger','caseRuleDelay','caseRuleTemplate','caseRuleScope','caseRuleNotes'].forEach(id=>{ const el=$(id); if(el) el.value=''; });
+}
+
+async function saveFollowupRule(){
+  if(!_supabase||!_session){openAuthModal();return}
+  const body={
+    name: $('caseRuleName')?.value?.trim(),
+    trigger_stage: $('caseRuleTrigger')?.value?.trim(),
+    delay_days: Number($('caseRuleDelay')?.value || 0),
+    template_key: $('caseRuleTemplate')?.value?.trim(),
+    scope: $('caseRuleScope')?.value?.trim(),
+    metadata: { notes: $('caseRuleNotes')?.value?.trim() || '' }
+  };
+  try{
+    await api.post('/api/cases/admin/followup-rules', body);
+    toast('Follow-up rule saved ✓');
+    await loadCaseAutomationAdmin();
+  }catch(e){ toast(e.message || 'Could not save follow-up rule.'); }
+}
+
+async function loadCaseDashboard(){
+  if(!_supabase||!_session){
+    _caseDashboard={loading:false,cases:[],events:[],deadlines:[],templates:[],followupRules:[],metrics:{active_cases:0,closed_cases:0,successful_cases:0,no_response_cases:0,overdue_cases:0,success_rate:0}};
+    renderCaseDashboard();
+    return;
+  }
+  try{
+    _caseDashboard.loading = true;
+    const data = await api.get('/api/cases/dashboard');
+    _caseDashboard = {
+      loading: false,
+      cases: data.cases || [],
+      events: data.events || [],
+      deadlines: data.deadlines || [],
+      templates: data.templates || [],
+      followupRules: data.followupRules || [],
+      metrics: data.metrics || data.summary || {}
+    };
+  }catch(e){
+    _caseDashboard={loading:false,cases:[],events:[],deadlines:[],templates:[],followupRules:[],metrics:{active_cases:0,closed_cases:0,successful_cases:0,no_response_cases:0,overdue_cases:0,success_rate:0},error:e.message};
+  }
+  renderCaseDashboard();
+}
+
 // ── CRM ────────────────────────────────────────────────────────
 async function saveClient(){
   if(!_supabase||!_session){openAuthModal();return}
@@ -3916,6 +4124,7 @@ function renderSettings(){
   else renderMailingAdminSection();
   renderServiceStatus();
   renderLaunchVerificationDashboard();
+  loadCaseAutomationAdmin().catch(()=>{});
 }
 function saveSettings(){
   const p=getProfile()||{};

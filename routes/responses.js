@@ -3,6 +3,7 @@ import { Router } from 'express';
 import { requireAuth, supabaseAdmin } from '../lib/server-state.js';
 import { hasPremiumAccess } from '../lib/billing.js';
 import { callGemini, geminiConfigured, toGeminiText } from '../lib/gemini.js';
+import { ensureCaseForDispute, getCaseByDisputeId, recordCaseEvent } from '../lib/cases.js';
 import {
   RESPONSE_ACTIONS,
   buildDeadlineAlerts,
@@ -336,6 +337,7 @@ router.post('/upload', requireAuth, requirePremium, async (req, res) => {
       .from('bureau_responses').insert(responseRow).select('*').single();
     if (saveError) throw saveError;
     responseSaved = true;
+    const caseRow = await ensureCaseForDispute(dispute).catch(() => null);
 
     const responseUploadedAt = new Date().toISOString();
     const { data: updatedRound, error: roundError } = await supabaseAdmin
@@ -364,6 +366,16 @@ router.post('/upload', requireAuth, requirePremium, async (req, res) => {
       dedupe_key: `response:${responseId}:analysis_ready`
     }, { onConflict: 'dedupe_key' });
     if (alertError) console.warn('[responses/alerts:analysis-ready]', alertError.message);
+    if (caseRow) {
+      await recordCaseEvent({
+        caseId: caseRow.id,
+        userId: req.user.id,
+        eventType: 'bureau_response_uploaded',
+        caseStatus: 'investigating',
+        note: 'Bureau response uploaded and analyzed.',
+        metadata: { response_id: responseId, round_id: round.id, bureau: analysis.bureau }
+      }).catch(() => {});
+    }
 
     res.status(201).json({ success: true, response: saved, analysis, round: updatedRound });
   } catch (error) {
@@ -428,6 +440,17 @@ router.post('/:id/letter', requireAuth, requirePremium, async (req, res) => {
         dedupe_key: `round:${round.id}:next_round_ready`
       }, { onConflict: 'dedupe_key' });
       if (alertError) console.warn('[responses/letter:alert]', alertError.message);
+      const caseRow = round.dispute_id ? await getCaseByDisputeId(req.user.id, round.dispute_id).catch(() => null) : null;
+      if (caseRow) {
+        await recordCaseEvent({
+          caseId: caseRow.id,
+          userId: req.user.id,
+          eventType: 'follow_up_letter_created',
+          caseStatus: 'escalated',
+          note: 'Next-round letter was generated from a bureau response.',
+          metadata: { response_id: response.id, letter_id: savedLetter.id, letter_type: letterType }
+        }).catch(() => {});
+      }
     }
     res.json({ success: true, letter: savedLetter, letterType });
   } catch (error) {
@@ -471,6 +494,17 @@ router.post('/rounds/:id/no-response-letter', requireAuth, requirePremium, async
       status: 'next_round_ready', next_round_ready_at: readyAt,
       next_letter_url: `letter:${savedLetter.id}`, updated_at: readyAt
     }).eq('id', round.id).eq('user_id', req.user.id);
+    const caseRow = round.dispute_id ? await getCaseByDisputeId(req.user.id, round.dispute_id).catch(() => null) : null;
+    if (caseRow) {
+      await recordCaseEvent({
+        caseId: caseRow.id,
+        userId: req.user.id,
+        eventType: 'no_response_follow_up_created',
+        caseStatus: 'escalated',
+        note: 'No-response follow-up letter was generated.',
+        metadata: { round_id: round.id, letter_id: savedLetter.id }
+      }).catch(() => {});
+    }
     res.json({ success: true, letter: savedLetter, letterType: 'no_response_follow_up' });
   } catch (error) {
     res.status(error.status || 500).json({ error: error.message || 'Could not create the no-response follow-up.' });
@@ -497,6 +531,17 @@ router.patch('/rounds/:id', requireAuth, requirePremium, async (req, res) => {
     if (error) throw error;
     if (!data) throw apiError('Dispute round not found.', 404);
     await upsertRoundAlerts(req.user.id, data);
+    const caseRow = data.dispute_id ? await getCaseByDisputeId(req.user.id, data.dispute_id).catch(() => null) : null;
+    if (caseRow) {
+      await recordCaseEvent({
+        caseId: caseRow.id,
+        userId: req.user.id,
+        eventType: 'deadline_updated',
+        caseStatus: fields.delivered_at ? 'investigating' : 'mailed',
+        note: fields.delivered_at ? 'Certified-mail delivery date recorded.' : 'Certified-mail sent date recorded.',
+        metadata: { round_id: data.id, sent_at: fields.sent_at || null, delivered_at: fields.delivered_at || null }
+      }).catch(() => {});
+    }
     res.json({ success: true, round: data });
   } catch (error) {
     res.status(error.status || 500).json({ error: error.message || 'Could not update the dispute timeline.' });

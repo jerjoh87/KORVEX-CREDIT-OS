@@ -139,7 +139,37 @@ router.post('/cfpb', (req, res) => {
   if (!b.company && !(b.consumer && b.consumer.name)) {
     return res.status(400).json({ success: false, error: 'Provide at least a company name or consumer name.' });
   }
-  res.json({ success: true, complaint: buildCfpbComplaint(b) });
+  const complaint = buildCfpbComplaint(b);
+  const packageText = [
+    '# CREDITOS CFPB Complaint Package',
+    '',
+    '## Complaint narrative',
+    complaint.narrative,
+    '',
+    '## Evidence checklist',
+    ...(complaint.fields.evidence || []).map(item => `- ${item}`),
+    '',
+    '## Timeline',
+    ...(Array.isArray(b.timeline)
+      ? b.timeline.map(item => `- ${[item?.date, item?.event].filter(Boolean).join(' — ')}`)
+      : [String(b.timeline || '').trim()].filter(Boolean)),
+    '',
+    '## Desired resolution',
+    complaint.fields.requestedResolution,
+    '',
+    '## Filing link',
+    complaint.filingUrl
+  ].join('\n').trim();
+
+  res.json({
+    success: true,
+    complaint,
+    package: {
+      filename: `creditos-cfpb-package-${String(complaint.fields.company || 'complaint').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'complaint'}.md`,
+      mimeType: 'text/markdown',
+      content: packageText
+    }
+  });
 });
 
 export default router;
