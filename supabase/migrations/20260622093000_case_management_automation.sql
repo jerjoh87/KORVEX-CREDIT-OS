@@ -205,6 +205,16 @@ create table if not exists public.deadline_alerts (
   updated_at   timestamptz not null default now()
 );
 
+alter table public.deadline_alerts add column if not exists case_id uuid references public.dispute_cases(id) on delete cascade;
+alter table public.deadline_alerts add column if not exists title text;
+alter table public.deadline_alerts add column if not exists body text;
+alter table public.deadline_alerts add column if not exists updated_at timestamptz not null default now();
+update public.deadline_alerts
+set title = coalesce(nullif(title, ''), metadata->>'title', initcap(replace(coalesce(alert_type, 'deadline'), '_', ' ')), 'Deadline alert')
+where title is null or title = '';
+alter table public.deadline_alerts alter column title set default 'Deadline alert';
+alter table public.deadline_alerts alter column title set not null;
+
 alter table public.deadline_alerts enable row level security;
 
 drop policy if exists "deadline_alerts_select_own" on public.deadline_alerts;

@@ -293,14 +293,18 @@ create table if not exists public.deadline_alerts (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
   dispute_round_id uuid references public.dispute_rounds(id) on delete cascade,
+  case_id uuid references public.dispute_cases(id) on delete cascade,
   alert_type text not null,
   alert_date timestamptz not null,
+  title text not null default 'Deadline alert',
+  body text,
   sent_at timestamptz,
   read_at timestamptz,
   status text not null default 'pending' check (status in ('pending','due','sent','read','dismissed')),
   metadata jsonb not null default '{}'::jsonb,
   dedupe_key text not null unique,
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
 );
 
 create table if not exists public.stripe_webhook_events (
