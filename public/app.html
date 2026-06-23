@@ -977,6 +977,7 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
     <label>Password<input id="authPass" type="password" placeholder="Min 8 characters"></label>
     <p id="authMsg" style="color:var(--muted);font-size:13px;min-height:18px"></p>
     <button class="primary" style="width:100%" onclick="submitAuth('signin')">Sign in</button>
+    <button class="ghost" style="width:100%" onclick="signInWithGoogle()">Continue with Google</button>
     <button class="ghost" style="width:100%" onclick="submitAuth('signup')">Create free account</button>
     <button class="ghost" style="width:100%" onclick="sendMagicLink()">Email me a magic sign-in link</button>
     <button class="ghost hidden" id="testAdminBtn" style="width:100%" onclick="enableTestAdminAccess()">Enable test admin access</button>
@@ -1917,6 +1918,7 @@ function friendlyAuthError(error){
   const raw=String(error?.message||error||'').toLowerCase();
   if(raw.includes('expired')||raw.includes('otp_expired'))return 'This link has expired. Request a fresh email and try again.';
   if(raw.includes('invalid')||raw.includes('token'))return 'This sign-in link is invalid or was already used. Request a new one.';
+  if((raw.includes('provider') && raw.includes('disabled')) || raw.includes('identity provider') || raw.includes('oauth')) return 'Google sign-in is not enabled yet. Ask the project owner to enable the Google provider in Supabase.';
   if(raw.includes('email not confirmed'))return 'Confirm your email first, then sign in.';
   if(raw.includes('invalid login credentials'))return 'That email or password does not match. Try again or reset your password.';
   if(raw.includes('rate limit'))return 'Too many attempts. Wait a minute, then try again.';
@@ -1927,6 +1929,7 @@ function handleAuthCallback(){
   const query=new URLSearchParams(location.search),hash=new URLSearchParams(location.hash.replace(/^#/,''));
   const error=query.get('error_description')||hash.get('error_description')||query.get('error')||hash.get('error');
   const type=query.get('type')||hash.get('type');
+  const pendingOAuthProvider = sessionStorage.getItem('pendingOAuthProvider') || '';
   const mail=query.get('mail');
   const checkout=query.get('checkout');
   const billing=query.get('billing');
@@ -1943,6 +1946,10 @@ function handleAuthCallback(){
   else if(type==='signup'||type==='email_change'){
     toast('Email verified — you can continue securely.');
     recordLaunchVerificationEvent('auth_email_verification','supabase','pass',{source:'auth_callback',type}).catch(()=>{});
+  }
+  else if(pendingOAuthProvider==='google' && (query.has('code') || hash.has('access_token'))){
+    sessionStorage.removeItem('pendingOAuthProvider');
+    recordLaunchVerificationEvent('auth_google_sign_in','supabase','pass',{source:'auth_callback',provider:'google'}).catch(()=>{});
   }
   else if(type==='magiclink' || (query.has('code') || hash.has('access_token'))){
     recordLaunchVerificationEvent('auth_magic_link','supabase','pass',{source:'auth_callback',type:type||'magiclink'}).catch(()=>{});
@@ -1966,6 +1973,27 @@ async function submitAuth(mode){
   const {error}=await fn;
   if(error){msg.textContent=friendlyAuthError(error)}
   else{msg.textContent= mode==='signup'?'Check your email to confirm your account.':'Signed in!'; setTimeout(closeAuthModal,1100)}
+}
+async function signInWithGoogle(){
+  const msg = $('authMsg');
+  if(!_supabase){msg.textContent='Auth is not configured.';return}
+  try{
+    msg.textContent='Redirecting to Google…';
+    sessionStorage.setItem('pendingOAuthProvider','google');
+    const {data,error}=await _supabase.auth.signInWithOAuth({
+      provider:'google',
+      options:{
+        redirectTo:`${appBaseUrl()}/app.html`,
+        queryParams:{prompt:'select_account'}
+      }
+    });
+    if(error) throw error;
+    if(data?.url){ window.location.href = data.url; return; }
+    throw new Error('Could not start Google sign-in.');
+  }catch(e){
+    sessionStorage.removeItem('pendingOAuthProvider');
+    msg.textContent=friendlyAuthError(e);
+  }
 }
 async function sendMagicLink(){
   const email=$('authEmail').value.trim(),msg=$('authMsg');
