@@ -326,6 +326,8 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
       <button class="navBtn" data-page="scanner"><span class="material-symbols-outlined ic">monitor_heart</span> Monitoring</button>
       <button class="navBtn" data-page="playbook"><span class="material-symbols-outlined ic">psychology_alt</span> Dispute Playbook <span class="navBadge gold">AI</span></button>
       <button class="navBtn" data-page="disputes"><span class="material-symbols-outlined ic">timeline</span> Dispute Timeline <span class="navBadge" id="disputeCount"></span></button>
+      <button class="navBtn" data-page="cfpb"><span class="material-symbols-outlined ic">account_balance</span> CFPB Center</button>
+      <button class="navBtn" data-page="cases"><span class="material-symbols-outlined ic">folder_managed</span> Case Tracker</button>
       <button class="navBtn" data-page="responses"><span class="material-symbols-outlined ic">mark_email_read</span> Bureau Responses <span class="navBadge gold">Premium</span></button>
       <button class="navBtn" data-page="letters"><span class="material-symbols-outlined ic">report_problem</span> Negative Items</button>
       <button class="navBtn" data-page="simulator"><span class="material-symbols-outlined ic">model_training</span> Simulators</button>
@@ -643,6 +645,93 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
         </div>
         <div class="list" id="disputeList"><div class="empty">No disputes yet. Scan your report, generate a letter, then track it here.</div></div>
         <div class="disclaimer">CREDITOS tracks self-reported dates and prepares documents. Use the certified-mail delivery date when available; otherwise the sent date anchors reminders. The 30-day date is the standard target, while 45 days can apply in some investigations.</div>
+      </div>
+
+      <!-- ════════ CFPB COMPLAINT CENTER ════════ -->
+      <div class="page" id="cfpb">
+        <div class="heroHead">
+          <div>
+            <h2>CFPB Complaint Center</h2>
+            <p>When a bureau or creditor refuses to fix an inaccuracy, generate a professional complaint to file with the Consumer Financial Protection Bureau.</p>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="ghost" onclick="clearCfpbForm()">Clear form</button>
+            <a href="https://www.consumerfinance.gov/complaint/" target="_blank" rel="noopener" class="primary" style="display:inline-flex;align-items:center;gap:7px;text-decoration:none;border:0;font-weight:700;border-radius:11px;padding:10px 16px"><span class="material-symbols-outlined" style="font-size:18px;vertical-align:-4px">open_in_new</span> File at CFPB.gov</a>
+          </div>
+        </div>
+        <div class="grid grid2">
+          <div class="card">
+            <h3 style="margin-bottom:13px">Your information</h3>
+            <div class="formGrid">
+              <label>Your full name<input id="cfpb_consumer_name" placeholder="Jordan Carter"></label>
+              <label>City, State ZIP<input id="cfpb_city_state_zip" placeholder="Austin, TX 78701"></label>
+              <label>Email<input id="cfpb_email" placeholder="you@example.com" type="email"></label>
+              <label>Phone <span style="color:var(--muted);font-size:11px">(optional)</span><input id="cfpb_phone" placeholder="(512) 555-0100"></label>
+            </div>
+            <h3 style="margin:18px 0 10px">Company & issue</h3>
+            <div class="formGrid">
+              <label>Company you're complaining about<input id="cfpb_company" placeholder="Midland Credit Management"></label>
+              <label>Account number <span style="color:var(--muted);font-size:11px">(optional)</span><input id="cfpb_account_number" placeholder="****1234"></label>
+            </div>
+            <label style="margin-top:10px">Issue category<input id="cfpb_issue" placeholder="Incorrect information on your credit report"></label>
+            <label style="margin-top:10px">Requested resolution<textarea id="cfpb_resolution" rows="3" placeholder="Delete the inaccurate account from all three bureaus and confirm in writing."></textarea></label>
+          </div>
+          <div class="card">
+            <h3 style="margin-bottom:10px">Timeline &amp; evidence</h3>
+            <label>What happened — one event per line: date — what happened<textarea id="cfpb_timeline" rows="4" placeholder="03/01/2026 — Mailed a dispute letter by certified mail&#10;03/20/2026 — Bureau verified item without an adequate investigation"></textarea></label>
+            <label style="margin-top:10px">Violations <span style="color:var(--muted);font-size:11px">(one per line)</span><textarea id="cfpb_violations" rows="3" placeholder="Failed to conduct a reasonable investigation (FCRA §611)&#10;Continued reporting inaccurate information (FCRA §623)"></textarea></label>
+            <label style="margin-top:10px">Supporting evidence <span style="color:var(--muted);font-size:11px">(one per line)</span><textarea id="cfpb_evidence" rows="3" placeholder="Certified mail receipt&#10;Copy of the disputed report entry&#10;Prior dispute letter"></textarea></label>
+          </div>
+        </div>
+        <button class="primary" id="cfpbGenerateBtn" style="margin:16px 0;width:100%" onclick="generateCfpbComplaint()"><span class="material-symbols-outlined" style="font-size:18px;vertical-align:-4px">gavel</span> Generate CFPB complaint</button>
+        <div id="cfpbOutput" class="hidden">
+          <div class="card">
+            <div class="stitchCardHead" style="margin-bottom:12px"><h3>Complaint narrative</h3><span class="chip up" id="cfpbReadyChip">Ready to file</span></div>
+            <pre id="cfpbNarrative" style="white-space:pre-wrap;color:var(--ink2);font-family:var(--font);font-size:13px;line-height:1.6;max-height:480px;overflow:auto;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:14px"></pre>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+              <button class="ghost" style="flex:1" onclick="copyText('cfpbNarrative')"><span class="material-symbols-outlined" style="font-size:16px;vertical-align:-3px">content_copy</span> Copy</button>
+              <button class="ghost" style="flex:1" id="cfpbDownloadBtn" onclick="downloadCfpbPackageFile()"><span class="material-symbols-outlined" style="font-size:16px;vertical-align:-3px">package_2</span> Download package</button>
+              <a id="cfpbFilingLink" href="https://www.consumerfinance.gov/complaint/" target="_blank" rel="noopener" class="primary" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;border:0;font-weight:700;border-radius:11px;padding:10px 16px;cursor:pointer;text-decoration:none"><span class="material-symbols-outlined" style="font-size:16px">open_in_new</span> File at consumerfinance.gov</a>
+            </div>
+          </div>
+        </div>
+        <div class="disclaimer">CREDITOS helps you draft complaints — it is not a law firm or credit repair organization. Review every detail before filing. Filing a false complaint with a federal agency is unlawful. You may dispute inaccurate information yourself for free at consumerfinance.gov/complaint.</div>
+      </div>
+
+      <!-- ════════ CASE TRACKER ════════ -->
+      <div class="page" id="cases">
+        <div class="heroHead">
+          <div>
+            <h2>Case Tracker</h2>
+            <p>Your live dispute case registry — status, deadlines, outcomes, and the full activity timeline synced from your disputes.</p>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="ghost" id="casesSyncBtn" onclick="syncCasesNow()"><span class="material-symbols-outlined" style="font-size:18px;vertical-align:-4px">sync</span> Sync cases</button>
+            <button class="primary" onclick="showPage('disputes')">View dispute letters</button>
+          </div>
+        </div>
+        <div class="grid grid4">
+          <div class="card"><div class="metricLab">Active Cases</div><div class="metricNum" id="casesActive">—</div></div>
+          <div class="card"><div class="metricLab">Closed Cases</div><div class="metricNum" id="casesClosedCount">—</div></div>
+          <div class="card"><div class="metricLab">Success Rate</div><div class="metricNum" id="casesSuccessRate" style="color:var(--em)">—</div></div>
+          <div class="card"><div class="metricLab">Overdue Deadlines</div><div class="metricNum" id="casesOverdue" style="color:var(--red)">—</div></div>
+        </div>
+        <div class="sectionTitle">
+          <h3>Case registry</h3>
+          <span id="casesSyncNote" style="color:var(--muted);font-size:12.5px">Loading…</span>
+        </div>
+        <div class="list" id="casesList"><div class="empty">No cases yet — sync after opening a dispute.</div></div>
+        <div class="sectionTitle" style="margin-top:22px">
+          <h3>Deadline alerts</h3>
+          <span style="color:var(--muted);font-size:12.5px">Upcoming and overdue response windows</span>
+        </div>
+        <div class="list" id="casesDeadlineList"><div class="empty">No alerts — deadlines appear here when cases have a response due date.</div></div>
+        <div class="sectionTitle" style="margin-top:22px">
+          <h3>Recent activity</h3>
+          <span style="color:var(--muted);font-size:12.5px">Last 20 case events</span>
+        </div>
+        <div class="list" id="casesEventList"><div class="empty">No case events yet.</div></div>
+        <div class="disclaimer">Case tracking is for organizational purposes only. CREDITOS does not provide legal advice. Keep certified mail receipts and complete records — they anchor all timelines shown here.</div>
       </div>
 
       <!-- ════════ PREMIUM BUREAU RESPONSES ════════ -->
@@ -1255,7 +1344,8 @@ const api = {
   headers(){ const h={'Content-Type':'application/json'}; const t=getAuthToken(); if(t)h['Authorization']=`Bearer ${t}`; return h; },
   async post(path,body){ const res=await fetch(path,{method:'POST',headers:this.headers(),body:JSON.stringify(body)}); const data=await res.json().catch(()=>({error:'Invalid server response.'})); if(!res.ok){const e=new Error(data.error||'Request failed.');e.status=res.status;throw e;} return data; },
   async patch(path,body){ const res=await fetch(path,{method:'PATCH',headers:this.headers(),body:JSON.stringify(body)}); const data=await res.json().catch(()=>({error:'Invalid server response.'})); if(!res.ok){const e=new Error(data.error||'Request failed.');e.status=res.status;throw e;} return data; },
-  async get(path){ const res=await fetch(path,{headers:this.headers()}); const data=await res.json().catch(()=>({error:'Invalid server response.'})); if(!res.ok){const e=new Error(data.error||'Request failed.');e.status=res.status;throw e;} return data; }
+  async get(path){ const res=await fetch(path,{headers:this.headers()}); const data=await res.json().catch(()=>({error:'Invalid server response.'})); if(!res.ok){const e=new Error(data.error||'Request failed.');e.status=res.status;throw e;} return data; },
+  async del(path){ const res=await fetch(path,{method:'DELETE',headers:this.headers()}); const data=await res.json().catch(()=>({error:'Invalid server response.'})); if(!res.ok){const e=new Error(data.error||'Request failed.');e.status=res.status;throw e;} return data; }
 };
 
 function normalizeMailingAddress(address = {}) {
@@ -2024,7 +2114,7 @@ async function completePasswordReset(){
 }
 
 // ── Navigation ─────────────────────────────────────────────────
-const PAGE_TITLES={home:'Dashboard',onboarding:'Goals & Plan',scanner:'Monitoring',playbook:'Dispute Playbook',letters:'Negative Items',disputes:'Dispute Timeline',responses:'Bureau Responses',simulator:'Simulators',funding:'Funding Center',business:'Business Credit',jordan:'Jordan AI',crm:'Client CRM',vendors:'Vendor Tracker',settings:'Settings'};
+const PAGE_TITLES={home:'Dashboard',onboarding:'Goals & Plan',scanner:'Monitoring',playbook:'Dispute Playbook',letters:'Negative Items',disputes:'Dispute Timeline',cfpb:'CFPB Center',cases:'Case Tracker',responses:'Bureau Responses',simulator:'Simulators',funding:'Funding Center',business:'Business Credit',jordan:'Jordan AI',crm:'Client CRM',vendors:'Vendor Tracker',settings:'Settings'};
 function openMenu(){document.body.classList.add('menu-open')}
 function closeMenu(){document.body.classList.remove('menu-open')}
 function toggleMenu(){document.body.classList.contains('menu-open')?closeMenu():openMenu()}
@@ -2044,6 +2134,8 @@ function showPage(id){
   if(id==='home') renderDashboard();
   if(id==='playbook') renderPlaybook();
   if(id==='disputes') renderDisputes();
+  if(id==='cfpb') renderCfpbPage();
+  if(id==='cases'){ renderCasesPage(); loadCaseDashboard().catch(()=>{}); }
   if(id==='responses') renderResponseCenter();
   if(id==='funding') renderFundingPage();
   if(id==='business') renderBusiness();
@@ -3681,14 +3773,18 @@ function generatePlaybookCfpbPackage(){
   const {account,analysis}=selectedPlaybook();
   if(!account||!analysis){toast('Select an account first.');return}
   const docs=analysis.neededDocs.flatMap(g=>g.items).slice(0,8);
-  const timeline=[
+  const timelineLines=[
     `Case opened: ${account.source==='scan'?'latest report scan':'dispute timeline'}`,
-    account.mailed_at?`Letter mailed: ${new Date(account.mailed_at).toLocaleDateString()}`:'Letter mailed: not recorded',
-    analysis.failedResponse?'Response received: item verified or kept':'Response received: not recorded',
-    analysis.overdue?'Follow-up due: response window has passed':'Follow-up due: monitor expected response window'
+    account.mailed_at?`${new Date(account.mailed_at).toLocaleDateString()} — Dispute letter mailed by certified mail`:'Letter mailed: not recorded',
+    analysis.failedResponse?'Bureau verified item without adequate investigation or explanation':'Response received: not recorded',
+    analysis.overdue?'Response window has passed — bureau has not resolved the matter':'Follow-up due: monitor expected response window'
   ];
-  $('pbEscalationBox').innerHTML=`<strong>CFPB Complaint Draft</strong><span>I am filing this complaint regarding ${escapeHtml(account.creditor)} because disputed credit reporting for ${escapeHtml(account.accountType)} remains unresolved after prior dispute activity. I request correction or deletion of inaccurate/unverifiable reporting and written confirmation of the investigation results.</span><strong>Timeline Summary</strong><span>${timeline.map(escapeHtml).join('<br>')}</span><strong>Supporting Document Package</strong><span>${escapeHtml(docs.join(', '))}</span><strong>Creditor History Summary</strong><span>${escapeHtml(account.creditor)} · ${escapeHtml(account.bureau)} · ${escapeHtml(account.issue)}</span>`;
-  toast('CFPB package drafted in the Playbook.');
+  // Update inline escalation box summary
+  $('pbEscalationBox').innerHTML=`<strong>CFPB Complaint Draft</strong><span>I am filing this complaint regarding ${escapeHtml(account.creditor)} because disputed credit reporting for ${escapeHtml(account.accountType)} remains unresolved after prior dispute activity.</span><strong>Timeline</strong><span>${timelineLines.map(escapeHtml).join('<br>')}</span><strong>Evidence Package</strong><span>${escapeHtml(docs.join(', ')||'Add prior disputes, bureau responses, and certified mail receipts.')}</span>`;
+  // Pre-fill and navigate to CFPB center
+  prefillCfpbFromPlaybook(account, analysis, timelineLines, docs);
+  showPage('cfpb');
+  toast('CFPB Center pre-filled — review and generate your complaint.');
 }
 
 // ── Simulators ─────────────────────────────────────────────────
@@ -3996,14 +4092,58 @@ function renderCaseAutomationAdmin(){
     stat('Follow-up rules', rules.length),
     stat('Status', d.error ? 'Blocked' : d.loading ? 'Loading' : 'Ready')
   ].join('');
-  const rows = [
-    '<div class="item"><div><strong>Template library</strong><small>Admin-created templates stay visible here.</small></div><span class="tag blue">CRUD</span></div>',
-    ...templates.slice(0, 6).map(t => `<div class="item"><div><strong>${escapeHtml(t.label || t.template_key)}</strong><small>${escapeHtml([t.category, t.recipient, t.strategy].filter(Boolean).join(' · ') || 'Template')}</small></div><span class="tag ${t.is_active ? 'up' : 'gray'}">${t.is_active ? 'Active' : 'Inactive'}</span></div>`),
-    '<div class="item"><div><strong>Follow-up rules</strong><small>Delay-based triggers for deadline nudges and next-round prompts.</small></div><span class="tag blue">Rules</span></div>',
-    ...rules.slice(0, 6).map(r => `<div class="item"><div><strong>${escapeHtml(r.name || r.template_key)}</strong><small>${escapeHtml(`${r.trigger_stage || 'stage'} · ${r.delay_days || 0} day${Number(r.delay_days)===1?'':'s'}`)}</small></div><span class="tag ${r.is_enabled ? 'up' : 'gray'}">${r.is_enabled ? 'Enabled' : 'Disabled'}</span></div>`)
+  const tplRows = templates.length
+    ? templates.map(t=>`<div class="item"><div><strong>${escapeHtml(t.label||t.template_key)}</strong><small>${escapeHtml([t.category,t.recipient,t.strategy].filter(Boolean).join(' · ')||'Template')}</small></div><div style="display:flex;gap:6px;align-items:center"><span class="tag ${t.is_active?'up':'gray'}">${t.is_active?'Active':'Inactive'}</span><button class="ghost" style="padding:5px 10px;font-size:12px" onclick="toggleAdminTemplate('${escapeHtml(t.id)}',${!t.is_active})">${t.is_active?'Deactivate':'Activate'}</button><button class="ghost" style="padding:5px 10px;font-size:12px;color:var(--red)" onclick="deleteAdminTemplate('${escapeHtml(t.id)}')">Delete</button></div></div>`)
+    : ['<div class="empty">No custom templates yet — add one with the editor below.</div>'];
+  const ruleRows = rules.length
+    ? rules.map(r=>`<div class="item"><div><strong>${escapeHtml(r.name||r.template_key)}</strong><small>${escapeHtml(`${r.trigger_stage||'stage'} · ${r.delay_days||0} day${Number(r.delay_days)===1?'':'s'} · ${r.template_key||''}`)}</small></div><div style="display:flex;gap:6px;align-items:center"><span class="tag ${r.is_enabled?'up':'gray'}">${r.is_enabled?'Enabled':'Disabled'}</span><button class="ghost" style="padding:5px 10px;font-size:12px" onclick="toggleAdminRule('${escapeHtml(r.id)}',${!r.is_enabled})">${r.is_enabled?'Disable':'Enable'}</button><button class="ghost" style="padding:5px 10px;font-size:12px;color:var(--red)" onclick="deleteAdminRule('${escapeHtml(r.id)}')">Delete</button></div></div>`)
+    : ['<div class="empty">No follow-up rules yet — add one with the rule editor below.</div>'];
+  const rows=[
+    '<div class="item" style="background:rgba(124,168,255,.06)"><div><strong>Template library</strong><small>Admin-created dispute templates shown to all users.</small></div><span class="tag blue">'+templates.length+' templates</span></div>',
+    ...tplRows,
+    '<div class="item" style="background:rgba(124,168,255,.06);margin-top:6px"><div><strong>Follow-up rules</strong><small>Delay-based triggers for next-round prompts and CFPB escalation.</small></div><span class="tag blue">'+rules.length+' rules</span></div>',
+    ...ruleRows
   ];
-  if (d.error) rows.unshift(`<div class="item"><div><strong>Admin access blocked</strong><small>${escapeHtml(d.error)}</small></div><span class="tag amber">Check role</span></div>`);
-  list.innerHTML = rows.join('') || '<div class="empty">No templates yet.</div>';
+  if(d.error) rows.unshift(`<div class="item"><div><strong>Admin access blocked</strong><small>${escapeHtml(d.error)}</small></div><span class="tag amber">Check role</span></div>`);
+  list.innerHTML = rows.join('');
+}
+
+async function toggleAdminTemplate(id, isActive){
+  if(!_supabase||!_session){openAuthModal();return;}
+  try{
+    await api.patch(`/api/cases/admin/templates/${id}`,{is_active:isActive});
+    toast(isActive?'Template activated ✓':'Template deactivated ✓');
+    await loadCaseAutomationAdmin();
+  }catch(e){toast(e.message||'Could not update template.');}
+}
+
+async function deleteAdminTemplate(id){
+  if(!confirm('Delete this template permanently?'))return;
+  if(!_supabase||!_session){openAuthModal();return;}
+  try{
+    await api.del(`/api/cases/admin/templates/${id}`);
+    toast('Template deleted ✓');
+    await loadCaseAutomationAdmin();
+  }catch(e){toast(e.message||'Could not delete template.');}
+}
+
+async function toggleAdminRule(id, isEnabled){
+  if(!_supabase||!_session){openAuthModal();return;}
+  try{
+    await api.patch(`/api/cases/admin/followup-rules/${id}`,{is_enabled:isEnabled});
+    toast(isEnabled?'Rule enabled ✓':'Rule disabled ✓');
+    await loadCaseAutomationAdmin();
+  }catch(e){toast(e.message||'Could not update rule.');}
+}
+
+async function deleteAdminRule(id){
+  if(!confirm('Delete this follow-up rule permanently?'))return;
+  if(!_supabase||!_session){openAuthModal();return;}
+  try{
+    await api.del(`/api/cases/admin/followup-rules/${id}`);
+    toast('Rule deleted ✓');
+    await loadCaseAutomationAdmin();
+  }catch(e){toast(e.message||'Could not delete rule.');}
 }
 
 async function loadCaseAutomationAdmin(){
@@ -4108,6 +4248,142 @@ async function loadCaseDashboard(){
     _caseDashboard={loading:false,cases:[],events:[],deadlines:[],templates:[],followupRules:[],metrics:{active_cases:0,closed_cases:0,successful_cases:0,no_response_cases:0,overdue_cases:0,success_rate:0},error:e.message};
   }
   renderCaseDashboard();
+  renderCasesPage();
+}
+
+// ── CFPB Center ────────────────────────────────────────────────
+let _cfpbState = { loading: false, lastPackage: null };
+
+function renderCfpbPage(){
+  const btn=$('cfpbGenerateBtn');
+  if(!btn)return;
+  btn.textContent=_cfpbState.loading?'Generating…':'Generate CFPB complaint';
+  btn.disabled=!!_cfpbState.loading;
+  if(!_cfpbState.loading) btn.innerHTML='<span class="material-symbols-outlined" style="font-size:18px;vertical-align:-4px">gavel</span> Generate CFPB complaint';
+}
+
+function clearCfpbForm(){
+  ['cfpb_consumer_name','cfpb_city_state_zip','cfpb_email','cfpb_phone','cfpb_company','cfpb_account_number','cfpb_issue','cfpb_resolution','cfpb_timeline','cfpb_violations','cfpb_evidence'].forEach(id=>{const el=$(id);if(el)el.value='';});
+  const out=$('cfpbOutput');if(out)out.classList.add('hidden');
+  _cfpbState.lastPackage=null;
+}
+
+function prefillCfpbFromPlaybook(account, analysis, timelineLines, docs){
+  const set=(id,val)=>{const el=$(id);if(el&&val!=null)el.value=val;};
+  set('cfpb_company', account.creditor||'');
+  set('cfpb_issue', `Inaccurate/unverifiable ${account.accountType||'credit'} reporting — ${account.issue||account.creditor}`);
+  set('cfpb_resolution', 'Delete or correct the inaccurate account from all three credit reports and confirm the resolution in writing.');
+  set('cfpb_timeline', (timelineLines||[]).filter(Boolean).join('\n'));
+  set('cfpb_violations', analysis?.cfpbEligible
+    ? 'Failed to conduct a reasonable investigation (FCRA §611(a)(1))\nContinued reporting inaccurate information (FCRA §623(a)(2))'
+    : 'Inadequate investigation response (FCRA §611)\nInaccurate reporting by data furnisher (FCRA §623)');
+  set('cfpb_evidence', (docs||[]).join('\n'));
+  const out=$('cfpbOutput');if(out)out.classList.add('hidden');
+}
+
+async function generateCfpbComplaint(){
+  const v=id=>$(id)?.value?.trim()||'';
+  const lines=id=>v(id).split('\n').map(s=>s.trim()).filter(Boolean);
+  const company=v('cfpb_company');
+  if(!company){toast('Enter the company name.');return;}
+  const timeline=lines('cfpb_timeline').map(l=>{const i=l.indexOf('—');return i>0?{date:l.slice(0,i).trim(),event:l.slice(i+1).trim()}:{event:l};});
+  const body={
+    consumer:{name:v('cfpb_consumer_name'),cityStateZip:v('cfpb_city_state_zip'),email:v('cfpb_email'),phone:v('cfpb_phone')},
+    company, accountNumber:v('cfpb_account_number'),
+    issueCategory:v('cfpb_issue'), requestedResolution:v('cfpb_resolution'),
+    timeline, violations:lines('cfpb_violations'), evidence:lines('cfpb_evidence')
+  };
+  _cfpbState.loading=true; renderCfpbPage();
+  try{
+    const data=await fetch('/api/disputes/cfpb',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(r=>r.json());
+    if(!data.success)throw new Error(data.error||'Could not generate the complaint.');
+    $('cfpbNarrative').textContent=data.complaint.narrative;
+    const link=$('cfpbFilingLink');if(link)link.href=data.complaint.filingUrl||'https://www.consumerfinance.gov/complaint/';
+    _cfpbState.lastPackage=data.package||null;
+    const out=$('cfpbOutput');if(out){out.classList.remove('hidden');out.scrollIntoView({behavior:'smooth',block:'nearest'});}
+    toast('CFPB complaint generated ✓');
+  }catch(e){toast(e.message||'Could not generate the complaint.');}
+  _cfpbState.loading=false; renderCfpbPage();
+}
+
+function downloadCfpbPackageFile(){
+  const pkg=_cfpbState.lastPackage;
+  if(!pkg?.content){toast('Generate the complaint first.');return;}
+  const blob=new Blob([pkg.content],{type:pkg.mimeType||'text/markdown'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=pkg.filename||'creditos-cfpb-package.md';
+  a.style.display='none';
+  document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1000);
+}
+
+// ── Case Tracker page ───────────────────────────────────────────
+function renderCasesPage(){
+  const d=_caseDashboard||{};
+  const cases=Array.isArray(d.cases)?d.cases:[];
+  const events=Array.isArray(d.events)?d.events:[];
+  const deadlines=Array.isArray(d.deadlines)?d.deadlines:[];
+  const m=d.metrics||{};
+
+  // Metrics tiles
+  const active=$('casesActive'), closed=$('casesClosedCount'), rate=$('casesSuccessRate'), overdue=$('casesOverdue');
+  if(active) active.textContent=m.active_cases??'—';
+  if(closed) closed.textContent=m.closed_cases??'—';
+  if(rate){ rate.textContent=m.success_rate!=null?`${m.success_rate}%`:'—'; rate.style.color=(m.success_rate??0)>=70?'var(--em)':'var(--amber)'; }
+  if(overdue){ overdue.textContent=m.overdue_cases??'—'; overdue.style.color=(m.overdue_cases??0)>0?'var(--red)':'inherit'; }
+
+  // Sync note
+  const note=$('casesSyncNote');
+  if(note) note.textContent=d.loading?'Syncing…':d.error?`Error: ${d.error}`:cases.length?`${cases.length} case${cases.length===1?'':'s'} · ${events.length} event${events.length===1?'':'s'}`:'No cases — run a dispute and sync.';
+
+  // Case list
+  const list=$('casesList');
+  if(list){
+    const statusTone=s=>{
+      s=String(s||'').toLowerCase();
+      if(['resolved','closed'].includes(s))return 'up';
+      if(s==='escalated')return 'red';
+      if(s==='mailed'||s==='investigating'||s==='waiting_response')return 'blue';
+      return 'gray';
+    };
+    const outcomeTone=o=>o&&['deleted','corrected'].includes(o)?'up':o==='verified'?'amber':'gray';
+    list.innerHTML=cases.length
+      ?cases.map(row=>{
+          const isOverdue=row.response_due_at&&new Date(row.response_due_at).getTime()<Date.now()&&!['resolved','closed'].includes(String(row.status||'').toLowerCase());
+          return `<div class="item"><div><strong>${escapeHtml(row.creditor||row.client_name||'Untitled case')}</strong><small>${escapeHtml([row.bureau,row.category,row.strategy].filter(Boolean).join(' · ')||'Case details')} · ${escapeHtml(String(row.status||'open').replace(/_/g,' '))}${row.response_due_at?` · due ${escapeHtml(exactDate(row.response_due_at))}`:''}${isOverdue?' ⚠️ overdue':''}</small></div><div style="display:flex;gap:6px;align-items:center">${row.outcome?`<span class="tag ${outcomeTone(row.outcome)}">${escapeHtml(row.outcome)}</span>`:''}<span class="tag ${statusTone(row.status)}">${escapeHtml(row.status||'open')}</span></div></div>`;
+        }).join('')
+      :'<div class="empty">No cases yet. Open a dispute, then click Sync cases above.</div>';
+  }
+
+  // Deadlines
+  const dlList=$('casesDeadlineList');
+  if(dlList){
+    const open=deadlines.filter(a=>!['read','dismissed'].includes(String(a.status||'').toLowerCase()));
+    dlList.innerHTML=open.length
+      ?open.map(a=>`<div class="item"><div><strong>${escapeHtml(a.title||'Deadline alert')}</strong><small>${escapeHtml(exactDate(a.alert_date))} · ${escapeHtml(a.body||a.alert_type||'deadline')}</small></div><span class="tag ${new Date(a.alert_date).getTime()<Date.now()?'red':'amber'}">Due</span></div>`).join('')
+      :'<div class="empty">No open deadline alerts.</div>';
+  }
+
+  // Events
+  const evList=$('casesEventList');
+  if(evList){
+    const recent=events.slice(0,20);
+    evList.innerHTML=recent.length
+      ?recent.map(ev=>`<div class="item"><div><strong>${escapeHtml(String(ev.event_type||'Event').replace(/_/g,' '))}</strong><small>${escapeHtml(exactDate(ev.created_at))}${ev.note?' · '+escapeHtml(ev.note.slice(0,80)):''}</small></div><span class="tag ${ev.case_status?'blue':'gray'}">${escapeHtml(ev.case_status||'event')}</span></div>`).join('')
+      :'<div class="empty">No case events yet.</div>';
+  }
+}
+
+async function syncCasesNow(){
+  const btn=$('casesSyncBtn');
+  if(btn){btn.disabled=true;btn.innerHTML='<span class="material-symbols-outlined" style="font-size:18px;vertical-align:-4px">sync</span> Syncing…';}
+  try{
+    await loadCaseDashboard();
+    renderCasesPage();
+    toast(`Cases synced — ${(_caseDashboard.cases||[]).length} records.`);
+  }catch(e){toast(e.message||'Sync failed.');}
+  if(btn){btn.disabled=false;btn.innerHTML='<span class="material-symbols-outlined" style="font-size:18px;vertical-align:-4px">sync</span> Sync cases';}
 }
 
 // ── CRM ────────────────────────────────────────────────────────

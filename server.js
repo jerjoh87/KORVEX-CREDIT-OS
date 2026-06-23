@@ -128,7 +128,7 @@ function isAllowedOrigin(origin, req) {
 app.use(cors((req, cb) => {
   cb(null, {
     origin: isAllowedOrigin(req.headers.origin, req),
-    methods: ['GET', 'POST', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
   });
