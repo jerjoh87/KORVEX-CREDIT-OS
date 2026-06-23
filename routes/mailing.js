@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { Router } from 'express';
 import Stripe from 'stripe';
 import { requireAuth, supabaseAdmin } from '../lib/server-state.js';
+import { isMissingSchemaError, withTimeout } from '../lib/supabase-errors.js';
 import { click2mailConfigured, sendCertifiedMail } from '../lib/click2mail.js';
 import { createCertifiedMailPacket } from '../lib/mail-packet.js';
 import {
@@ -71,12 +72,15 @@ async function getMailingProfile(userId) {
 }
 
 async function isAdminUser(userId) {
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await withTimeout(supabaseAdmin
     .from('profiles')
     .select('is_admin,email')
     .eq('id', userId)
-    .maybeSingle();
-  if (error) throw error;
+    .maybeSingle(), 8000, 'Mailing admin lookup timed out.');
+  if (error) {
+    if (isMissingSchemaError(error)) return false;
+    throw error;
+  }
   if (data?.is_admin) return true;
   if (data?.email && ADMIN_EMAILS.includes(String(data.email).toLowerCase())) return true;
   return false;
@@ -112,22 +116,30 @@ async function seedSystemRecipients() {
   const rows = getSystemRecipients().map(recipient =>
     toRecipientBookRow(recipient, { id: recipient.id, user_id: null, organization_id: null })
   );
-  const { error } = await supabaseAdmin
+  const { error } = await withTimeout(supabaseAdmin
     .from('recipient_address_book')
-    .upsert(rows, { onConflict: 'id' });
-  if (error) throw error;
+    .upsert(rows, { onConflict: 'id' }), 8000, 'Recipient address book seed timed out.');
+  if (error) {
+    if (isMissingSchemaError(error)) return rows;
+    throw error;
+  }
   return rows;
 }
 
 async function loadRecipients(userId, { includeInactive = false, adminView = false } = {}) {
-  await seedSystemRecipients();
-  const { data, error } = await supabaseAdmin
+  const systemFallback = await seedSystemRecipients();
+  const { data, error } = await withTimeout(supabaseAdmin
     .from('recipient_address_book')
     .select('*')
     .order('is_system_recipient', { ascending: false })
     .order('is_default', { ascending: false })
-    .order('recipient_name', { ascending: true });
-  if (error) throw error;
+    .order('recipient_name', { ascending: true }), 8000, 'Recipient address book lookup timed out.');
+  if (error) {
+    if (isMissingSchemaError(error)) {
+      return systemFallback.map(normalizeBookRow).filter(row => includeInactive || row.is_active);
+    }
+    throw error;
+  }
 
   return (data || [])
     .map(normalizeBookRow)
@@ -139,12 +151,20 @@ async function loadRecipients(userId, { includeInactive = false, adminView = fal
 }
 
 async function getRecipientById(id) {
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await withTimeout(supabaseAdmin
     .from('recipient_address_book')
     .select('*')
     .eq('id', id)
-    .maybeSingle();
-  if (error) throw error;
+    .maybeSingle(), 8000, 'Recipient lookup timed out.');
+  if (error) {
+    if (isMissingSchemaError(error)) {
+      const system = getSystemRecipients()
+        .map(recipient => toRecipientBookRow(recipient, { id: recipient.id, user_id: null, organization_id: null }))
+        .find(row => row.id === id);
+      return system ? normalizeBookRow(system) : null;
+    }
+    throw error;
+  }
   return data ? normalizeBookRow(data) : null;
 }
 

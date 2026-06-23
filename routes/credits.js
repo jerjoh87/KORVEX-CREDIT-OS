@@ -20,6 +20,7 @@ import { Router } from 'express';
 import Stripe from 'stripe';
 import { requireAuth, supabaseAdmin } from '../lib/server-state.js';
 import { isAdminUser } from '../lib/admin.js';
+import { withTimeout } from '../lib/supabase-errors.js';
 import {
   getPlanFromCheckoutSession,
   getPlanFromSubscription,
@@ -431,10 +432,26 @@ const EVENT_HANDLERS = {
 // GET /api/credits/balance
 router.get('/balance', requireAuth, async (req, res) => {
   try {
-    const { data, error } = await supabaseAdmin
+    if (req.testAdmin) {
+      return res.json({
+        credits: 999,
+        plan: 'business',
+        unlimited: true,
+        premium_access: true,
+        payment_failed: false,
+        subscription_status: 'active',
+        trial_started_at: null,
+        trial_ends_at: null,
+        next_bill_at: null,
+        canceled_at: null,
+        can_manage_billing: true
+      });
+    }
+
+    const { data, error } = await withTimeout(supabaseAdmin
       .from('profiles')
       .select('credits, plan, payment_failed, subscription_status, trial_started_at, trial_ends_at, next_bill_at, canceled_at, stripe_customer_id')
-      .eq('id', req.user.id).single();
+      .eq('id', req.user.id).single(), 8000, 'Credit balance lookup timed out.');
     if (error) return res.status(404).json({ error: 'Profile not found.' });
     const unlimited = isUnlimitedPlan(data.plan);
     const testAdmin = await isAdminUser(req.user?.id, req.user?.email || null);

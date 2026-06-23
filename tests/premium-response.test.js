@@ -74,12 +74,18 @@ describe('30/45-day dispute timeline', () => {
 describe('Bureau response normalization', () => {
   test('maps bureau wording to the supported category set', () => {
     assert.equal(normalizeResponseCategory('Verified as accurate'), 'verified');
+    assert.equal(normalizeResponseCategory('Unable to verify'), 'unable_to_verify');
+    assert.equal(normalizeResponseCategory('Partial deletion'), 'partial_deletion');
+    assert.equal(normalizeResponseCategory('Request for information'), 'request_for_information');
     assert.equal(normalizeResponseCategory('Frivolous / irrelevant'), 'frivolous_or_irrelevant');
     assert.equal(normalizeResponseCategory('No clear result detected'), 'unclear');
   });
 
   test('preliminary classifier recognizes common response outcomes', () => {
     assert.equal(inferResponseCategory('The account was deleted from your file.'), 'deleted');
+    assert.equal(inferResponseCategory('We were unable to verify this account.'), 'unable_to_verify');
+    assert.equal(inferResponseCategory('Some accounts were deleted but others remain verified.'), 'partial_deletion');
+    assert.equal(inferResponseCategory('Please provide proof of identity and additional information.'), 'request_for_information');
     assert.equal(inferResponseCategory('We verified this account as accurate.'), 'verified');
     assert.equal(inferResponseCategory('We need additional documentation.'), 'needs_more_information');
   });
@@ -96,5 +102,8 @@ describe('Bureau response normalization', () => {
     assert.equal(analysis.confidence_score, 100);
     assert.equal(analysis.accounts[0].account_last4, '4821');
     assert.equal(analysis.recommended_letter_type, 'method_of_verification');
+    assert.equal(analysis.method_of_verification_recommended, true);
+    assert.equal(analysis.creditor_direct_dispute_recommended, true);
+    assert.ok(analysis.next_round_number >= 2);
   });
 });

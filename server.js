@@ -15,6 +15,7 @@ import rateLimit from 'express-rate-limit';
 import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { requireAuth, supabaseAdmin, hasSupabaseAdmin } from './lib/server-state.js';
+import { createTestAdminToken, testAdminCredentials, testAdminModeEnabled, validateTestAdminCredentials } from './lib/test-admin.js';
 
 import aiRoutes from './routes/ai.js';
 import creditsRoutes from './routes/credits.js';
@@ -176,7 +177,7 @@ app.get('/api/runtime-status', (req, res) => {
   res.json({
     ok: true,
     appUrl: process.env.APP_BASE_URL || process.env.APP_URL || null,
-    testAdminMode: String(process.env.TEST_ADMIN_MODE || '').toLowerCase() === 'true',
+    testAdminMode: testAdminModeEnabled(),
     services: {
       supabase: !!supabaseAdmin,
       stripe: !!process.env.STRIPE_SECRET_KEY,
@@ -186,6 +187,39 @@ app.get('/api/runtime-status', (req, res) => {
       pdf: 'browser'
     }
   });
+});
+
+app.post('/api/test-admin/login', (req, res) => {
+  if (!testAdminModeEnabled()) {
+    return res.status(404).json({ error: 'Temporary admin login is not enabled.' });
+  }
+
+  const username = String(req.body?.username || '').trim();
+  const password = String(req.body?.password || '');
+
+  if (!validateTestAdminCredentials(username, password)) {
+    return res.status(401).json({ error: 'Invalid temporary admin credentials.' });
+  }
+
+  try {
+    const { email } = testAdminCredentials();
+    const token = createTestAdminToken({ email });
+    res.json({
+      success: true,
+      access_token: token,
+      user: {
+        id: `temp-admin:${email}`,
+        email,
+        app_metadata: { provider: 'temp-admin' },
+        user_metadata: { full_name: 'Temporary Admin' }
+      },
+      expires_in: 12 * 60 * 60,
+      unlimited: true,
+      admin: true
+    });
+  } catch (error) {
+    res.status(error.status || 500).json({ error: error.message || 'Temporary admin login failed.' });
+  }
 });
 
 // ── Routes ───────────────────────────────────────────────────────────────────

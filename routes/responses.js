@@ -131,7 +131,7 @@ Return only valid JSON:
   "bureau": "Experian|Equifax|TransUnion|Unknown",
   "response_date": "YYYY-MM-DD or null",
   "client_name": "name or empty",
-  "overall_category": "deleted|updated|verified|unchanged|frivolous_or_irrelevant|needs_more_information|no_investigation|mixed_result|unclear",
+  "overall_category": "deleted|partial_deletion|updated|verified|unable_to_verify|investigation_complete|unchanged|frivolous_or_irrelevant|needs_more_information|request_for_information|no_investigation|mixed_result|unclear",
   "summary": "plain-English summary",
   "confidence_score": 0,
   "accounts": [{
@@ -141,8 +141,16 @@ Return only valid JSON:
     "bureau_explanation": "what the letter says"
   }],
   "recommended_next_action": "consumer-safe next step",
-  "recommended_letter_type": "corrected_info_reinvestigation|method_of_verification|reinvestigation|evidence_resubmission|evidence_attachment|no_response_follow_up|mixed_result_follow_up|manual_review or null",
-  "missing_documents": ["specific document"]
+  "recommended_letter_type": "corrected_info_reinvestigation|method_of_verification|reinvestigation|evidence_resubmission|evidence_attachment|no_response_follow_up|mixed_result_follow_up|deletion_enforcement|manual_review or null",
+  "missing_documents": ["specific document"],
+  "next_round_number": 1,
+  "next_round_action": "what to do next",
+  "escalation_recommended": false,
+  "cfpb_recommended": false,
+  "creditor_direct_dispute_recommended": false,
+  "goodwill_recommended": false,
+  "debt_validation_recommended": false,
+  "method_of_verification_recommended": false
 }`;
 
   if (!geminiConfigured()) {
@@ -173,6 +181,7 @@ Return only valid JSON:
     if (extractedText) return preliminaryAnalysis(extractedText, selectedBureau);
     throw apiError('The bureau response could not be read clearly. Try a sharper image or searchable PDF.', 422);
   }
+  parsed.previous_round_number = Number(previousRound?.round_number || previousRound?.roundNumber || 1);
   const normalized = normalizeResponseAnalysis(parsed, extractedText);
   if (normalized.bureau === 'Unknown' && selectedBureau !== 'Unknown') normalized.bureau = selectedBureau;
   return normalized;

@@ -91,9 +91,30 @@ function validatePriceId(name) {
   return false;
 }
 
+function boolEnv(name) {
+  return ['1', 'true', 'yes', 'on'].includes(safeValue(name).toLowerCase());
+}
+
+function validateTemporaryAdminSafety() {
+  const enabled = boolEnv('TEST_ADMIN_MODE') || boolEnv('TEMP_ADMIN_LOGIN_ENABLED');
+  if (!enabled) {
+    report('pass', 'Temporary admin login is disabled');
+    return true;
+  }
+
+  if (!isProduction) {
+    report('na', 'Temporary admin login is enabled for local testing');
+    return true;
+  }
+
+  report('fail', 'Temporary admin login is enabled in production; disable before public launch');
+  return false;
+}
+
 console.log(`CREDITOS env validation (${isProduction ? 'production' : 'local'} mode)`);
 
 let failed = false;
+failed = !validateTemporaryAdminSafety() || failed;
 
 if (hasValue('APP_BASE_URL')) {
   failed = !validateUrl('APP_BASE_URL', 'APP_BASE_URL') || failed;
@@ -110,6 +131,21 @@ failed = !requireKey('SUPABASE_SERVICE_ROLE_KEY', 'SUPABASE_SERVICE_ROLE_KEY') |
 
 failed = !requireKey('GEMINI_API_KEY', 'GEMINI_API_KEY') || failed;
 failed = !optionalKey('GEMINI_MODEL', 'GEMINI_MODEL') || failed;
+const googleOcrConfigured = hasValue('GOOGLE_SERVICE_ACCOUNT_JSON') || hasValue('GOOGLE_SERVICE_ACCOUNT_JSON_BASE64');
+if (googleOcrConfigured || hasValue('GOOGLE_DOCUMENT_AI_PROCESSOR_ID') || hasValue('GOOGLE_CLOUD_PROJECT_ID')) {
+  failed = !requireKey('GOOGLE_CLOUD_PROJECT_ID', 'GOOGLE_CLOUD_PROJECT_ID') || failed;
+  failed = !optionalKey('GOOGLE_CLOUD_LOCATION', 'GOOGLE_CLOUD_LOCATION') || failed;
+  failed = !requireKey('GOOGLE_DOCUMENT_AI_PROCESSOR_ID', 'GOOGLE_DOCUMENT_AI_PROCESSOR_ID') || failed;
+  failed = !optionalKey('GOOGLE_DOCUMENT_AI_PROCESSOR_VERSION', 'GOOGLE_DOCUMENT_AI_PROCESSOR_VERSION') || failed;
+  if (googleOcrConfigured) report('pass', 'Google service account credentials are set');
+  else {
+    report('blocked', 'GOOGLE_SERVICE_ACCOUNT_JSON or GOOGLE_SERVICE_ACCOUNT_JSON_BASE64 is not set');
+    failed = true;
+  }
+  failed = !optionalKey('GOOGLE_VISION_OCR_ENABLED', 'GOOGLE_VISION_OCR_ENABLED') || failed;
+} else {
+  report('na', 'Google Document AI OCR is not configured (optional)');
+}
 failed = !requireKey('STRIPE_SECRET_KEY', 'STRIPE_SECRET_KEY') || failed;
 failed = !requireKey('STRIPE_WEBHOOK_SECRET', 'STRIPE_WEBHOOK_SECRET') || failed;
 failed = !requireKey('CLICK2MAIL_USERNAME', 'CLICK2MAIL_USERNAME') || failed;
@@ -128,7 +164,7 @@ failed = !validatePriceId('STRIPE_TRIAL_ACTIVATION_PRICE_ID') || failed;
 report('pass', appUrl ? `Auth redirect: ${appUrl}/app.html` : 'Auth redirect: not available until APP_URL is set');
 report('pass', appUrl ? `Stripe success redirect: ${appUrl}/app.html?checkout=success` : 'Stripe success redirect: not available until APP_URL is set');
 report('pass', appUrl ? `Stripe cancel redirect: ${appUrl}/app.html?checkout=cancelled` : 'Stripe cancel redirect: not available until APP_URL is set');
-report('na', 'OCR/scanner provider key: browser-based OCR is used in the current build');
+report(googleOcrConfigured ? 'pass' : 'na', googleOcrConfigured ? 'OCR/scanner provider: Google OCR configured with browser fallback' : 'OCR/scanner provider key: browser-based OCR is used until Google OCR is configured');
 report('na', 'PDF generation provider key: browser-based PDF export is used in the current build');
 
 if (failed && isProduction) {

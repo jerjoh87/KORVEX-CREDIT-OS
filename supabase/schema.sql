@@ -11,6 +11,7 @@
 --    onboarding_profiles — wizard answers + computed scores
 --    user_state          — cross-device progress, vault, badges, and preferences
 --    launch_verification_events — launch proof log for auth / Stripe / mail
+--    credit_report_uploads  — private per-user report history and analysis
 --    leads               — landing-page quiz leads (service-role only)
 --
 --  Security model: anon key + RLS. Every user-facing table has
@@ -320,12 +321,31 @@ create table if not exists public.launch_verification_events (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.credit_report_uploads (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  original_filename text,
+  file_type text,
+  storage_path text,
+  extraction_method text not null default 'text',
+  characters_received int not null default 0,
+  extracted_text text,
+  analysis_json jsonb not null default '{}'::jsonb,
+  analysis_summary jsonb not null default '{}'::jsonb,
+  bureau_scores_json jsonb not null default '{}'::jsonb,
+  status text not null default 'new' check (status in ('new','reviewing','disputed','waiting_response','resolved','escalated')),
+  metadata jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 alter table public.premium_trials enable row level security;
 alter table public.dispute_rounds enable row level security;
 alter table public.bureau_responses enable row level security;
 alter table public.deadline_alerts enable row level security;
 alter table public.stripe_webhook_events enable row level security;
 alter table public.launch_verification_events enable row level security;
+alter table public.credit_report_uploads enable row level security;
 
 drop policy if exists "premium_trials_select_own" on public.premium_trials;
 create policy "premium_trials_select_own" on public.premium_trials for select to authenticated using ((select auth.uid()) = user_id);
@@ -335,6 +355,14 @@ drop policy if exists "bureau_responses_select_own" on public.bureau_responses;
 create policy "bureau_responses_select_own" on public.bureau_responses for select to authenticated using ((select auth.uid()) = user_id);
 drop policy if exists "deadline_alerts_select_own" on public.deadline_alerts;
 create policy "deadline_alerts_select_own" on public.deadline_alerts for select to authenticated using ((select auth.uid()) = user_id);
+drop policy if exists "credit_report_uploads_select_own" on public.credit_report_uploads;
+create policy "credit_report_uploads_select_own" on public.credit_report_uploads for select to authenticated using ((select auth.uid()) = user_id);
+drop policy if exists "credit_report_uploads_insert_own" on public.credit_report_uploads;
+create policy "credit_report_uploads_insert_own" on public.credit_report_uploads for insert to authenticated with check ((select auth.uid()) = user_id);
+drop policy if exists "credit_report_uploads_update_own" on public.credit_report_uploads;
+create policy "credit_report_uploads_update_own" on public.credit_report_uploads for update to authenticated using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
+drop policy if exists "credit_report_uploads_delete_own" on public.credit_report_uploads;
+create policy "credit_report_uploads_delete_own" on public.credit_report_uploads for delete to authenticated using ((select auth.uid()) = user_id);
 
 create index if not exists premium_trials_subscription_idx on public.premium_trials (stripe_subscription_id);
 create index if not exists bureau_responses_user_created_idx on public.bureau_responses (user_id, created_at desc);
@@ -344,6 +372,8 @@ create index if not exists dispute_rounds_dispute_idx on public.dispute_rounds (
 create index if not exists deadline_alerts_user_date_idx on public.deadline_alerts (user_id, alert_date);
 create index if not exists launch_verification_events_type_idx on public.launch_verification_events (event_type, created_at desc);
 create index if not exists launch_verification_events_user_idx on public.launch_verification_events (user_id, created_at desc);
+create index if not exists credit_report_uploads_user_created_idx on public.credit_report_uploads (user_id, created_at desc);
+create index if not exists credit_report_uploads_status_idx on public.credit_report_uploads (user_id, status, updated_at desc);
 
 -- ── mail_jobs (certified mailing workflow) ──────────────────────
 create table if not exists public.mail_jobs (
@@ -432,6 +462,79 @@ create policy "user_state_update_own" on public.user_state for update to authent
   with check ((select auth.uid()) = user_id);
 drop policy if exists "user_state_delete_own" on public.user_state;
 create policy "user_state_delete_own" on public.user_state for delete to authenticated using ((select auth.uid()) = user_id);
+
+-- ── business_credit_profiles (business command center) ─────────
+create table if not exists public.business_credit_profiles (
+  user_id    uuid primary key references auth.users(id) on delete cascade,
+  profile    jsonb not null default '{}'::jsonb check (jsonb_typeof(profile) = 'object'),
+  updated_at timestamptz not null default now()
+);
+
+alter table public.business_credit_profiles enable row level security;
+
+drop policy if exists "business_credit_profiles_select_own" on public.business_credit_profiles;
+create policy "business_credit_profiles_select_own" on public.business_credit_profiles for select to authenticated using ((select auth.uid()) = user_id);
+drop policy if exists "business_credit_profiles_insert_own" on public.business_credit_profiles;
+create policy "business_credit_profiles_insert_own" on public.business_credit_profiles for insert to authenticated with check ((select auth.uid()) = user_id);
+drop policy if exists "business_credit_profiles_update_own" on public.business_credit_profiles;
+create policy "business_credit_profiles_update_own" on public.business_credit_profiles for update to authenticated
+  using ((select auth.uid()) = user_id)
+  with check ((select auth.uid()) = user_id);
+drop policy if exists "business_credit_profiles_delete_own" on public.business_credit_profiles;
+create policy "business_credit_profiles_delete_own" on public.business_credit_profiles for delete to authenticated using ((select auth.uid()) = user_id);
+
+-- ── business_tradelines (vendor / tradeline tracker) ───────────
+create table if not exists public.business_tradelines (
+  id           uuid primary key default gen_random_uuid(),
+  user_id      uuid not null references auth.users(id) on delete cascade,
+  vendor_name  text not null,
+  note         text,
+  stage        int not null default 0 check (stage between 0 and 3),
+  created_at   timestamptz not null default now(),
+  updated_at   timestamptz not null default now(),
+  unique (user_id, vendor_name)
+);
+
+alter table public.business_tradelines enable row level security;
+
+drop policy if exists "business_tradelines_select_own" on public.business_tradelines;
+create policy "business_tradelines_select_own" on public.business_tradelines for select to authenticated using ((select auth.uid()) = user_id);
+drop policy if exists "business_tradelines_insert_own" on public.business_tradelines;
+create policy "business_tradelines_insert_own" on public.business_tradelines for insert to authenticated with check ((select auth.uid()) = user_id);
+drop policy if exists "business_tradelines_update_own" on public.business_tradelines;
+create policy "business_tradelines_update_own" on public.business_tradelines for update to authenticated
+  using ((select auth.uid()) = user_id)
+  with check ((select auth.uid()) = user_id);
+drop policy if exists "business_tradelines_delete_own" on public.business_tradelines;
+create policy "business_tradelines_delete_own" on public.business_tradelines for delete to authenticated using ((select auth.uid()) = user_id);
+
+-- ── business_credit_checklist_items (setup progress tracker) ───
+create table if not exists public.business_credit_checklist_items (
+  id           uuid primary key default gen_random_uuid(),
+  user_id      uuid not null references auth.users(id) on delete cascade,
+  item_key     text not null,
+  label        text not null,
+  status       text not null default 'not_started' check (status in ('not_started','in_progress','completed','blocked')),
+  notes        text,
+  due_date     date,
+  document_url text,
+  created_at   timestamptz not null default now(),
+  updated_at   timestamptz not null default now(),
+  unique (user_id, item_key)
+);
+
+alter table public.business_credit_checklist_items enable row level security;
+
+drop policy if exists "business_credit_checklist_select_own" on public.business_credit_checklist_items;
+create policy "business_credit_checklist_select_own" on public.business_credit_checklist_items for select to authenticated using ((select auth.uid()) = user_id);
+drop policy if exists "business_credit_checklist_insert_own" on public.business_credit_checklist_items;
+create policy "business_credit_checklist_insert_own" on public.business_credit_checklist_items for insert to authenticated with check ((select auth.uid()) = user_id);
+drop policy if exists "business_credit_checklist_update_own" on public.business_credit_checklist_items;
+create policy "business_credit_checklist_update_own" on public.business_credit_checklist_items for update to authenticated
+  using ((select auth.uid()) = user_id)
+  with check ((select auth.uid()) = user_id);
+drop policy if exists "business_credit_checklist_delete_own" on public.business_credit_checklist_items;
+create policy "business_credit_checklist_delete_own" on public.business_credit_checklist_items for delete to authenticated using ((select auth.uid()) = user_id);
 
 -- ── leads (service-role only — no user policies on purpose) ──────
 create table if not exists public.leads (

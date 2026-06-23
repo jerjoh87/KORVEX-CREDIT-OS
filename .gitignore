@@ -4,6 +4,8 @@
 .env.production
 .env.development
 .env.test
+google-ocr-key.json
+abiding-honor-497505-b4-*.json
 .DS_Store
 .claude/
 lib 2/
