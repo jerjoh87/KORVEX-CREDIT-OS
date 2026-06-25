@@ -1,3 +1,5 @@
+import '../lib/env.js';
+
 const isProduction = process.env.NODE_ENV === 'production' || process.env.LAUNCH_MODE === 'production';
 const env = process.env;
 const appUrl = safeValue('APP_BASE_URL') || safeValue('APP_URL');
@@ -30,6 +32,15 @@ function optionalKey(name, label = name) {
     return true;
   }
   report('na', `${label} is not set (optional)`);
+  return false;
+}
+
+function requireAnyKey(names, label = names.join(' or ')) {
+  if (names.some(name => hasValue(name))) {
+    report('pass', `${label} is set`);
+    return true;
+  }
+  report('blocked', `${label} is not set`);
   return false;
 }
 
@@ -129,8 +140,13 @@ failed = !validateUrl('SUPABASE_URL', 'SUPABASE_URL') || failed;
 failed = !requireKey('SUPABASE_ANON_KEY', 'SUPABASE_ANON_KEY') || failed;
 failed = !requireKey('SUPABASE_SERVICE_ROLE_KEY', 'SUPABASE_SERVICE_ROLE_KEY') || failed;
 
-failed = !requireKey('GEMINI_API_KEY', 'GEMINI_API_KEY') || failed;
-failed = !optionalKey('GEMINI_MODEL', 'GEMINI_MODEL') || failed;
+failed = !requireAnyKey(['GEMINI_API_KEY','GOOGLE_GEMINI_API_KEY','GOOGLE_AI_API_KEY','GOOGLE_API_KEY'], 'Gemini API key') || failed;
+if (hasValue('GEMINI_MODEL') || hasValue('GOOGLE_GEMINI_MODEL')) {
+  optionalKey('GEMINI_MODEL', 'GEMINI_MODEL');
+  optionalKey('GOOGLE_GEMINI_MODEL', 'GOOGLE_GEMINI_MODEL');
+} else {
+  report('na', 'Gemini model not set; default model will be used');
+}
 const googleOcrConfigured = hasValue('GOOGLE_SERVICE_ACCOUNT_JSON') || hasValue('GOOGLE_SERVICE_ACCOUNT_JSON_BASE64');
 if (googleOcrConfigured || hasValue('GOOGLE_DOCUMENT_AI_PROCESSOR_ID') || hasValue('GOOGLE_CLOUD_PROJECT_ID')) {
   failed = !requireKey('GOOGLE_CLOUD_PROJECT_ID', 'GOOGLE_CLOUD_PROJECT_ID') || failed;

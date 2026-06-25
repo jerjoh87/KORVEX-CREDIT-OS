@@ -30,8 +30,8 @@ const router = Router();
 async function aiCaseAnalyst(playbook, timeoutMs = 30000) {
   const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), timeoutMs));
   const resp = await Promise.race([
-    // gemini-3.5-flash is a thinking model — thinking tokens count against the
-    // output budget, so give it enough room to both reason and emit the JSON.
+    // Some Gemini models use thinking tokens that count against the output
+    // budget, so give it enough room to both reason and emit the JSON.
     callGemini({ max_tokens: 2048, temperature: 0.3, responseMimeType: 'application/json', prompt: caseAnalystPrompt(playbook) }),
     timeout,
   ]);

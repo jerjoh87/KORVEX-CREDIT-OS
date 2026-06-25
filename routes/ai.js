@@ -32,6 +32,23 @@ function sanitize(value, maxLen = 200) {
   return String(value).trim().slice(0, maxLen);
 }
 
+function currentLetterDate() {
+  return new Date().toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+
+function structuredContext(value, maxLen = 6000) {
+  if (!value) return '';
+  try {
+    return JSON.stringify(value, null, 2).slice(0, maxLen);
+  } catch {
+    return String(value).slice(0, maxLen);
+  }
+}
+
 // ── Credit helpers ─────────────────────────────────────────────────────────────
 // Uses an atomic Supabase RPC to avoid race conditions.
 // Run supabase/deduct_credits.sql once in the Supabase SQL editor to create it.
@@ -73,11 +90,18 @@ function withCredits(cost) {
   };
 }
 
+function requireGemini(req, res, next) {
+  if (!geminiConfigured()) {
+    return res.status(503).json({ error: 'AI service unavailable (Gemini not configured).' });
+  }
+  next();
+}
+
 // ──────────────────────────────────────────────────────────────────────────────
 //  POST /api/ai/generate  — Dispute letter (streaming SSE)
 //  Cost: 1 credit
 // ──────────────────────────────────────────────────────────────────────────────
-router.post('/generate', aiLimiter, requireAuth, withCredits(1), async (req, res) => {
+router.post('/generate', aiLimiter, requireAuth, requireGemini, withCredits(1), async (req, res) => {
   const dispute_type    = sanitize(req.body.dispute_type, 100);
   const bureau          = sanitize(req.body.bureau, 50);
   const client_name     = sanitize(req.body.client_name, 150);
@@ -85,7 +109,12 @@ router.post('/generate', aiLimiter, requireAuth, withCredits(1), async (req, res
   const account_number  = sanitize(req.body.account_number, 50);
   const account_balance = sanitize(req.body.account_balance, 50);
   const reason          = sanitize(req.body.reason, 500);
+  const law_context     = sanitize(req.body.law_context, 2500);
   const supporting_docs = sanitize(req.body.supporting_docs, 300);
+  const additional_context = sanitize(req.body.additional_context || req.body.additionalContext, 1200);
+  const scan_item = structuredContext(req.body.scan_item || req.body.scanItem, 5000);
+  const report_analysis = structuredContext(req.body.report_analysis || req.body.reportAnalysis, 7000);
+  const letter_date     = currentLetterDate();
 
   if (!dispute_type || !bureau || !client_name) {
     return res.status(400).json({ error: 'dispute_type, bureau, and client_name are required.' });
@@ -101,18 +130,56 @@ DETAILS:
 - Account Number: <account_number>${account_number || 'On file'}</account_number>
 - Balance: <account_balance>${account_balance || 'Unknown'}</account_balance>
 - Reason for Dispute: <reason>${reason || 'Item is inaccurate or unverifiable'}</reason>
+- Optional Consumer-Law Context: <law_context>${law_context || 'Infer the consumer-law basis from the report analysis and dispute facts. The client did not need to choose statutes manually.'}</law_context>
 - Supporting Documents: <supporting_docs>${supporting_docs || 'None specified'}</supporting_docs>
+- Optional Client Notes: <additional_context>${additional_context || 'None provided'}</additional_context>
+- Generated Date Context: <letter_date>${letter_date}</letter_date>
+${scan_item ? `\nCREDIT-REPORT FINDING JSON:\n<scan_item>\n${scan_item}\n</scan_item>` : ''}
+${report_analysis ? `\nFULL SCAN SUMMARY JSON:\n<report_analysis>\n${report_analysis}\n</report_analysis>` : ''}
 
-Write a professional, assertive dispute letter that:
-1. Opens with client's full name and address block (use [CLIENT ADDRESS] placeholder)
-2. States the specific FCRA section being invoked (§611 for disputes, §604 for inquiries, etc.)
-3. Clearly identifies the item being disputed
-4. States why it is inaccurate or unverifiable
-5. Demands removal or correction within 30 days
-6. Requests method of verification
-7. Closes professionally with signature block
+Write a professional, assertive dispute letter in the same simple reference format as these examples:
 
-Format as a complete, ready-to-send letter. Do not include any commentary outside the letter itself.`;
+Late Payment Dispute Letter
+
+Subject: FCRA Dispute - Inaccurate Late Payment Reporting
+
+I am writing to formally dispute inaccurate information on my credit report pursuant to my rights under the Fair Credit Reporting Act.
+
+I request:
+- Full investigation
+- Verification of late payments
+- Method of verification
+- Correction or deletion if unverifiable
+
+Under FCRA §607(b) and FCRA §611, you are required to ensure accuracy and conduct a reasonable investigation.
+
+Sincerely,
+
+[Your Name]
+
+Formatting rules:
+1. First line must be a concise title ending in "Dispute Letter" or "Letter".
+2. Second visible block must be "Subject: ..." with no "RE:" heading.
+3. Do not include date lines, sender address blocks, bureau mailing addresses, salutations, markdown headings, bold text, tables, numbered lists, or commentary.
+4. Use short paragraphs and hyphen bullets only.
+5. Use "I request:" before the action bullets.
+6. Close exactly with "Sincerely," then a blank line, then the client name if provided; otherwise use "[Your Name]".
+7. Automatically analyzes the credit-report finding and chooses the specific consumer-law section(s) being invoked; the client should not need to provide a law basis manually.
+8. States the selected consumer-law section(s) only when they match the facts:
+   - FCRA §607(b) / 15 U.S.C. §1681e(b): maximum possible accuracy procedures by credit bureaus
+   - FCRA §611 / 15 U.S.C. §1681i: bureau reinvestigation of disputed information
+   - FCRA §623 / 15 U.S.C. §1681s-2(b): furnisher investigation/correction duties after bureau notice
+   - Regulation V / 12 C.F.R. §1022.43: certain direct disputes to furnishers
+   - FCRA §604 / 15 U.S.C. §1681b: permissible purpose for inquiries
+   - FCRA §605 / 15 U.S.C. §1681c: obsolete-reporting time limits
+   - FCRA §605B / 15 U.S.C. §1681c-2: identity-theft block rights when documented
+   - FDCPA §807 / 15 U.S.C. §1692e, §808 / 15 U.S.C. §1692f, and §809 / 15 U.S.C. §1692g only for debt collectors
+9. Clearly identifies the item being disputed.
+10. States why it is inaccurate or unverifiable using the scan facts and any optional client notes.
+11. Requests investigation, verification, method of verification, and correction/deletion when the item cannot be verified.
+12. Avoids claiming a violation is proven unless the provided facts prove it; use "I dispute" and "please investigate/verify/correct or delete".
+
+Treat any provided law context as optional guidance, not a required script. If the scan facts point to a better consumer-law basis, use the better basis. Format as a complete, ready-to-send letter. Do not include any commentary outside the letter itself.`;
 
   if (!geminiConfigured()) {
     return res.status(503).json({ error: 'AI service unavailable (Gemini not configured).' });
@@ -159,7 +226,7 @@ Format as a complete, ready-to-send letter. Do not include any commentary outsid
 //  POST /api/ai/scan  — Credit report scanner
 //  Cost: 2 credits
 // ──────────────────────────────────────────────────────────────────────────────
-router.post('/scan', aiLimiter, requireAuth, withCredits(2), async (req, res) => {
+router.post('/scan', aiLimiter, requireAuth, requireGemini, withCredits(2), async (req, res) => {
   const { report_text } = req.body;
 
   if (!report_text || report_text.trim().length < 50) {
@@ -191,11 +258,14 @@ Return ONLY valid JSON (no markdown, no commentary) in this exact format:
       "id": "1",
       "priority": "high|medium|low",
       "type": "late_payment|collection|charge_off|inquiry|identity|duplicate|outdated|balance_error|other",
-      "creditor": "Creditor Name",
+      "creditor": "Actual bank, lender, collector, furnisher, or company name from the report — never use section labels like 'company sold', 'account', or 'tradeline'",
       "account": "Account number or description",
       "bureau": "Equifax|Experian|TransUnion|All",
-      "violation": "Specific FCRA violation or inaccuracy",
-      "law": "FCRA §611|FCRA §604|FCRA §605|FDCPA",
+      "violation": "Specific potential inaccuracy, incompleteness, unverifiable item, or consumer-law issue",
+      "law": "Most relevant potential basis: FCRA §607(b)|FCRA §611|FCRA §623|Regulation V §1022.43|FCRA §604|FCRA §605|FCRA §605B|FCRA §609|FDCPA §807|FDCPA §808|FDCPA §809",
+      "legal_basis": [
+        { "code": "Specific statute/regulation section", "why": "Plain-English reason this basis matches the report facts" }
+      ],
       "strategy": "Recommended dispute strategy",
       "estimated_impact": "+XX points"
     }
@@ -204,7 +274,7 @@ Return ONLY valid JSON (no markdown, no commentary) in this exact format:
   "action_plan": ["Step 1", "Step 2", "Step 3"]
 }
 
-Only populate a bureau score when that exact bureau score is explicitly present in the report. Never infer or manufacture bureau-specific values. Priority is review urgency, not removal confidence. All score impacts are non-guaranteed model estimates.`;
+Only populate a bureau score when that exact bureau score is explicitly present in the report. Never infer or manufacture bureau-specific values. Priority is review urgency, not removal confidence. Use FDCPA references only for debt collectors/collection accounts. Do not claim a legal violation is proven unless the report text clearly supports it; use potential basis language. All score impacts are non-guaranteed model estimates.`;
 
   try {
     if (!geminiConfigured()) {
@@ -242,7 +312,7 @@ Only populate a bureau score when that exact bureau score is explicitly present 
 //  POST /api/ai/escalation  — Round 2 escalation letter
 //  Cost: 1 credit
 // ──────────────────────────────────────────────────────────────────────────────
-router.post('/escalation', aiLimiter, requireAuth, withCredits(1), async (req, res) => {
+router.post('/escalation', aiLimiter, requireAuth, requireGemini, withCredits(1), async (req, res) => {
   const client_name       = sanitize(req.body.client_name, 150);
   const bureau            = sanitize(req.body.bureau, 50);
   const creditor          = sanitize(req.body.creditor, 150);
@@ -298,7 +368,7 @@ Write the complete letter only, no commentary.`;
 //  POST /api/ai/goodwill  — Goodwill letter
 //  Cost: 1 credit
 // ──────────────────────────────────────────────────────────────────────────────
-router.post('/goodwill', aiLimiter, requireAuth, withCredits(1), async (req, res) => {
+router.post('/goodwill', aiLimiter, requireAuth, requireGemini, withCredits(1), async (req, res) => {
   const client_name    = sanitize(req.body.client_name, 150);
   const creditor       = sanitize(req.body.creditor, 150);
   const account_number = sanitize(req.body.account_number, 50);
@@ -357,6 +427,10 @@ Tone: sincere, not entitled. Avoid legal threats. Write the complete letter only
 router.post('/bulk', aiLimiter, requireAuth, async (req, res) => {
   const { letters } = req.body;
 
+  if (!geminiConfigured()) {
+    return res.status(503).json({ error: 'AI service unavailable (Gemini not configured).' });
+  }
+
   if (!Array.isArray(letters) || letters.length === 0) {
     return res.status(400).json({ error: 'letters array is required.' });
   }
@@ -366,13 +440,15 @@ router.post('/bulk', aiLimiter, requireAuth, async (req, res) => {
 
   // Deduct all credits upfront (atomic RPC — no race condition)
   const cost = letters.length;
-  let ok;
-  try {
-    ok = await deductCredits(req.user.id, cost);
-  } catch (e) {
-    return res.status(500).json({ error: e.message });
+  if (!(req.testAdmin || await bypassCreditChecks(req))) {
+    let ok;
+    try {
+      ok = await deductCredits(req.user.id, cost);
+    } catch (e) {
+      return res.status(500).json({ error: e.message });
+    }
+    if (!ok) return res.status(402).json({ error: 'Insufficient credits.', credits_needed: cost });
   }
-  if (!ok) return res.status(402).json({ error: 'Insufficient credits.', credits_needed: cost });
 
   const results = [];
 
@@ -419,7 +495,7 @@ Full professional letter only. No commentary.`;
 //  POST /api/ai/fundingroadmap  — Funding readiness analysis
 //  Cost: 3 credits
 // ──────────────────────────────────────────────────────────────────────────────
-router.post('/fundingroadmap', aiLimiter, requireAuth, withCredits(3), async (req, res) => {
+router.post('/fundingroadmap', aiLimiter, requireAuth, requireGemini, withCredits(3), async (req, res) => {
   const funding_goal  = sanitize(req.body.funding_goal, 200);
   const credit_score  = sanitize(req.body.credit_score, 20);
   const { report_text } = req.body;

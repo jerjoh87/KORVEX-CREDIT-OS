@@ -669,9 +669,10 @@ router.post('/checkout', requireAuth, async (req, res) => {
       });
     }
 
-    if (docs.length < 2) {
+    const docTypes = new Set(docs.map(doc => String(doc?.docType || '').toLowerCase()));
+    if (!docTypes.has('driver_license') || !docTypes.has('ssn_card') || !docTypes.has('proof_of_address')) {
       return res.status(422).json({
-        error: 'Upload at least your driver license and SSN card before mailing.'
+        error: 'Upload your driver license, SSN card, and proof of address before mailing.'
       });
     }
 

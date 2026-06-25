@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
-  CATEGORIES, TEMPLATE_COUNT, listTemplates, getTemplate, templatesByCategory, renderLetter, BUREAU_ADDRESSES,
+  CATEGORIES, TEMPLATE_COUNT, listTemplates, getTemplate, templatesByCategory, renderLetter,
 } from '../lib/disputeLibrary.js';
 import { recommendStrategy, buildCfpbComplaint, STRATEGIES } from '../lib/disputeStrategy.js';
 
@@ -34,18 +34,27 @@ test('library: templates are well-formed and ids are unique', () => {
 });
 
 // ── Letter rendering ──────────────────────────────────────────────────────────
-test('renderLetter: fills provided data and uses bureau address', () => {
+test('renderLetter: fills provided data using the reference letter format', () => {
   const t = getTemplate('incorrect-late-payment');
   const letter = renderLetter(t, {
     fullName: 'Jordan Carter', address: '123 Main St', cityStateZip: 'Austin, TX 78701',
     bureau: 'Experian', creditor: 'Capital One', accountNumber: '****1234',
   });
+  assert.match(letter, /^Incorrect Late Payment Dispute Letter/);
+  assert.match(letter, /Subject: Dispute of inaccurate late-payment notation/);
   assert.match(letter, /Jordan Carter/);
   assert.match(letter, /Capital One/);
   assert.match(letter, /\*\*\*\*1234/);
-  assert.match(letter, /P\.O\. Box 4500/);        // Experian dispute address
   assert.match(letter, /FCRA §611/);
-  assert.match(letter, /Sincerely/);
+  assert.match(letter, /I request:/);
+  assert.match(letter, /- Full investigation/);
+  assert.match(letter, /- Verification of late payments/);
+  assert.match(letter, /- Method of verification/);
+  assert.match(letter, /- Correction or deletion if unverifiable/);
+  assert.match(letter, /Sincerely,\n\nJordan Carter/);
+  assert.doesNotMatch(letter, /P\.O\. Box 4500/);
+  assert.doesNotMatch(letter, /RE:/);
+  assert.doesNotMatch(letter, /To Whom It May Concern/);
 });
 
 test('renderLetter: missing fields become labelled placeholders, not literal tokens', () => {

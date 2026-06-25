@@ -3,11 +3,13 @@
 //  server.js
 // ─────────────────────────────────────────────
 
-// instrument.js must be the very first import — Sentry needs to load before
-// anything else so it can patch modules for automatic error capture.
+// Local env must load before instrumentation and route modules read process.env.
+import './lib/env.js';
+
+// instrument.js should load before app modules so Sentry can patch modules for
+// automatic error capture.
 import './instrument.js';
 
-import 'dotenv/config';
 import Sentry from './instrument.js';
 import express from 'express';
 import cors from 'cors';
@@ -16,6 +18,7 @@ import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { requireAuth, supabaseAdmin, hasSupabaseAdmin } from './lib/server-state.js';
 import { createTestAdminToken, testAdminCredentials, testAdminModeEnabled, validateTestAdminCredentials } from './lib/test-admin.js';
+import { geminiConfigured } from './lib/gemini.js';
 
 import aiRoutes from './routes/ai.js';
 import creditsRoutes from './routes/credits.js';
@@ -109,6 +112,7 @@ const allowedOrigins = resolveAllowedOrigins();
 function isAllowedOrigin(origin, req) {
   if (!origin) return true;
   if (allowedOrigins.includes(origin)) return true;
+  if (origin === 'null' && /^(localhost|127\.0\.0\.1|\[::1\]|::1)(:\d+)?$/i.test(String(req.headers.host || ''))) return true;
   const host = req.headers.host;
   if (host) {
     try {
@@ -182,7 +186,7 @@ app.get('/api/runtime-status', (req, res) => {
       supabase: !!supabaseAdmin,
       stripe: !!process.env.STRIPE_SECRET_KEY,
       click2mail: !!(process.env.CLICK2MAIL_USERNAME && process.env.CLICK2MAIL_PASSWORD),
-      gemini: !!process.env.GEMINI_API_KEY,
+      gemini: geminiConfigured(),
       ocr: 'browser',
       pdf: 'browser'
     }

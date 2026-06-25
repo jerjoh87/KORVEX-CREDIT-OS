@@ -73,7 +73,7 @@ h2,h3,h4{letter-spacing:-.02em}
 .card h3{font-size:16.5px;font-weight:700;color:var(--ink)}
 .metricLab{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.8px;font-weight:700}
 .metricNum{font-size:30px;font-weight:800;margin-top:6px}
-.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:11.5px;font-weight:700}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:11.5px;font-weight:700;line-height:1.2;max-width:100%;white-space:normal;text-align:left;min-width:0}
 .chip.up{background:var(--em-soft);color:#34d8a0}
 .chip.down{background:var(--red-soft);color:var(--red)}
 .chip.warn{background:var(--amber-soft);color:var(--amber)}
@@ -100,11 +100,74 @@ h2,h3,h4{letter-spacing:-.02em}
 /* ── Forms ── */
 label{display:grid;gap:6px;color:var(--ink2);font-size:12px;font-weight:700}
 input,select,textarea{background:rgba(255,255,255,.05);border:1px solid var(--line2);border-radius:11px;padding:11px 13px;color:var(--ink);outline:none;font-size:14px}
+select{background-color:#111827;color:var(--ink);color-scheme:dark}
+select option,select optgroup{background-color:#0B1424;color:#E6EDF7}
+select option:checked{background-color:#16314E;color:#fff}
+select:disabled{opacity:.72;color:var(--muted)}
 input:focus,select:focus,textarea:focus{border-color:var(--em);box-shadow:0 0 0 3px rgba(16,185,129,.13)}
 input::placeholder,textarea::placeholder{color:var(--soft)}
 textarea{min-height:96px;resize:vertical}
 .formGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.formGrid>label{min-width:0}
+.formGrid input,.formGrid select,.formGrid textarea{width:100%;min-width:0}
+.mailModalGrid{grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);align-items:start}
+.mailCardHead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
+.mailCardHead>div{min-width:0}
+.mailCardHead p{color:var(--muted);font-size:13px;line-height:1.5;margin-top:5px}
+.mailPriceChip{white-space:nowrap;text-align:center;align-self:flex-start}
+.mailShipStack{display:grid;gap:12px;margin-top:8px}
+.mailModeCard{align-items:flex-start;display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+.mailModeCard small{display:block;line-height:1.45}
+.mailModeActions{display:grid;grid-template-columns:repeat(auto-fit,minmax(122px,1fr));gap:8px;width:100%}
+.mailModeActions .ghost{width:100%;min-height:42px}
+.mailPresetGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:10px}
+.mailPresetCard{width:100%;display:grid;grid-template-columns:32px minmax(0,1fr);align-items:flex-start;gap:10px;text-align:left;padding:13px;min-height:116px}
+.mailPresetCard .em{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:rgba(124,168,255,.10);border:1px solid rgba(124,168,255,.18);font-size:18px;line-height:1;flex:none}
+.mailPresetCopy{min-width:0;display:grid;gap:5px}
+.mailPresetTitle{display:block;color:var(--ink);font-size:13.5px;font-weight:800;line-height:1.2;overflow-wrap:anywhere}
+.mailPresetCard small{display:block;color:var(--muted);font-size:11.5px;line-height:1.38;font-weight:600;overflow-wrap:anywhere}
+.mailPresetStatus{grid-column:2;justify-self:start;margin-top:2px;max-width:100%}
+.mailingStatusBox{padding:13px!important}
+.mailingStatusBox span{line-height:1.45}
 .bizProfileCard{display:grid;gap:12px}.bizProfileCard .formGrid{grid-template-columns:1fr}.bizProfileCard input,.bizProfileCard select,.bizProfileCard textarea{min-width:0}
+#simulator .card{min-width:0}
+#simulator .simulatorStack{display:grid;gap:16px;align-content:start;min-width:0}
+#simulator .payoffCard{overflow:hidden}
+#simulator .payoffGrid{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+#payoffOut{line-height:1.5}
+.fundingRoadmapCard{display:grid;gap:16px;min-width:0}
+.fundingRoadmapHead{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap}
+.fundingRoadmapHead>div{flex:1 1 230px;min-width:0}
+.fundingRoadmapHead h3{margin-bottom:4px}
+.fundingRoadmapIntro{color:var(--muted);font-size:13px;line-height:1.55}
+.fundingRoadmapGrid{grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:13px;margin:0}
+.fundingRoadmapCard label{min-width:0}
+.fundingRoadmapCard textarea{min-height:72px;line-height:1.5}
+.fundingRoadmapCard .primary{width:100%;padding-block:12px}
+.integrationGrid{align-items:stretch}
+.card.integrationCard{position:relative;overflow:hidden;display:grid;gap:14px;min-height:174px;padding:20px;background:linear-gradient(145deg,rgba(12,19,34,.88),rgba(9,15,28,.74));border-color:rgba(124,168,255,.16);box-shadow:0 18px 44px rgba(0,0,0,.28)}
+.card.integrationCard:before{content:"";position:absolute;inset:0;background:radial-gradient(420px 160px at 12% 0%,rgba(124,168,255,.16),transparent 55%),linear-gradient(90deg,rgba(16,185,129,.08),transparent 48%);opacity:.9;pointer-events:none}
+.card.integrationCard>*{position:relative;z-index:1}
+.integrationTop{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.integrationIcon{width:42px;height:42px;border-radius:14px;display:grid!important;place-items:center;background:rgba(16,185,129,.11);border:1px solid rgba(16,185,129,.24);color:#4EDEA3;font-size:23px!important;box-shadow:0 0 24px rgba(16,185,129,.10)}
+.integrationBadge{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(124,168,255,.22);background:rgba(124,168,255,.10);color:#AFC6FF;border-radius:999px;padding:5px 10px;font:800 10.5px/1 var(--font);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.integrationBadge:before{content:"";width:6px;height:6px;border-radius:50%;background:#7CA8FF;box-shadow:0 0 12px rgba(124,168,255,.7)}
+.integrationCopy{display:grid;gap:6px}
+.integrationCopy h3{font-size:17px}
+.integrationCopy p{color:var(--muted);font-size:13px;line-height:1.55;margin:0}
+.integrationMeta{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:12px;border-top:1px solid rgba(255,255,255,.08);color:var(--soft);font-size:11.5px}
+.integrationMeta b{color:var(--ink2);font-size:12px;text-align:right}
+.letterEditor{width:100%;min-height:430px;max-height:560px;overflow:auto;white-space:pre-wrap;color:var(--ink2);margin-top:14px;font-family:var(--font);font-size:13px;line-height:1.72;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:18px 16px;resize:vertical}
+.letterEditor:focus{border-color:var(--em);box-shadow:0 0 0 4px var(--em-soft);outline:none}
+.letterReviewHead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.letterReviewHead p{color:var(--muted);font-size:12.5px;line-height:1.5;margin-top:4px}
+.letterActions{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:8px;margin-top:12px}
+.letterActions .ghost,.letterActions .primary{min-height:44px;padding:10px 12px}
+.letterActions .wide{grid-column:1/-1}
+.letterLawPanel{border:1px solid rgba(78,222,163,.2);background:rgba(16,185,129,.055);border-radius:13px;padding:12px;margin-top:13px;display:grid;gap:8px}
+.letterLawPanel strong{color:var(--ink);font-size:13.5px}
+.letterLawPanel ul{display:grid;gap:6px;margin:0;padding-left:18px}
+.letterLawPanel li{color:var(--muted);font-size:12.3px;line-height:1.45}
 .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 18px}
 .tab{border:1px solid var(--line2);background:rgba(255,255,255,.05);color:var(--muted);border-radius:999px;padding:9px 15px;cursor:pointer;font-weight:700;font-size:13px}
 .tab.active{color:#fff;border-color:var(--em);background:var(--em)}
@@ -194,11 +257,59 @@ textarea{min-height:96px;resize:vertical}
 .scannerState.success{border-color:#BCE9D9;background:var(--em-soft);color:var(--ink2)}
 .spinner{width:26px;height:26px;border-radius:50%;border:3px solid rgba(255,255,255,.12);border-top-color:var(--em);animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+.aiReading{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:center}
+.aiBrain{width:46px;height:46px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(16,185,129,.2),rgba(124,168,255,.14));border:1px solid rgba(78,222,163,.3);color:#4EDEA3;box-shadow:0 0 24px rgba(16,185,129,.14);position:relative;flex:none}
+.aiBrain .material-symbols-outlined{font-size:27px}
+.aiBrain.thinking:after{content:'';position:absolute;inset:-5px;border-radius:20px;border:2px solid rgba(78,222,163,.22);border-top-color:#4EDEA3;animation:spin .9s linear infinite}
+.scanHero{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;align-items:center;margin:12px 0 16px;padding:18px;border:1px solid rgba(78,222,163,.22);border-radius:16px;background:linear-gradient(135deg,rgba(16,185,129,.12),rgba(59,130,246,.06))}
+.scanHero h4{font-size:18px;margin:0 0 5px}.scanHero p{color:var(--muted);font-size:13.5px;line-height:1.55;margin:0}.scanHeroText{min-width:0}
+.scanStatsGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:14px}
+.scanStatCard{border:1px solid var(--line);border-radius:13px;padding:12px;background:rgba(255,255,255,.035);min-width:0}
+.scanStatCard b{display:block;font-size:22px;line-height:1.1;overflow-wrap:anywhere}
+.scanNextStep{border:1px solid rgba(124,168,255,.24);background:rgba(124,168,255,.08);border-radius:14px;padding:15px;margin-bottom:14px;display:grid;gap:10px}
+.scanNextStep strong,.scanSectionHead strong{color:var(--ink)}
+.scanNextStep p{color:var(--muted);font-size:13px;line-height:1.55;margin:0}
+.scanSection{display:grid;gap:11px;margin-top:14px}
+.scanSectionHead{display:flex;justify-content:space-between;gap:10px;align-items:flex-end;flex-wrap:wrap}
+.scanSectionHead small{color:var(--muted);font-size:12px}
+.scanDetailsGrid{display:grid;grid-template-columns:1fr;gap:10px;margin:12px 0}
+.scanMiniCard{border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.025);padding:12px;min-width:0;display:grid;gap:6px}
+.scanMiniCard strong{display:block;color:var(--ink);font-size:13.5px;margin-bottom:0}.scanMiniCard>span,.scanMiniCard li{display:block;color:var(--muted);font-size:12.5px;line-height:1.5;overflow-wrap:anywhere}
+.scanMiniCard .chip{overflow-wrap:normal;word-break:normal}
+.scanMiniCard ul{margin:8px 0 0 18px}
+.scanChips{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+.detectedSummary{border:1px solid rgba(78,222,163,.18);border-radius:13px;padding:12px;margin:12px 0;background:rgba(16,185,129,.055)}
+.detectedSummary strong{display:block;color:var(--ink);font-size:13.5px}
 .dropZone{display:grid;place-items:center;min-height:140px;border:1.5px dashed var(--line2);border-radius:14px;background:rgba(255,255,255,.03);text-align:center;color:var(--muted);font-size:13.5px;transition:.15s;cursor:pointer;padding:14px}
 .dropZone.activeDrop,.dropZone:hover{border-color:var(--em);background:var(--em-soft)}
-.findRow{border:1px solid var(--line);border-radius:14px;padding:15px;display:grid;gap:8px;background:rgba(255,255,255,.05)}
-.findRow .top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}
-.findRow p{color:var(--muted);font-size:13px}
+.findRow{border:1px solid rgba(124,168,255,.16);border-radius:18px;padding:18px;display:grid;gap:14px;background:linear-gradient(145deg,rgba(11,20,36,.88),rgba(8,14,26,.76));min-width:0;box-shadow:0 14px 40px rgba(0,0,0,.24)}
+.findRow strong{overflow-wrap:anywhere}.findRow p{color:var(--muted);font-size:13px;line-height:1.55;margin:0;overflow-wrap:anywhere}
+.recommendHead{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap}
+.recommendTitle{display:grid;gap:5px;min-width:0;flex:1 1 260px}
+.recommendTitle small,.recommendField small,.recommendPanel small,.bestMove small{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:#7CA8FF;font-weight:800}
+.recommendTitle h4{font-size:19px;line-height:1.2;color:var(--ink);margin:0;overflow-wrap:anywhere}
+.recommendSubline{color:var(--muted);font-size:12.5px;line-height:1.45;overflow-wrap:anywhere}
+.recommendPriority{display:flex;gap:7px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.recommendGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.recommendField{border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.035);padding:11px;min-width:0;display:grid;gap:5px}
+.recommendField b{color:var(--ink2);font-size:13.5px;line-height:1.35;overflow-wrap:anywhere}
+.recommendPanel{border:1px solid rgba(124,168,255,.20);background:rgba(124,168,255,.07);border-radius:13px;padding:13px;display:grid;gap:7px;min-width:0}
+.recommendPanel.problem{border-color:rgba(124,168,255,.28)}
+.recommendPanel.law{border-color:rgba(78,222,163,.22);background:rgba(16,185,129,.055)}
+.recommendPanel b{color:var(--ink);font-size:14px;line-height:1.45;overflow-wrap:anywhere}
+.lawPills{display:flex;gap:7px;flex-wrap:wrap}
+.lawPill{display:inline-flex;align-items:center;border:1px solid rgba(78,222,163,.24);background:rgba(16,185,129,.10);color:#A7F3D0;border-radius:999px;padding:5px 9px;font-size:11.5px;font-weight:800;line-height:1.2;max-width:100%}
+.lawList{list-style:none;margin:0;padding:0;display:grid;gap:7px}
+.lawList li{color:var(--muted);font-size:12.5px;line-height:1.45;overflow-wrap:anywhere}
+.lawList b{color:var(--ink)}
+.lawDisclaimer{color:var(--muted);font-size:11.5px;line-height:1.45}
+.bestMove{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center;border:1px solid rgba(78,222,163,.22);background:rgba(16,185,129,.07);border-radius:14px;padding:13px}
+.bestMove b{display:block;color:var(--ink);font-size:15px;line-height:1.35;margin-top:3px;overflow-wrap:anywhere}
+.bestMove span{display:block;color:var(--muted);font-size:12.5px;line-height:1.45;margin-top:4px}
+.findActions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.findActions button{min-height:38px}
+.findDetails{border-top:1px solid var(--line);padding-top:11px}
+.findDetails summary{cursor:pointer;color:var(--ink2);font-weight:800;font-size:12.5px}
+.findDetails p{margin-top:8px}
 
 /* ── Dispute Playbook ── */
 .playbookHero{position:relative;overflow:hidden;border-color:rgba(78,222,163,.22);margin-bottom:16px}
@@ -282,9 +393,14 @@ textarea{min-height:96px;resize:vertical}
   .advisor{grid-template-columns:1fr}
   .offerGrid{grid-template-columns:repeat(2,1fr)}
 }
+@media(max-width:900px){.mailModalGrid{grid-template-columns:1fr}.mailPresetGrid{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}}
 @media(max-width:760px){
   .grid4,.grid3,.grid2,.formGrid,.offerGrid{grid-template-columns:1fr}
   .businessTopRow{grid-template-columns:1fr}
+  .recommendGrid{grid-template-columns:1fr}
+  .bestMove{grid-template-columns:1fr}
+  .findActions{justify-content:stretch}
+  .findActions button{flex:1 1 150px}
   .content{padding:20px 14px 110px}
   .topbar{padding:10px 14px}
   .topActions .pill{display:none}
@@ -293,6 +409,7 @@ textarea{min-height:96px;resize:vertical}
   .card{padding:17px}
   .chat{height:60vh}
 }
+@media(max-width:520px){.mailCardHead{display:grid}.mailPriceChip{justify-self:start}.mailPresetGrid{grid-template-columns:1fr}}
 
 /* Stitch source: Creditos Premium Fintech OS — Luminous Authority */
 :root{
@@ -600,7 +717,7 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
 
       <!-- ════════ LETTERS ════════ -->
       <div class="page" id="letters">
-        <div class="heroHead"><div><h2>Letters</h2><p>AI-written dispute, escalation, and goodwill letters — cited to the exact law (FCRA §611, §604, §605).</p></div></div>
+        <div class="heroHead"><div><h2>Letters</h2><p>AI-written dispute, escalation, and goodwill letters — cited to the exact law and editable before anything is copied, tracked, or shipped.</p></div></div>
         <div class="tabs">
           <button class="tab active" data-ltab="dispute" onclick="switchLetterTab('dispute',this)">Dispute</button>
           <button class="tab" data-ltab="escalation" onclick="switchLetterTab('escalation',this)">Round 2 escalation</button>
@@ -608,23 +725,25 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
           <button class="tab" data-ltab="bulk" onclick="switchLetterTab('bulk',this)">Bulk</button>
         </div>
         <div id="letterTab-dispute" class="grid grid2">
-          <div class="card"><div class="formGrid"><label>Bureau<select id="lBureau"><option>Experian</option><option>Equifax</option><option>TransUnion</option></select></label><label>Item type<select id="lType"><option>Collection</option><option>Late Payment</option><option>Charge-off</option><option>Inquiry</option></select></label></div>
-            <label style="margin-top:13px">Strategy <span class="info" title="FCRA Validation = make them prove it. Metro 2 = reporting-format errors. Goodwill = polite ask. Round 2 = they ignored you.">i</span><select id="lStrategy"><option>FCRA Validation</option><option>Metro 2 Inaccuracy</option><option>Goodwill Adjustment</option><option>Round 2 Escalation</option></select></label>
+          <div class="card"><div class="formGrid"><label>Bureau<select id="lBureau" onchange="updateLetterLawPanel()"><option>Experian</option><option>Equifax</option><option>TransUnion</option></select></label><label>Item type<select id="lType" onchange="updateLetterLawPanel()"><option>Collection</option><option>Late Payment</option><option>Charge-off</option><option>Inquiry</option><option>Identity Theft</option><option>Outdated Reporting</option><option>Balance Error</option><option>Mixed File</option><option>Duplicate</option><option>Account Status</option><option>Personal Information</option></select></label></div>
+            <label style="margin-top:13px">Strategy <span class="info" title="FCRA Validation = make them prove it. Metro 2 = reporting-format errors. Goodwill = polite ask. Round 2 = they ignored you.">i</span><select id="lStrategy" onchange="updateLetterLawPanel()"><option>FCRA Validation</option><option>Factual Accuracy Dispute</option><option>Metro 2 Inaccuracy</option><option>Direct Furnisher Dispute</option><option>Goodwill Adjustment</option><option>Round 2 Escalation</option><option>Method of Verification Request</option><option>Permissible Purpose Inquiry</option><option>Obsolete Reporting</option><option>Debt Validation</option><option>Identity Theft Block</option></select></label>
             <label style="margin-top:13px">Your full name<input id="letterClientName" placeholder="e.g. Jordan Carter"></label>
-            <label style="margin-top:13px">Creditor / account (optional)<input id="lCreditor" placeholder="e.g. Midland Credit"></label>
-            <button id="letterGenBtn" class="primary" style="margin-top:15px;width:100%" onclick="generateLetter()">Generate letter — 1 credit</button>
+            <label style="margin-top:13px">Creditor / company being disputed<input id="lCreditor" placeholder="e.g. Midland Credit" oninput="updateLetterLawPanel()"></label>
+            <label style="margin-top:13px">Optional details for Gemini<textarea id="letterExtraContext" placeholder="Optional: add anything the report scan missed, such as payment proof, identity-theft report details, or a specific correction you want requested." style="min-height:78px"></textarea></label>
+            <div class="letterLawPanel" id="letterLawPanel"><strong>Consumer-law basis</strong><span style="color:var(--muted);font-size:12.5px">Choose an item type or generate from a scan to see the draft law support here.</span></div>
+            <button id="letterGenBtn" class="primary" style="margin-top:15px;width:100%" onclick="generateLetter()">Generate Gemini dispute letter</button>
           </div>
-          <div class="card"><h3>Letter preview</h3><pre id="letterPreview" style="white-space:pre-wrap;color:var(--ink2);margin-top:12px;font-family:var(--font);font-size:13px;line-height:1.6;max-height:430px;overflow:auto;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:14px">Your letter will stream here as it's written...</pre>
-            <div style="display:flex;gap:8px;margin-top:11px;flex-wrap:wrap"><button class="ghost" style="flex:1" onclick="copyText('letterPreview')">Copy</button><button class="ghost" style="flex:1" onclick="downloadText('letterPreview','creditos-dispute-letter')">Download .txt</button><button class="ghost" style="flex:1" onclick="downloadLetterPdf('letterPreview','Dispute Letter','creditos-dispute-letter')">Download PDF</button><button class="primary" style="flex:1" onclick="shipCurrentLetter()">Ship letter</button><button class="ghost" style="flex:1" onclick="trackCurrentLetter()">Track only</button></div>
+          <div class="card"><div class="letterReviewHead"><div><h3>Draft Review Studio</h3><p>Preview and edit the dispute letter here. The text in this box is the exact version used for copy, PDF, tracking, and shipping.</p></div><span class="chip info">Editable draft</span></div><textarea id="letterPreview" class="letterEditor" spellcheck="true">Your letter will stream here as it's written...</textarea>
+            <div class="letterActions"><button class="ghost" onclick="insertLawBasisIntoLetter()">Insert law basis</button><button class="ghost" onclick="copyText('letterPreview')">Copy</button><button class="ghost" onclick="downloadText('letterPreview','creditos-dispute-letter')">Download .txt</button><button class="ghost" onclick="downloadLetterPdf('letterPreview','Dispute Letter','creditos-dispute-letter')">Download PDF</button><button class="primary" onclick="shipCurrentLetter()">Ship letter</button><button class="ghost wide" onclick="trackCurrentLetter()">Track only</button></div>
           </div>
         </div>
         <div id="letterTab-escalation" class="grid grid2 hidden">
           <div class="card"><label>Your full name<input id="escName" placeholder="e.g. Jordan Carter"></label><label style="margin-top:13px">Bureau<select id="escBureau"><option>Experian</option><option>Equifax</option><option>TransUnion</option></select></label><label style="margin-top:13px">Creditor (optional)<input id="escCreditor" placeholder="e.g. Midland Credit"></label><label style="margin-top:13px">What did the bureau say?<textarea id="escResponse" placeholder="e.g. 'verified as accurate' with no proof"></textarea></label><button id="escBtn" class="primary" style="margin-top:15px;width:100%" onclick="generateEscalation()">Generate escalation — 1 credit</button></div>
-          <div class="card"><h3>Escalation letter</h3><pre id="escPreview" style="white-space:pre-wrap;color:var(--ink2);margin-top:12px;font-family:var(--font);font-size:13px;line-height:1.6;max-height:430px;overflow:auto;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:14px">Escalation letter appears here...</pre><div style="display:flex;gap:8px;margin-top:11px;flex-wrap:wrap"><button class="ghost" style="flex:1" onclick="copyText('escPreview')">Copy</button><button class="ghost" style="flex:1" onclick="downloadText('escPreview','creditos-escalation-letter')">Download .txt</button><button class="ghost" style="flex:1" onclick="downloadLetterPdf('escPreview','Round 2 Escalation Letter','creditos-escalation-letter')">Download PDF</button></div></div>
+          <div class="card"><h3>Escalation letter</h3><textarea id="escPreview" class="letterEditor" spellcheck="true">Escalation letter appears here...</textarea><div class="letterActions"><button class="ghost" onclick="copyText('escPreview')">Copy</button><button class="ghost" onclick="downloadText('escPreview','creditos-escalation-letter')">Download .txt</button><button class="ghost" onclick="downloadLetterPdf('escPreview','Round 2 Escalation Letter','creditos-escalation-letter')">Download PDF</button></div></div>
         </div>
         <div id="letterTab-goodwill" class="grid grid2 hidden">
           <div class="card"><label>Your full name<input id="gwName" placeholder="e.g. Jordan Carter"></label><label style="margin-top:13px">Creditor<input id="gwCreditor" placeholder="e.g. Capital One"></label><label style="margin-top:13px">Account number (optional)<input id="gwAccount" placeholder="e.g. ****1234"></label><label style="margin-top:13px">How many late payments?<input id="gwMonths" placeholder="e.g. 1-2 late payments"></label><label style="margin-top:13px">What happened?<textarea id="gwHardship" placeholder="Brief, honest explanation — job loss, medical, family emergency..."></textarea></label><button id="gwBtn" class="primary" style="margin-top:15px;width:100%" onclick="generateGoodwill()">Generate goodwill — 1 credit</button></div>
-          <div class="card"><h3>Goodwill letter</h3><pre id="gwPreview" style="white-space:pre-wrap;color:var(--ink2);margin-top:12px;font-family:var(--font);font-size:13px;line-height:1.6;max-height:430px;overflow:auto;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:14px">Goodwill letter appears here...</pre><div style="display:flex;gap:8px;margin-top:11px;flex-wrap:wrap"><button class="ghost" style="flex:1" onclick="copyText('gwPreview')">Copy</button><button class="ghost" style="flex:1" onclick="downloadText('gwPreview','creditos-goodwill-letter')">Download .txt</button><button class="ghost" style="flex:1" onclick="downloadLetterPdf('gwPreview','Goodwill Letter','creditos-goodwill-letter')">Download PDF</button></div></div>
+          <div class="card"><h3>Goodwill letter</h3><textarea id="gwPreview" class="letterEditor" spellcheck="true">Goodwill letter appears here...</textarea><div class="letterActions"><button class="ghost" onclick="copyText('gwPreview')">Copy</button><button class="ghost" onclick="downloadText('gwPreview','creditos-goodwill-letter')">Download .txt</button><button class="ghost" onclick="downloadLetterPdf('gwPreview','Goodwill Letter','creditos-goodwill-letter')">Download PDF</button></div></div>
         </div>
         <div id="letterTab-bulk" class="hidden">
           <div class="card" style="margin-bottom:13px"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap"><div><h3>Bulk letters</h3><p style="color:var(--muted);font-size:13px;margin-top:5px">Up to 20 letters at once · 1 credit each. <span class="chip gold">Pro</span></p></div><button class="ghost" onclick="addBulkRow()">+ Add row</button></div><div id="bulkRows" style="display:grid;gap:10px;margin-top:13px"></div><button id="bulkBtn" class="primary" style="margin-top:15px" onclick="runBulkGenerate()">Generate all letters</button></div>
@@ -804,7 +923,7 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
             </div>
             <p style="color:var(--soft);font-size:11.5px;margin-top:10px">Illustrative projections only. Actual scoring models and outcomes vary.</p>
           </div>
-          <div style="display:grid;gap:16px;align-content:start">
+          <div class="simulatorStack">
             <div class="card">
               <h3>Funding simulator</h3>
               <p style="color:var(--muted);font-size:13px;margin:5px 0 13px">What unlocks if my score increases?</p>
@@ -814,10 +933,10 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
               <div class="track" style="margin-top:11px"><span id="fundBar" style="width:40%"></span></div>
               <p style="color:var(--muted);font-size:12px;margin-top:9px" id="fundNote"></p>
             </div>
-            <div class="card">
+            <div class="card payoffCard">
               <h3>Debt payoff helper</h3>
               <p style="color:var(--muted);font-size:13px;margin:5px 0 13px">"What happens if I pay down this card?"</p>
-              <div class="formGrid"><label>Card balance ($)<input id="payBal" type="number" placeholder="e.g. 1800" oninput="calcPayoff()"></label><label>Card limit ($)<input id="payLim" type="number" placeholder="e.g. 3000" oninput="calcPayoff()"></label></div>
+              <div class="formGrid payoffGrid"><label>Card balance ($)<input id="payBal" type="number" placeholder="e.g. 1800" oninput="calcPayoff()"></label><label>Card limit ($)<input id="payLim" type="number" placeholder="e.g. 3000" oninput="calcPayoff()"></label></div>
               <div id="payoffOut" style="margin-top:13px;color:var(--muted);font-size:13.5px">Enter your balance and limit to see your payoff target.</div>
             </div>
           </div>
@@ -835,11 +954,11 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
               <div class="list" style="margin-top:10px" id="blockerList"></div>
             </div>
           </div>
-          <div class="card">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap"><div><h3>AI Funding Roadmap</h3><p style="color:var(--muted);font-size:13px;margin-top:5px">Personal plan: blockers, monthly steps, and matched products.</p></div><span class="chip gold">3 credits</span></div>
-            <div class="formGrid" style="margin:13px 0"><label>Funding goal<select id="fundingGoal"><option>$5,000 - $10,000</option><option>$10,000 - $25,000</option><option>$25,000 - $50,000</option><option>$50,000 - $100,000</option><option>$100,000+</option></select></label><label>Current credit score<input id="fundingScore" type="number" placeholder="e.g. 680" min="300" max="850"></label></div>
-            <label>Report text (optional, sharper results)<textarea id="fundingReportText" style="min-height:64px" placeholder="Paste report text for more accurate blockers..."></textarea></label>
-            <button class="primary" id="fundingRoadmapBtn" style="margin-top:13px;width:100%" onclick="runFundingRoadmap()">Build my roadmap — 3 credits</button>
+          <div class="card fundingRoadmapCard">
+            <div class="fundingRoadmapHead"><div><h3>AI Funding Roadmap</h3><p class="fundingRoadmapIntro">Personal plan: blockers, monthly steps, and matched products.</p></div><span class="chip gold">3 credits</span></div>
+            <div class="formGrid fundingRoadmapGrid"><label>Funding goal<select id="fundingGoal"><option>$5,000 - $10,000</option><option>$10,000 - $25,000</option><option>$25,000 - $50,000</option><option>$50,000 - $100,000</option><option>$100,000+</option></select></label><label>Current credit score<input id="fundingScore" type="number" placeholder="e.g. 680" min="300" max="850"></label></div>
+            <label>Report text (optional, sharper results)<textarea id="fundingReportText" placeholder="Paste report text for more accurate blockers..."></textarea></label>
+            <button class="primary" id="fundingRoadmapBtn" onclick="runFundingRoadmap()">Build my roadmap — 3 credits</button>
           </div>
         </div>
         <div id="fundingRoadmapResults" style="margin-top:16px"></div>
@@ -855,14 +974,38 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
         <div class="sectionTitle"><h3>🗄️ My funding vault</h3><span>Offers you saved</span></div>
         <div class="offerGrid" id="vaultGrid"><div class="empty" style="grid-column:1/-1">Save offers you like and compare them here.</div></div>
         <div class="disclaimer">These are projections based on the information available and are not guaranteed credit score or funding outcomes. CREDITOS does not submit applications; lender links are not connected yet.</div>
-        <div class="sectionTitle"><h3>Roadmap integrations</h3><span>Clearly labeled placeholders for post-launch</span></div>
-        <div class="grid grid3">
-          <div class="card"><span class="chip info">Coming soon</span><h3 style="margin-top:10px">Credit monitoring</h3><p style="color:var(--muted);font-size:13px;margin-top:6px">Array/CRS bureau monitoring is not connected yet.</p></div>
-          <div class="card"><span class="chip info">Coming soon</span><h3 style="margin-top:10px">Mail fulfillment</h3><p style="color:var(--muted);font-size:13px;margin-top:6px">Lob or Click2Mail fulfillment is not connected yet.</p></div>
-          <div class="card"><span class="chip info">Coming soon</span><h3 style="margin-top:10px">Live lender links</h3><p style="color:var(--muted);font-size:13px;margin-top:6px">Applications and affiliate tracking are not connected yet.</p></div>
-          <div class="card"><span class="chip info">Coming soon</span><h3 style="margin-top:10px">Email & dispute alerts</h3><p style="color:var(--muted);font-size:13px;margin-top:6px">Weekly email and push notifications are not active yet.</p></div>
-          <div class="card"><span class="chip info">Coming soon</span><h3 style="margin-top:10px">Debt payoff planner</h3><p style="color:var(--muted);font-size:13px;margin-top:6px">Full avalanche and snowball planning will follow the beta.</p></div>
-          <div class="card"><span class="chip info">Coming soon</span><h3 style="margin-top:10px">Credit aging trackers</h3><p style="color:var(--muted);font-size:13px;margin-top:6px">Inquiry aging and personal tradeline tracking are not active yet.</p></div>
+        <div class="sectionTitle"><h3>Roadmap integrations</h3><span>Provider connections planned after beta validation</span></div>
+        <div class="grid grid3 integrationGrid">
+          <div class="card integrationCard">
+            <div class="integrationTop"><span class="material-symbols-outlined integrationIcon">monitoring</span><span class="integrationBadge">Planned</span></div>
+            <div class="integrationCopy"><h3>Credit monitoring</h3><p>Connect Array/CRS to refresh bureau data, detect score movement, and surface account alerts.</p></div>
+            <div class="integrationMeta"><span>Status</span><b>Provider setup pending</b></div>
+          </div>
+          <div class="card integrationCard">
+            <div class="integrationTop"><span class="material-symbols-outlined integrationIcon">local_shipping</span><span class="integrationBadge">Setup pending</span></div>
+            <div class="integrationCopy"><h3>Mail fulfillment</h3><p>Connect fulfillment credentials to route approved dispute packets through certified mail.</p></div>
+            <div class="integrationMeta"><span>Status</span><b>Credential verification required</b></div>
+          </div>
+          <div class="card integrationCard">
+            <div class="integrationTop"><span class="material-symbols-outlined integrationIcon">account_balance</span><span class="integrationBadge">Planned</span></div>
+            <div class="integrationCopy"><h3>Live lender links</h3><p>Attach lender application links and affiliate tracking after readiness rules are finalized.</p></div>
+            <div class="integrationMeta"><span>Status</span><b>Marketplace integration queued</b></div>
+          </div>
+          <div class="card integrationCard">
+            <div class="integrationTop"><span class="material-symbols-outlined integrationIcon">notifications_active</span><span class="integrationBadge">Planned</span></div>
+            <div class="integrationCopy"><h3>Email & dispute alerts</h3><p>Automated reminders for dispute deadlines, bureau responses, and next recommended actions.</p></div>
+            <div class="integrationMeta"><span>Status</span><b>Notification engine pending</b></div>
+          </div>
+          <div class="card integrationCard">
+            <div class="integrationTop"><span class="material-symbols-outlined integrationIcon">savings</span><span class="integrationBadge">Beta roadmap</span></div>
+            <div class="integrationCopy"><h3>Debt payoff planner</h3><p>Expanded avalanche and snowball modeling for utilization goals and funding-readiness planning.</p></div>
+            <div class="integrationMeta"><span>Status</span><b>Advanced planner scheduled</b></div>
+          </div>
+          <div class="card integrationCard">
+            <div class="integrationTop"><span class="material-symbols-outlined integrationIcon">schedule</span><span class="integrationBadge">Planned</span></div>
+            <div class="integrationCopy"><h3>Credit aging trackers</h3><p>Track inquiry aging, tradeline age, and key reporting milestones as the profile matures.</p></div>
+            <div class="integrationMeta"><span>Status</span><b>Timeline automation pending</b></div>
+          </div>
         </div>
       </div>
 
@@ -1192,12 +1335,12 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
       </div>
       <button class="close" onclick="closeMailingModal()">✕</button>
     </div>
-    <div class="grid grid2">
+    <div class="grid grid2 mailModalGrid">
       <div class="card">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:12px">
+        <div class="mailCardHead">
           <div>
             <h3>1 · Your mailing profile</h3>
-            <p style="color:var(--muted);font-size:13px;margin-top:5px">Needed for return mail and identity verification.</p>
+            <p>Needed for return mail and identity verification.</p>
           </div>
           <span class="chip info" id="mailingProfileChip">Not set</span>
         </div>
@@ -1230,30 +1373,40 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
             <small id="mailSsnStatus" style="color:var(--muted)">No file uploaded yet.</small>
           </div>
         </div>
+        <div class="item" style="margin-top:10px;align-items:flex-start">
+          <div>
+            <strong>Proof of address</strong>
+            <small>Utility bill, bank statement, lease, or official mail showing your current address.</small>
+          </div>
+          <div style="display:grid;gap:8px;min-width:min(100%,260px);width:100%">
+            <input id="mailProofAddressInput" type="file" accept=".png,.jpg,.jpeg,.pdf,image/png,image/jpeg,application/pdf">
+            <small id="mailProofAddressStatus" style="color:var(--muted)">No file uploaded yet.</small>
+          </div>
+        </div>
         <p style="color:var(--soft);font-size:11.5px;margin-top:10px">We never print or expose secret values. These documents stay private in your mailing profile.</p>
       </div>
       <div class="card">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:12px">
+        <div class="mailCardHead">
           <div>
             <h3>2 · Ship this letter</h3>
-            <p style="color:var(--muted);font-size:13px;margin-top:5px">Choose a saved recipient or enter a custom address. The system keeps the defaults in the database so they can be updated safely.</p>
+            <p>Choose a saved recipient or enter a custom address. The system keeps defaults in the address book so they can be updated safely.</p>
           </div>
-          <span class="chip gold">$19.99 + $5.50</span>
+          <span class="chip gold mailPriceChip">$19.99 + $5.50</span>
         </div>
-        <div style="display:grid;gap:10px;margin-top:8px">
-          <div class="item" style="align-items:flex-start">
+        <div class="mailShipStack">
+          <div class="item mailModeCard">
             <div>
               <strong>Recipient mode</strong>
               <small>Saved recipient, custom address, or batch shipping for all three bureaus.</small>
             </div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+            <div class="mailModeActions">
               <button class="ghost" type="button" onclick="setMailingMode('saved')">Select saved</button>
               <button class="ghost" type="button" onclick="setMailingMode('custom')">Custom</button>
               <button class="ghost" type="button" onclick="setMailingMode('all_three')">All three bureaus</button>
             </div>
           </div>
-          <div id="mailingPresetCards" class="grid grid3"></div>
-          <div id="mailRecipientBookHint" class="scannerState" style="padding:14px">
+          <div id="mailingPresetCards" class="mailPresetGrid"></div>
+          <div id="mailRecipientBookHint" class="scannerState mailingStatusBox">
             <strong>Loading address book…</strong>
             <span>We’re fetching your saved recipients and the built-in bureau list.</span>
           </div>
@@ -1627,12 +1780,14 @@ async function syncBusinessCloudState(){
   }
 }
 
+const LOCAL_API_BASE = 'http://127.0.0.1:3001';
 const api = {
+  url(path){ return /^https?:\/\//i.test(path) ? path : `${location.protocol === 'file:' ? LOCAL_API_BASE : ''}${path}`; },
   headers(){ const h={'Content-Type':'application/json'}; const t=getAuthToken(); if(t)h['Authorization']=`Bearer ${t}`; return h; },
-  async post(path,body){ const res=await fetch(path,{method:'POST',headers:this.headers(),body:JSON.stringify(body)}); const data=await res.json().catch(()=>({error:'Invalid server response.'})); if(!res.ok){const e=new Error(data.error||'Request failed.');e.status=res.status;throw e;} return data; },
-  async patch(path,body){ const res=await fetch(path,{method:'PATCH',headers:this.headers(),body:JSON.stringify(body)}); const data=await res.json().catch(()=>({error:'Invalid server response.'})); if(!res.ok){const e=new Error(data.error||'Request failed.');e.status=res.status;throw e;} return data; },
-  async get(path){ const res=await fetch(path,{headers:this.headers()}); const data=await res.json().catch(()=>({error:'Invalid server response.'})); if(!res.ok){const e=new Error(data.error||'Request failed.');e.status=res.status;throw e;} return data; },
-  async del(path){ const res=await fetch(path,{method:'DELETE',headers:this.headers()}); const data=await res.json().catch(()=>({error:'Invalid server response.'})); if(!res.ok){const e=new Error(data.error||'Request failed.');e.status=res.status;throw e;} return data; }
+  async post(path,body){ const res=await fetch(this.url(path),{method:'POST',headers:this.headers(),body:JSON.stringify(body)}); const data=await res.json().catch(()=>({error:'Invalid server response.'})); if(!res.ok){const e=new Error(data.error||'Request failed.');e.status=res.status;throw e;} return data; },
+  async patch(path,body){ const res=await fetch(this.url(path),{method:'PATCH',headers:this.headers(),body:JSON.stringify(body)}); const data=await res.json().catch(()=>({error:'Invalid server response.'})); if(!res.ok){const e=new Error(data.error||'Request failed.');e.status=res.status;throw e;} return data; },
+  async get(path){ const res=await fetch(this.url(path),{headers:this.headers()}); const data=await res.json().catch(()=>({error:'Invalid server response.'})); if(!res.ok){const e=new Error(data.error||'Request failed.');e.status=res.status;throw e;} return data; },
+  async del(path){ const res=await fetch(this.url(path),{method:'DELETE',headers:this.headers()}); const data=await res.json().catch(()=>({error:'Invalid server response.'})); if(!res.ok){const e=new Error(data.error||'Request failed.');e.status=res.status;throw e;} return data; }
 };
 
 function normalizeMailingAddress(address = {}) {
@@ -1668,13 +1823,53 @@ function mailingProfileState(){
     lastUpdated: profile.lastUpdated || null
   };
 }
+const BUREAU_MAILING_ADDRESSES={
+  Experian:{fullName:'Experian',organization:'Experian',address1:'P.O. Box 4500',city:'Allen',state:'TX',postalCode:'75013',country:'United States'},
+  Equifax:{fullName:'Equifax Information Services LLC',organization:'Equifax Information Services LLC',address1:'P.O. Box 740256',city:'Atlanta',state:'GA',postalCode:'30374',country:'United States'},
+  TransUnion:{fullName:'TransUnion Consumer Solutions',organization:'TransUnion Consumer Solutions',address1:'P.O. Box 2000',city:'Chester',state:'PA',postalCode:'19016',country:'United States'}
+};
+const CFPB_MAILING_ADDRESS={fullName:'Consumer Financial Protection Bureau',organization:'Consumer Financial Protection Bureau',department:'Consumer Response',address1:'P.O. Box 27170',city:'Washington',state:'DC',postalCode:'20038',country:'United States'};
+function letterBureauName(value){
+  const normalized=normalizeBureauName(value);
+  if(normalized)return normalized;
+  const text=String(value||'').toLowerCase();
+  if(text.includes('equifax'))return 'Equifax';
+  if(text.includes('trans'))return 'TransUnion';
+  return 'Experian';
+}
+function bureauMailingAddress(value){
+  return BUREAU_MAILING_ADDRESSES[letterBureauName(value)] || BUREAU_MAILING_ADDRESSES.Experian;
+}
+function fallbackRecipientForType(type){
+  const key=String(type||'').toLowerCase();
+  const bureauKey=key==='experian'?'Experian':key==='equifax'?'Equifax':key==='transunion'?'TransUnion':'';
+  const address=bureauKey ? BUREAU_MAILING_ADDRESSES[bureauKey] : key==='cfpb' ? CFPB_MAILING_ADDRESS : null;
+  if(!address) return null;
+  return {
+    id:`fallback-${key}`,
+    recipient_type:key,
+    recipient_name:address.organization||address.fullName||recipientTypeLabel(key),
+    department:address.department||'Dispute Department',
+    address_line_1:address.address1||'',
+    address_line_2:address.address2||'',
+    city:address.city||'',
+    state:address.state||'',
+    postal_code:address.postalCode||'',
+    country:address.country||'United States',
+    is_default:key==='experian',
+    is_active:true,
+    is_system_recipient:true,
+    is_fallback:true,
+    label:address.organization||address.fullName||recipientTypeLabel(key)
+  };
+}
 function hasMailingAddress(address){
   return !!(address.address1 && address.city && address.state && address.postalCode);
 }
 function mailingProfileReady(profile = mailingProfileState()){
   const docs = Array.isArray(profile.documents) ? profile.documents : [];
   const docTypes = new Set(docs.map(doc => String(doc.docType || '').toLowerCase()));
-  return !!(profile.fullName && hasMailingAddress(profile.billingAddress) && docTypes.has('driver_license') && docTypes.has('ssn_card'));
+  return !!(profile.fullName && hasMailingAddress(profile.billingAddress) && docTypes.has('driver_license') && docTypes.has('ssn_card') && docTypes.has('proof_of_address'));
 }
 function renderMailingSummary(){
   const profile = mailingProfileState();
@@ -1685,7 +1880,7 @@ function renderMailingSummary(){
       summary.innerHTML = `<div><strong>Ready for certified mail</strong><small>${escapeHtml(profile.billingAddress.address1)}, ${escapeHtml([profile.billingAddress.city, profile.billingAddress.state].filter(Boolean).join(', '))}</small></div><span class="tag">Ready</span>`;
     } else {
       const docCount = profile.documents.length;
-      summary.innerHTML = `<div><strong>Setup still needed</strong><small>${docCount} document${docCount===1?'':'s'} uploaded · add billing address and both identity uploads.</small></div><span class="tag amber">Needs setup</span>`;
+      summary.innerHTML = `<div><strong>Setup still needed</strong><small>${docCount} document${docCount===1?'':'s'} uploaded · add billing address, identity uploads, and proof of address.</small></div><span class="tag amber">Needs setup</span>`;
     }
   }
   if (chip) {
@@ -1694,12 +1889,15 @@ function renderMailingSummary(){
   }
   const d1 = $('mailDlStatus');
   const d2 = $('mailSsnStatus');
-  if (d1 || d2) {
+  const d3 = $('mailProofAddressStatus');
+  if (d1 || d2 || d3) {
     const docs = profile.documents || [];
     const dl = docs.find(doc => String(doc.docType || '').toLowerCase() === 'driver_license');
     const ssn = docs.find(doc => String(doc.docType || '').toLowerCase() === 'ssn_card');
+    const proof = docs.find(doc => String(doc.docType || '').toLowerCase() === 'proof_of_address');
     if (d1) d1.textContent = dl ? `Uploaded: ${dl.fileName || 'driver license'}` : 'No file uploaded yet.';
     if (d2) d2.textContent = ssn ? `Uploaded: ${ssn.fileName || 'SSN card'}` : 'No file uploaded yet.';
+    if (d3) d3.textContent = proof ? `Uploaded: ${proof.fileName || 'proof of address'}` : 'No file uploaded yet.';
   }
 }
 function writeMailingProfile(profile) {
@@ -1778,8 +1976,17 @@ function mailingRecipientsByType(type) {
   return _mailingRecipients.filter(r => String(r.recipient_type || '').toLowerCase() === String(type || '').toLowerCase());
 }
 
+function recipientForPreset(type) {
+  return mailingRecipientsByType(type)[0] || fallbackRecipientForType(type);
+}
+
 function selectedRecipientRow() {
-  return _mailingRecipients.find(r => r.id === _mailingSelectionId) || null;
+  const saved = _mailingRecipients.find(r => r.id === _mailingSelectionId);
+  if (saved) return saved;
+  if (String(_mailingSelectionId || '').startsWith('fallback-')) {
+    return fallbackRecipientForType(String(_mailingSelectionId).replace('fallback-',''));
+  }
+  return null;
 }
 
 function allThreeRecipientRows() {
@@ -1813,16 +2020,18 @@ function renderMailingRecipientsUI() {
     cards.innerHTML = quickTypes.map(type => {
       const rec = type === 'custom'
         ? _mailingRecipients.find(r => !r.is_system_recipient && r.recipient_type === 'custom')
-        : mailingRecipientsByType(type)[0];
-      const active = rec?.is_active !== false;
+        : recipientForPreset(type);
+      const active = !!rec && rec.is_active !== false;
       const label = type === 'custom' ? 'Custom' : recipientTypeLabel(type);
       const sub = type === 'custom'
-        ? 'Add and save your own creditor or collector address.'
-        : rec ? rec.address_line_1 || 'Ready to load from address book.' : 'Not loaded yet.';
-      return `<button class="opt ${_mailingMode==='saved' && _mailingSelectionId===rec?.id ? 'sel' : ''}" onclick="selectMailingPreset('${type}')">
+        ? (rec ? (rec.address_line_1 || 'Saved custom recipient.') : 'Add creditor or collector address.')
+        : rec ? rec.address_line_1 || 'Ready to load from address book.' : 'Not saved in address book yet.';
+      const statusText = rec ? (active ? 'Ready' : 'Inactive') : (type === 'custom' ? 'Optional' : 'Missing');
+      const statusClass = rec ? presetClassForType(type) : (type === 'custom' ? 'chip gray' : 'chip warn');
+      return `<button class="opt mailPresetCard ${_mailingMode==='saved' && _mailingSelectionId===rec?.id ? 'sel' : ''}" onclick="selectMailingPreset('${type}')">
         <span class="em">${type === 'custom' ? '✎' : '📬'}</span>
-        <span>${escapeHtml(label)}<small>${escapeHtml(sub)}</small></span>
-        <span class="${presetClassForType(type)}">${active ? 'Ready' : 'Inactive'}</span>
+        <span class="mailPresetCopy"><span class="mailPresetTitle">${escapeHtml(label)}</span><small>${escapeHtml(sub)}</small></span>
+        <span class="${statusClass} mailPresetStatus">${statusText}</span>
       </button>`;
     }).join('');
   }
@@ -2018,7 +2227,7 @@ function selectMailingPreset(type) {
     setMailingMode('all_three');
     return;
   }
-  const row = mailingRecipientsByType(type)[0];
+  const row = recipientForPreset(type);
   if (!row) {
     _mailingMode = 'custom';
     lockRecipientFields(false);
@@ -2061,7 +2270,7 @@ function saveCustomRecipientHint() {
 }
 
 function openMailingModal(state = {}) {
-  const letterText = state.letterText || $('letterPreview')?.textContent || '';
+  const letterText = state.letterText || draftText('letterPreview') || '';
   const profile = mailingProfileState();
   $('mailLetterText').value = letterText;
   $('mailingMsg').textContent = state.message || 'Choose a recipient and continue to secure checkout.';
@@ -2139,7 +2348,7 @@ function currentRecipientPayload() {
   const selected = selectedRecipientRow();
   return {
     recipient_mode: _mailingMode,
-    recipient_address_book_id: _mailingMode === 'saved' && selected ? selected.id : null,
+    recipient_address_book_id: _mailingMode === 'saved' && selected && !selected.is_fallback ? selected.id : null,
     recipient_type: selected?.recipient_type || 'custom',
     custom_recipient_address: form.recipientAddress,
     save_custom_recipient: !!$('mailSaveCustomRecipient')?.checked,
@@ -2218,8 +2427,8 @@ async function continueCertifiedMail() {
   }
   const docs = profile.documents || [];
   const docTypes = new Set(docs.map(doc => String(doc.docType || '').toLowerCase()));
-  if (!docTypes.has('driver_license') || !docTypes.has('ssn_card')) {
-    if (msg) msg.textContent = 'Upload your driver license and SSN card first.';
+  if (!docTypes.has('driver_license') || !docTypes.has('ssn_card') || !docTypes.has('proof_of_address')) {
+    if (msg) msg.textContent = 'Upload your driver license, SSN card, and proof of address first.';
     return;
   }
   if (!hasMailingAddress(recipientAddress)) {
@@ -2861,7 +3070,7 @@ function updateScannerCreditUI(credits,unlimited){
   $('sideCredits').textContent=unlimited?'∞':(credits??'—');
   $('sideMeter').style.width=unlimited?'100%':`${Math.min(100,((credits||0)/25)*100)}%`;
 }
-function setScannerLoading(title,detail){ $('scanResults').innerHTML=`<h3>2 · AI results</h3><div class="scannerState" style="margin-top:12px"><div class="spinner"></div><strong>${escapeHtml(title)}</strong><span>${escapeHtml(detail)}</span></div>`; }
+function setScannerLoading(title,detail){ $('scanResults').innerHTML=`<h3>2 · AI results</h3><div class="scannerState aiReading" style="margin-top:12px"><div class="aiBrain thinking"><span class="material-symbols-outlined">psychology</span></div><div><strong>${escapeHtml(title)}</strong><span>${escapeHtml(detail)}</span></div></div>`; }
 let _lastScanRetry=null,_pendingScanMeta=null;
 function setScannerError(msg,retryFn=null){
   _lastScanRetry=retryFn;
@@ -3119,10 +3328,25 @@ function wireAutofillTracking(){
       el.addEventListener('change',()=>markTouchedField(el));
     });
 }
+function ensureSelectOption(select,value){
+  if(!select || select.tagName!=='SELECT') return String(value??'').trim();
+  const target=String(value??'').trim();
+  if(!target) return '';
+  const existing=[...select.options].find(opt=>{
+    const optionValue=String(opt.value||opt.textContent||'').trim();
+    return optionValue.toLowerCase()===target.toLowerCase();
+  });
+  if(existing) return existing.value || existing.textContent;
+  const option=document.createElement('option');
+  option.value=target;
+  option.textContent=target;
+  select.appendChild(option);
+  return target;
+}
 function maybeFillField(id,value,force=false){
   const el=$(id);
   if(!el) return false;
-  const next=String(value??'').trim();
+  const next=ensureSelectOption(el,value);
   if(!next) return false;
   const current=String(el.value??'').trim();
   const pristine=!el.dataset.touched;
@@ -3207,6 +3431,18 @@ function extractPersonalReportSignals(analysis, meta={}){
   };
 }
 function personalDetectedChips(signals={}, applied=[]){
+  const labels={
+    consumer_name:'Client name',
+    bureau_name:'Bureau',
+    creditor_name:'Creditor',
+    account_number:'Account number',
+    account_type:'Account type',
+    dispute_strategy:'Dispute strategy',
+    bureau_response_text:'Bureau response',
+    months_late:'Late-payment age',
+    credit_score:'Credit score',
+    report_summary:'Report notes'
+  };
   const found=[];
   if(signals.consumerName) found.push('consumer_name');
   if(signals.bureau) found.push('bureau_name');
@@ -3218,9 +3454,9 @@ function personalDetectedChips(signals={}, applied=[]){
   if(signals.monthsLate) found.push('months_late');
   if(signals.creditScore) found.push('credit_score');
   if(signals.fundingNotes) found.push('report_summary');
-  const values=[...new Set([...applied, ...found])].slice(0,10);
+  const values=[...new Set([...applied, ...found])].slice(0,8);
   if(!values.length) return '';
-  return `<div class="scannerState" style="padding:12px;margin:12px 0"><strong>Detected fields</strong><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">${values.map(v=>`<span class="chip up">${escapeHtml(v)}</span>`).join('')}</div></div>`;
+  return `<div class="detectedSummary"><strong>Auto-filled from the report</strong><div class="scanChips">${values.map(v=>`<span class="chip up">${escapeHtml(labels[v]||String(v).replace(/_/g,' '))}</span>`).join('')}</div></div>`;
 }
 function summarizeScanForFunding(analysis, meta={}){
   const items=analysis?.disputes||analysis?.items||[];
@@ -3278,6 +3514,120 @@ function confidenceTone(value){
   if(n>=55)return 'warn';
   return 'gray';
 }
+function scanItemCompany(it={}){
+  return creditorNameFromScanItem(it) || 'Company not clearly identified';
+}
+function scanItemBureau(it={}){
+  return normalizeBureauName(firstText(it.bureau,it.bureau_name)) || firstText(it.bureau,it.bureau_name) || 'Bureau not clearly identified';
+}
+function scanItemAccount(it={}){
+  return maskAccountNumber(firstText(it.account_number,it.accountNumber,it.account,it.account_id,it.account_ref));
+}
+function friendlyScanType(value){
+  const t=String(value||'').toLowerCase().replace(/[_-]/g,' ');
+  if(t.includes('collection')) return 'Collection account';
+  if(t.includes('late')) return 'Late payment';
+  if(t.includes('charge')) return 'Charge-off';
+  if(t.includes('inquir')) return 'Credit inquiry';
+  if(t.includes('identity')||t.includes('fraud')) return 'Identity-theft / fraud item';
+  if(t.includes('duplicate')) return 'Duplicate reporting';
+  if(t.includes('outdated')||t.includes('obsolete')) return 'Outdated reporting';
+  if(t.includes('balance')||t.includes('utilization')) return 'Balance / utilization reporting';
+  if(t.includes('personal')) return 'Personal-information issue';
+  return value ? String(value).replace(/_/g,' ') : 'Credit-report item';
+}
+function scanDisputeTarget(it={}){
+  const type=friendlyScanType(firstText(it.type,it.account_type,it.category));
+  const issue=firstText(it.violation,it.reason,it.issue,it.dispute_reason);
+  if(issue) return `${type}: ${issue}`;
+  const text=JSON.stringify(it||{}).toLowerCase();
+  if(text.includes('collection')) return 'Collection account: verify ownership, balance, dates, and collection authority.';
+  if(text.includes('late')) return 'Late payment: verify the date, payment history, and whether the late mark is accurate.';
+  if(text.includes('charge')) return 'Charge-off: verify balance, date of first delinquency, and reporting accuracy.';
+  if(text.includes('inquir')) return 'Inquiry: verify permissible purpose and consumer authorization.';
+  return `${type}: verify that the company, account, dates, balance, and status are accurate and complete.`;
+}
+function scanWhyItMatters(it={}){
+  const text=JSON.stringify(it||{}).toLowerCase();
+  const creditor=scanItemCompany(it);
+  const bureau=scanItemBureau(it);
+  const evidence=Array.isArray(it.supporting_evidence) ? it.supporting_evidence.filter(Boolean) : [];
+  const sourceFact=evidence[0] ? ` Report signal: ${evidence[0]}` : '';
+  if(/collection|collector|debt/.test(text)) return `${creditor} may be reporting a collection item on ${bureau}. The balance, ownership, dates, and collection authority should be verified before a dispute is sent.${sourceFact}`;
+  if(/late|payment history|delinquen/.test(text)) return `${creditor} may be reporting a late-payment history item on ${bureau}. Late marks can affect scoring and should match the exact payment history and reporting dates.${sourceFact}`;
+  if(/charge/.test(text)) return `${creditor} may be reporting a charge-off. The balance, account status, and date of first delinquency need to match the report evidence.${sourceFact}`;
+  if(/inquir|permissible|unauthor/.test(text)) return `${creditor} may have accessed the report or appeared as an inquiry. The dispute should focus on whether there was a permissible purpose or consumer authorization.${sourceFact}`;
+  if(/outdated|obsolete|too old|first delinquency|dofd|7 year|seven year/.test(text)) return `${creditor} may involve outdated reporting. The key issue is whether the reported dates are complete and within the allowed reporting period.${sourceFact}`;
+  if(/identity|fraud|theft|not mine|mixed file|wrong person/.test(text)) return `${creditor} may not belong to the client or may reflect mixed-file/identity-theft risk. The client should confirm identity documents before sending any dispute.${sourceFact}`;
+  if(/balance|utilization|limit|status/.test(text)) return `${creditor} may have a balance, limit, or status mismatch. The dispute should be based on the exact field that appears inaccurate or incomplete.${sourceFact}`;
+  return `${creditor} has a report item that needs review against the original credit report. Confirm the company, bureau, account, dates, balance, and status before sending a letter.${sourceFact}`;
+}
+function scanBestMove(it={}){
+  const strategy=firstText(it.strategy,it.recommended_strategy,it.dispute_strategy);
+  if(strategy) return strategy;
+  const text=JSON.stringify(it||{}).toLowerCase();
+  if(/collection|collector|debt/.test(text)) return 'Debt validation and factual accuracy dispute';
+  if(/inquir|permissible|unauthor/.test(text)) return 'Permissible purpose inquiry dispute';
+  if(/late/.test(text)) return 'Payment-history accuracy dispute';
+  if(/charge/.test(text)) return 'Charge-off reporting accuracy dispute';
+  if(/outdated|obsolete|first delinquency|dofd/.test(text)) return 'Obsolete reporting / date accuracy dispute';
+  if(/identity|fraud|theft|not mine|mixed file/.test(text)) return 'Identity-theft or mixed-file review';
+  return 'Factual accuracy dispute';
+}
+function scanLawBasisFromFinding(it={}){
+  const found=[];
+  const push=(code,why='Selected by the report analysis for this finding.')=>{
+    const clean=String(code||'').trim();
+    if(!clean || /^(fcra|fdcpa)$/i.test(clean))return;
+    if(!found.some(l=>l.code.toLowerCase()===clean.toLowerCase())){
+      found.push({code:clean,why:String(why||'Selected by the report analysis for this finding.').trim()});
+    }
+  };
+  const readBasis=value=>{
+    if(!value)return;
+    if(Array.isArray(value)){ value.forEach(readBasis); return; }
+    if(typeof value==='object'){
+      push(value.code||value.law||value.section||value.statute,value.why||value.reason||value.applies_to);
+      return;
+    }
+    String(value).split(/[|,;]/).map(v=>v.trim()).filter(Boolean).forEach(code=>push(code));
+  };
+  readBasis(it.legal_basis);
+  readBasis(it.consumer_law_basis);
+  readBasis(it.laws);
+  readBasis(it.law);
+  return found.slice(0,5);
+}
+function scanConsumerLawBasis(it={}){
+  const text=JSON.stringify(it||{}).toLowerCase();
+  const laws=scanLawBasisFromFinding(it);
+  const add=(code,why)=>{ if(!laws.some(l=>l.code===code)) laws.push({code,why}); };
+  add('FCRA §607(b) / 15 U.S.C. §1681e(b)','Credit bureaus must follow reasonable procedures to assure maximum possible accuracy of consumer-report information.');
+  add('FCRA §611 / 15 U.S.C. §1681i','Credit bureaus must reasonably reinvestigate disputed information that may be inaccurate, incomplete, or unverifiable.');
+  if(/collection|collector|debt/.test(text)){
+    add('FDCPA §809 / 15 U.S.C. §1692g','For debt collectors, validation rights may apply when the amount, collector, or debt details are disputed.');
+    add('FDCPA §807 / 15 U.S.C. §1692e','Debt collectors may not use false, deceptive, or misleading representations about the character, amount, or legal status of a debt.');
+    add('FDCPA §808 / 15 U.S.C. §1692f','Debt collectors may not use unfair means to collect amounts not expressly authorized by agreement or permitted by law.');
+  }
+  if(/late|charge|balance|utilization|account|payment|creditor|furnisher|collection/.test(text)){
+    add('FCRA §623 / 15 U.S.C. §1681s-2(b)','After a bureau dispute, furnishers must investigate and correct information that cannot be verified as accurate.');
+    add('Regulation V / 12 C.F.R. §1022.43','Consumers may send certain direct disputes to furnishers about liability, terms, account status, payment history, or identifying information.');
+  }
+  if(/inquir|permissible|unauthor/.test(text)){
+    add('FCRA §604 / 15 U.S.C. §1681b','Credit report access generally requires a permissible purpose.');
+  }
+  if(/outdated|obsolete|too old|first delinquency|dofd|7 year|seven year/.test(text)){
+    add('FCRA §605 / 15 U.S.C. §1681c','Obsolete adverse information is limited by federal reporting time rules.');
+  }
+  if(/identity|fraud|theft/.test(text)){
+    add('FCRA §605B / 15 U.S.C. §1681c-2','Identity-theft block rights may apply when proper identity-theft documentation supports the dispute.');
+    add('FCRA §609 / 15 U.S.C. §1681g','Consumers have disclosure rights to obtain information in their file and review the sources of reported information.');
+  }
+  if(/mixed file|wrong person|not mine|belongs to someone else|personal information|address|ssn|social security/.test(text)){
+    add('FCRA §609 / 15 U.S.C. §1681g','Consumers have disclosure rights to obtain information in their file and review the sources of reported information.');
+  }
+  return laws.slice(0,6);
+}
 function renderCreditIntelligenceSummary(analysis={}){
   const normalized=analysis.normalized_report||{};
   const funding=analysis.funding_intelligence||{};
@@ -3285,12 +3635,13 @@ function renderCreditIntelligenceSummary(analysis={}){
   const sections=normalized.sections||{};
   const detectedSections=Object.entries(sections).filter(([,v])=>v?.detected).map(([k])=>k.replace(/_/g,' ')).slice(0,7);
   const score=Number(funding.score);
-  const readiness=Number.isFinite(score)?`<div class="scannerState success" style="padding:13px"><strong>Funding readiness: ${score}/100</strong><span>${escapeHtml(funding.approval_odds_note||'Directional readiness only — no approval is guaranteed.')}</span></div>`:'';
-  const source=`<div class="scannerState" style="padding:13px"><strong>Normalized report</strong><span>${escapeHtml(normalized.source||'Unknown source')} · ${escapeHtml(normalized.bureau||'Unknown bureau')} · ${Number(normalized.accounts?.length||0)} account block(s) · Parser confidence ${Math.round(Number(normalized.parser_confidence)||0)}/100</span>${detectedSections.length?`<div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:8px">${detectedSections.map(s=>`<span class="chip info">${escapeHtml(s)}</span>`).join('')}</div>`:''}</div>`;
-  const topChecks=checks.slice(0,3).map(check=>`<div class="scannerState" style="padding:12px"><strong>${escapeHtml(check.title||check.type||'Validation check')}</strong><span>${escapeHtml(check.evidence||'Review required')}</span><div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:8px"><span class="chip ${check.severity==='high'?'down':check.severity==='medium'?'warn':'gray'}">${escapeHtml(check.severity||'review')}</span><span class="chip ${confidenceTone(check.dispute_confidence)}">${escapeHtml(check.dispute_confidence||'—')}/100 confidence</span>${check.metro2_rule?`<span class="chip info">Metro 2</span>`:''}</div></div>`).join('');
+  const hasNormalized=normalized.source||normalized.bureau||Number(normalized.accounts?.length||0)||detectedSections.length;
+  const source=hasNormalized?`<div class="scanMiniCard"><strong>Report read</strong><span>${escapeHtml(normalized.bureau||'Credit report')} · ${Number(normalized.accounts?.length||0)} account block(s) read</span>${Number(normalized.parser_confidence)?`<span>Read confidence: ${Math.round(Number(normalized.parser_confidence)||0)}/100</span>`:''}${detectedSections.length?`<div class="scanChips">${detectedSections.slice(0,5).map(s=>`<span class="chip info">${escapeHtml(s)}</span>`).join('')}</div>`:''}</div>`:'';
+  const readiness=Number.isFinite(score)?`<div class="scanMiniCard"><strong>Funding signal</strong><span>${score}/100 readiness estimate</span><span>${escapeHtml(funding.approval_odds_note||'Directional only — not an approval or offer.')}</span></div>`:'';
+  const topChecks=checks.length?`<div class="scanMiniCard"><strong>Data checks</strong><span>${checks.length} possible data issue${checks.length===1?'':'s'} found for review.</span><ul>${checks.slice(0,2).map(check=>`<li>${escapeHtml(check.title||check.type||'Review item')}</li>`).join('')}</ul></div>`:'';
   const recs=(funding.recommendations||[]).slice(0,3).map(item=>`<li>${escapeHtml(item)}</li>`).join('');
-  const fundingTips=recs?`<div class="scannerState" style="padding:13px"><strong>Funding intelligence</strong><ul style="margin:8px 0 0 18px;color:var(--muted);line-height:1.55">${recs}</ul></div>`:'';
-  return `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin:12px 0">${source}${readiness}${fundingTips}</div>${topChecks?`<div style="display:grid;gap:9px;margin:10px 0">${topChecks}</div>`:''}`;
+  const fundingTips=recs?`<div class="scanMiniCard"><strong>Funding tips</strong><ul>${recs}</ul></div>`:'';
+  return (source||readiness||topChecks||fundingTips)?`<div class="scanDetailsGrid">${source}${readiness}${topChecks}${fundingTips}</div>`:'';
 }
 function renderScanFindings(analysis,meta=_pendingScanMeta||{}){
   const items=analysis?.disputes||analysis?.items||[];
@@ -3302,17 +3653,67 @@ function renderScanFindings(analysis,meta=_pendingScanMeta||{}){
   const autofill=applyScanAutofill(analysis,meta) || {signals:{},applied:[]};
   awardBadge('scan');
   setScanStep(3);
-  const stat=(lab,val)=>`<div style="flex:1;min-width:110px;border:1px solid var(--line);border-radius:12px;padding:12px;background:rgba(255,255,255,.03)"><div class="metricLab">${lab}</div><b style="font-size:20px">${escapeHtml(val)}</b></div>`;
+  const highCount=Number(summary.high_priority??items.filter(i=>String(i.priority||'').toLowerCase()==='high').length)||0;
+  const readinessScore=analysis?.funding_intelligence?.score?`${analysis.funding_intelligence.score}/100`:'—';
+  const topIndex=Math.max(0,items.findIndex(i=>String(i?.priority||'').toLowerCase()==='high'));
+  const topItem=items[topIndex]||items[0]||null;
+  const stat=(lab,val)=>`<div class="scanStatCard"><div class="metricLab">${lab}</div><b>${escapeHtml(val)}</b></div>`;
+  const topReason=topItem?(topItem.strategy||topItem.reason||topItem.violation||'Review this item against the original report before sending anything.'):'No dispute item needs immediate action.';
+  const heroTitle=items.length?`${items.length} item${items.length===1?'':'s'} need a human review`:'Report reviewed';
+  const heroCopy=items.length
+    ? `Start with ${topItem?escapeHtml(scanItemCompany(topItem)):'the highest-priority item'}, then decide whether to generate a draft letter.`
+    : 'No obvious dispute items were detected. Keep monitoring and review the original report for anything the AI may have missed.';
   const rows=items.map((it,idx)=>{
     const evidence=(it.supporting_evidence||[]).slice(0,3).map(v=>`<span class="chip info">${escapeHtml(v)}</span>`).join('');
-    return `<div class="findRow"><div class="top"><div><strong>${escapeHtml(it.creditor||'Unknown creditor')}</strong> <span class="tag ${it.priority==='high'?'red':it.priority==='medium'?'amber':'gray'}">${escapeHtml(it.type||'item')}</span><br><small style="color:var(--muted)">${escapeHtml(it.bureau||'All bureaus')} · ${escapeHtml(it.law||'FCRA')}</small></div><div style="text-align:right"><span class="chip ${it.priority==='high'?'down':it.priority==='medium'?'warn':'info'}">${reviewPriority(it)}</span><br><span class="chip ${confidenceTone(it.dispute_confidence)}" style="margin-top:5px">${escapeHtml(it.dispute_confidence||'—')}/100 confidence</span></div></div><p><b>Why:</b> ${escapeHtml(it.reason||it.violation||it.strategy||'This item may be inaccurate or unverifiable — you have the right to make the bureau prove it.')}</p>${it.metro2_rule?`<p><b>Metro 2:</b> ${escapeHtml(it.metro2_rule)}</p>`:''}<div style="display:flex;gap:7px;flex-wrap:wrap;margin:8px 0"><span class="chip gray">Priority ${escapeHtml(it.priority_score||'—')}</span><span class="chip gray">${escapeHtml(it.difficulty_rating||'Review required')}</span><span class="chip gray">${escapeHtml(it.time_estimate||'30–45 days')}</span>${evidence}</div><p style="color:var(--muted);font-size:13px"><b>Strategy:</b> ${escapeHtml(it.strategy||'Review and dispute only if inaccurate.')} ${it.alternative_strategy?`Backup: ${escapeHtml(it.alternative_strategy)}`:''}</p><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="primary" style="padding:8px 14px;font-size:13px" onclick="disputeFromScan(${idx})">Generate dispute letter</button><button class="ghost" style="padding:8px 14px;font-size:13px" onclick="trackFromScan(${idx})">Track only</button></div></div>`;
+    const priority=String(it.priority||'review').toLowerCase();
+    const company=scanItemCompany(it);
+    const bureau=scanItemBureau(it);
+    const account=scanItemAccount(it);
+    const itemType=friendlyScanType(firstText(it.type,it.account_type,it.category));
+    const disputeTarget=scanDisputeTarget(it);
+    const laws=scanConsumerLawBasis(it);
+    const lawPills=laws.slice(0,4).map(law=>`<span class="lawPill">${escapeHtml(law.code.split('/')[0].trim())}</span>`).join('');
+    const lawItems=laws.map(law=>`<li><b>${escapeHtml(law.code)}:</b> ${escapeHtml(law.why)}</li>`).join('');
+    const why=scanWhyItMatters(it);
+    const bestMove=scanBestMove(it);
+    const priorityClass=priority==='high'?'down':priority==='medium'?'warn':'info';
+    return `<div class="findRow">
+      <div class="recommendHead">
+        <div class="recommendTitle">
+          <small>Company</small>
+          <h4>${escapeHtml(company)}</h4>
+          <span class="recommendSubline">${escapeHtml(itemType)} · Review before sending</span>
+        </div>
+        <div class="recommendPriority"><span class="chip ${priorityClass}">${reviewPriority(it)}</span></div>
+      </div>
+      <div class="recommendGrid">
+        <div class="recommendField"><small>Bureau</small><b>${escapeHtml(bureau)}</b></div>
+        <div class="recommendField"><small>Account</small><b>${account?escapeHtml(account):'Not clearly identified'}</b></div>
+        <div class="recommendField"><small>Item type</small><b>${escapeHtml(itemType)}</b></div>
+      </div>
+      <div class="recommendPanel problem"><small>Problem</small><b>${escapeHtml(disputeTarget)}</b></div>
+      <div class="recommendPanel"><small>Why it matters</small><p>${escapeHtml(why)}</p></div>
+      <div class="recommendPanel law">
+        <small>Consumer-law basis</small>
+        <div class="lawPills">${lawPills}</div>
+        <details class="findDetails"><summary>Show law details</summary><ul class="lawList">${lawItems}</ul></details>
+        <div class="lawDisclaimer">Draft support only — not legal advice, not a guaranteed deletion, and not a promise of score increase.</div>
+      </div>
+      <div class="bestMove">
+        <div><small>Best next move</small><b>${escapeHtml(bestMove)}</b><span>Generate a draft letter, then review and edit before sending.</span></div>
+        <div class="findActions"><button class="primary" style="padding:8px 14px;font-size:13px" onclick="disputeFromScan(${idx})">Generate letter</button><button class="ghost" style="padding:8px 14px;font-size:13px" onclick="trackFromScan(${idx})">Track only</button></div>
+      </div>
+      <details class="findDetails"><summary>Show report evidence and backup plan</summary><p>${it.metro2_rule?`<b>Metro 2 note:</b> ${escapeHtml(it.metro2_rule)}<br>`:''}<b>Timeline:</b> ${escapeHtml(it.time_estimate||'30–45 days')} · <b>Confidence:</b> ${escapeHtml(it.dispute_confidence||'—')}/100 · <b>Difficulty:</b> ${escapeHtml(it.difficulty_rating||'Review required')}</p>${evidence?`<div class="scanChips">${evidence}</div>`:''}${it.alternative_strategy?`<p><b>Backup option:</b> ${escapeHtml(it.alternative_strategy)}</p>`:''}</details>
+    </div>`;
   }).join('');
+  const rowsHtml=rows || `<div class="empty">No obvious dispute items — that's good news! Keep utilization low and monitor monthly.</div>`;
   $('scanResults').innerHTML=`<h3>2 · AI results</h3>
-  <div class="scannerState success" style="margin:12px 0"><strong>We found ${items.length} item${items.length===1?'':'s'} that may need review</strong><span>Report quality: ${escapeHtml(quality.level)} — ${escapeHtml(quality.reason)}</span><span>Non-guaranteed model estimate: ${escapeHtml(summary.estimated_score_impact||'not available')}</span></div>
-  ${renderCreditIntelligenceSummary(analysis)}
+  <div class="scanHero"><div class="aiBrain"><span class="material-symbols-outlined">psychology</span></div><div class="scanHeroText"><h4>${escapeHtml(heroTitle)}</h4><p>${heroCopy}</p><p>Report quality: ${escapeHtml(quality.level)} · Estimate only, not a guarantee.</p></div></div>
+  <div class="scanStatsGrid">${stat('Items to review',items.length)}${stat('High priority',highCount)}${stat('Readiness',readinessScore)}</div>
+  ${topItem?`<div class="scanNextStep"><strong>Start here: ${escapeHtml(scanItemCompany(topItem)||'Highest-priority item')}</strong><p>${escapeHtml(topReason)}</p><div class="findActions"><button class="primary" style="justify-self:start" onclick="disputeFromScan(${topIndex})">Generate draft letter</button><button class="ghost" style="justify-self:start" onclick="showPage('playbook')">Open playbook</button></div></div>`:''}
   ${personalDetectedChips(autofill.signals, autofill.applied)}
-  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">${stat('Issues found',items.length)}${stat('Readiness',analysis?.funding_intelligence?.score?`${analysis.funding_intelligence.score}/100`:'—')}${stat('High priority',summary.high_priority??items.filter(i=>i.priority==='high').length)}</div>
-  <div style="display:grid;gap:11px">${rows||'<div class="empty">No obvious dispute items — that\'s good news! Keep utilization low and monitor monthly.</div>'}</div>`;
+  ${renderCreditIntelligenceSummary(analysis)}
+  <div class="scanSection"><div class="scanSectionHead"><strong>Recommended dispute review</strong><small>Company · problem · law basis · next move</small></div>${rowsHtml}</div>`;
   renderDashboard();
   renderPlaybook();
 }
@@ -3328,18 +3729,35 @@ function disputeFromScan(idx){
   maybeFillField('lCreditor',it.creditor||'',true);
   maybeFillField('lBureau',bureau,true);
   maybeFillField('lType',type,true);
-  maybeFillField('lStrategy',String(it.strategy||'').trim() || (String(it.type||'').toLowerCase()==='late_payment' ? 'Goodwill Adjustment' : 'FCRA Validation'),true);
-  maybeFillField('letterClientName',getProfile()?.name || '',true);
-  maybeFillField('escName',getProfile()?.name || '',true);
+  const templateId=bestTemplateIdForSource({...it,bureau,type});
+  const scanStrategy=String(it.strategy||'').trim();
+  maybeFillField('lStrategy',scanStrategy && !/goodwill/i.test(scanStrategy) ? scanStrategy : 'FCRA Validation',true);
+  const customer=letterCustomerProfile();
+  maybeFillField('letterClientName',customer.fullName || getProfile()?.name || '',true);
+  maybeFillField('escName',customer.fullName || getProfile()?.name || '',true);
   maybeFillField('escBureau',bureau,true);
   maybeFillField('escCreditor',it.creditor||'',true);
   if(String(it.type||'').toLowerCase()==='late_payment' || String(it.type||'').toLowerCase()==='charge_off'){
-    maybeFillField('gwName',getProfile()?.name || '',true);
+    maybeFillField('gwName',customer.fullName || getProfile()?.name || '',true);
     maybeFillField('gwCreditor',it.creditor||'',true);
     maybeFillField('gwMonths','1-2 late payments',true);
   }
-  window._pendingDispute={creditor:it.creditor||'Unknown',bureau,item_type:type};
-  toast('Letter form pre-filled from your scan ✓');
+  window._pendingScanItem=it;
+  window._pendingDispute={
+    creditor:scanItemCompany(it),
+    bureau,
+    item_type:type,
+    account_number:scanItemAccount(it),
+    dispute_reason:scanDisputeTarget(it),
+    law_context:scanConsumerLawBasis(it).map(law=>`${law.code}: ${law.why}`).join('\n'),
+    templateId,
+    mailingAddress:bureauMailingAddress(bureau)
+  };
+  window._pendingRecommendedTemplateId=templateId;
+  updateLetterLawPanel();
+  setDraftText('letterPreview',`Generating your Gemini dispute draft from the scan...\n\nCompany: ${scanItemCompany(it)}\nBureau: ${bureau}\nItem: ${friendlyScanType(firstText(it.type,it.account_type,it.category))}\nWhat we are disputing: ${scanDisputeTarget(it)}\n\nThe consumer-law basis has been added automatically from the credit-report analysis. You can still edit the optional details or the final draft before sending.`);
+  toast('Generating letter from your scan ✓');
+  setTimeout(()=>generateLetter(),80);
 }
 async function trackFromScan(idx){
   const scan=store('lastScan'); const it=scan?.disputes?.[idx]; if(!it)return;
@@ -3613,40 +4031,85 @@ function switchLetterTab(name,btn){
   ['dispute','escalation','goodwill','bulk'].forEach(t=>$(`letterTab-${t}`)?.classList.toggle('hidden',t!==name));
   document.querySelectorAll('#letters .tabs .tab').forEach(b=>b.classList.remove('active'));
   if(btn)btn.classList.add('active');
+  if(name==='dispute') updateLetterLawPanel();
+}
+function draftText(idOrEl){
+  const el=typeof idOrEl==='string'?$(idOrEl):idOrEl;
+  if(!el)return '';
+  if(el.tagName==='TEXTAREA'||el.tagName==='INPUT')return String(el.value||'');
+  return String(el.textContent||'');
+}
+function setDraftText(idOrEl,text=''){
+  const el=typeof idOrEl==='string'?$(idOrEl):idOrEl;
+  if(!el)return;
+  if(el.tagName==='TEXTAREA'||el.tagName==='INPUT')el.value=String(text||'');
+  else el.textContent=String(text||'');
+}
+function appendDraftText(idOrEl,text=''){
+  const el=typeof idOrEl==='string'?$(idOrEl):idOrEl;
+  if(!el)return;
+  if(el.tagName==='TEXTAREA'||el.tagName==='INPUT'){
+    el.value+=String(text||'');
+    el.scrollTop=el.scrollHeight;
+  }else{
+    el.textContent+=String(text||'');
+    el.scrollTop=el.scrollHeight;
+  }
 }
 function copyText(id){
   const el=$(id); if(!el)return;
-  navigator.clipboard.writeText(el.textContent).then(()=>toast('Copied to clipboard ✓')).catch(()=>toast('Copy failed — select and copy manually.'));
+  navigator.clipboard.writeText(draftText(el)).then(()=>toast('Copied to clipboard ✓')).catch(()=>toast('Copy failed — select and copy manually.'));
 }
 function downloadText(id,filename){
   const el=$(id); if(!el)return;
-  const blob=new Blob([el.textContent],{type:'text/plain'});
+  const blob=new Blob([draftText(el)],{type:'text/plain'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename+'.txt'; a.click(); URL.revokeObjectURL(a.href);
 }
+function referenceLetterParts(text,title='Dispute Letter'){
+  const lines=String(text||'').replace(/\r/g,'').split('\n');
+  const firstIndex=lines.findIndex(line=>line.trim());
+  let resolvedTitle=title||'Dispute Letter';
+  let bodyLines=lines;
+  if(firstIndex>=0 && /letter$/i.test(lines[firstIndex].trim())){
+    resolvedTitle=lines[firstIndex].trim();
+    bodyLines=lines.slice(firstIndex+1);
+  }
+  return {title:resolvedTitle, body:bodyLines.join('\n').replace(/^\n+/, '').trim()};
+}
 function printLetter(id,title='CREDITOS Letter'){
-  const el=$(id),text=el?.textContent?.trim();
+  const el=$(id),text=draftText(el).trim();
   if(!text||/appears here|stream here/i.test(text)){toast('Generate the letter before printing.');return}
   const printWindow=window.open('','_blank','width=820,height=900');
   if(!printWindow){toast('Allow pop-ups to print or save this letter as a PDF.');return}
+  const parts=referenceLetterParts(text,title);
   printWindow.opener=null;
-  printWindow.document.title=title;
-  printWindow.document.body.innerHTML=`<main style="max-width:720px;margin:48px auto;padding:0 28px;color:#111;font-family:Arial,sans-serif"><header style="display:flex;justify-content:space-between;border-bottom:2px solid #10B981;padding-bottom:14px;margin-bottom:28px"><strong style="font-size:20px">CREDITOS</strong><span style="color:#555">${escapeHtml(title)}</span></header><pre style="white-space:pre-wrap;font:15px/1.65 Georgia,serif">${escapeHtml(text)}</pre><footer style="border-top:1px solid #ccc;margin-top:36px;padding-top:12px;color:#666;font-size:11px">Generated with CREDITOS self-help software. Review all details before mailing.</footer></main>`;
+  printWindow.document.title=parts.title;
+  printWindow.document.body.innerHTML=`<style>@page{size:A4;margin:78pt}body{margin:0;color:#111;font-family:Arial,Helvetica,sans-serif}.title{text-align:center;font-weight:700;font-size:18pt;margin:0 0 18pt}.body{white-space:pre-wrap;font-size:10pt;line-height:1.4}</style><main><h1 class="title">${escapeHtml(parts.title)}</h1><pre class="body">${escapeHtml(parts.body)}</pre></main>`;
   setTimeout(()=>{printWindow.focus();printWindow.print();},250);
 }
 async function downloadLetterPdf(id,title='CREDITOS Letter',filename='creditos-letter'){
-  const el=$(id),text=el?.textContent?.trim();
+  const el=$(id),text=draftText(el).trim();
   if(!text||/appears here|stream here/i.test(text)){toast('Generate the letter before downloading.');return}
   try{
     toast('Preparing your PDF…');
     await loadExternalScript('https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js',()=>!!window.jspdf?.jsPDF);
-    const {jsPDF}=window.jspdf,doc=new jsPDF({unit:'pt',format:'letter'}),margin=54,pageHeight=792;
-    doc.setFont('helvetica','bold');doc.setFontSize(18);doc.setTextColor(16,185,129);doc.text('CREDITOS',margin,52);
-    doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(90);doc.text(title,558-margin,52,{align:'right'});
-    doc.setDrawColor(16,185,129);doc.line(margin,66,558-margin,66);
-    doc.setFont('times','normal');doc.setFontSize(11);doc.setTextColor(25);
-    const lines=doc.splitTextToSize(text,558-(margin*2));let y=92;
-    for(const line of lines){if(y>pageHeight-58){doc.addPage();y=58;}doc.text(line,margin,y);y+=16;}
-    doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(100);doc.text('Generated with CREDITOS self-help software. Review every detail before mailing.',margin,pageHeight-28);
+    const {jsPDF}=window.jspdf,doc=new jsPDF({unit:'pt',format:'a4'}),pageWidth=595.28,pageHeight=841.89,margin=78,lineHeight=12;
+    const parts=referenceLetterParts(text,title);
+    doc.setFont('helvetica','bold');doc.setFontSize(18);doc.setTextColor(20);
+    doc.text(parts.title,pageWidth/2,96,{align:'center'});
+    doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(20);
+    const rawLines=parts.body.split('\n');
+    let y=130;
+    for(const raw of rawLines){
+      if(!raw.trim()){y+=16;continue}
+      const lines=doc.splitTextToSize(raw,pageWidth-(margin*2));
+      for(const line of lines){
+        if(y>pageHeight-margin){doc.addPage();y=margin;}
+        doc.text(line,margin,y);
+        y+=lineHeight;
+      }
+      y+=4;
+    }
     doc.save(`${filename.replace(/[^a-z0-9-]/gi,'-')}.pdf`);toast('PDF downloaded ✓');
   }catch(e){toast('PDF download failed. Use Print / Save PDF from your browser instead.');}
 }
@@ -3663,39 +4126,254 @@ async function loadLetterHistory(){
   count.textContent=`${data.length} letter${data.length===1?'':'s'}`;
   el.innerHTML=data.map(l=>`<div class="item"><div><strong>${escapeHtml(l.type||'Letter')}${l.creditor?' — '+escapeHtml(l.creditor):''}</strong><small>${new Date(l.created_at).toLocaleDateString()}</small></div><button class="ghost" style="font-size:12px;padding:7px 10px" onclick='navigator.clipboard.writeText(${JSON.stringify(l.content||"")});toast("Copied ✓")'>Copy</button></div>`).join('');
 }
+function currentLetterLawSource(){
+  const pending=window._pendingScanItem||window._pendingDispute||{};
+  return {
+    ...pending,
+    type:firstText(pending.type,pending.item_type,$('lType')?.value),
+    account_type:firstText(pending.account_type,pending.item_type,$('lType')?.value),
+    strategy:firstText(pending.strategy,$('lStrategy')?.value),
+    creditor:firstText(pending.creditor,$('lCreditor')?.value),
+    bureau:firstText(pending.bureau,$('lBureau')?.value),
+    reason:firstText(pending.dispute_reason,pending.reason,pending.violation,$('lStrategy')?.value)
+  };
+}
+function letterLawContext(){
+  const source=currentLetterLawSource();
+  return scanConsumerLawBasis(source).map(law=>`${law.code}: ${law.why}`).join('\n');
+}
+function updateLetterLawPanel(){
+  const panel=$('letterLawPanel');
+  if(!panel)return;
+  const source=currentLetterLawSource();
+  const laws=scanConsumerLawBasis(source);
+  const company=scanItemCompany(source);
+  const target=scanDisputeTarget(source);
+  panel.innerHTML=`<strong>Consumer-law basis for this draft</strong><span style="color:var(--muted);font-size:12.5px">Company: ${escapeHtml(company)} · ${escapeHtml(target)}</span><ul>${laws.map(law=>`<li><b>${escapeHtml(law.code)}:</b> ${escapeHtml(law.why)}</li>`).join('')}</ul><span style="color:var(--muted);font-size:11.5px">Review facts before sending. These are draft references, not legal advice or guaranteed outcomes.</span>`;
+}
+function insertLawBasisIntoLetter(){
+  const current=draftText('letterPreview').trim();
+  if(!current||/your letter will stream here/i.test(current)){toast('Generate or paste a draft before inserting law basis.');return;}
+  const basis=letterLawContext();
+  const block=`\n\nDraft legal basis to review before sending:\n${basis}\n\nI request a reasonable reinvestigation and correction or deletion of any information that cannot be verified as accurate, complete, and legally reportable.`;
+  setDraftText('letterPreview',`${current}${block}`);
+  toast('Law basis inserted into the editable draft ✓');
+}
+function compactAddressLine(address={}){
+  return [address.address1,address.address2].filter(Boolean).join('\n');
+}
+function compactCityStateZip(address={}){
+  const city=String(address.city||'').trim();
+  const state=String(address.state||'').trim();
+  const zip=String(address.postalCode||'').trim();
+  return `${city}${city&&state?', ':''}${state}${(city||state)&&zip?' ':''}${zip}`.trim();
+}
+function letterCustomerProfile(){
+  const mail=mailingProfileState();
+  const profile=getProfile()||{};
+  const address=mail.billingAddress||{};
+  const fullName=firstText(mail.fullName,address.fullName,$('letterClientName')?.value,profile.name);
+  return {
+    fullName,
+    address:compactAddressLine(address),
+    cityStateZip:compactCityStateZip(address),
+    hasAddress:hasMailingAddress(address)
+  };
+}
+function scanTemplateSource(){
+  const pending=window._pendingScanItem||window._pendingDispute||{};
+  return {
+    ...pending,
+    type:firstText(pending.type,pending.item_type,$('lType')?.value),
+    account_type:firstText(pending.account_type,pending.item_type,$('lType')?.value),
+    strategy:firstText(pending.strategy,$('lStrategy')?.value),
+    creditor:firstText(pending.creditor,$('lCreditor')?.value),
+    bureau:firstText(pending.bureau,$('lBureau')?.value),
+    account_number:firstText(pending.account_number,pending.accountNumber,pending.account),
+    reason:firstText(pending.dispute_reason,pending.reason,pending.violation,$('lStrategy')?.value)
+  };
+}
+function bestTemplateIdForSource(source={}){
+  if(source.templateId)return source.templateId;
+  const text=JSON.stringify(source||{}).toLowerCase();
+  const type=String(firstText(source.type,source.account_type,$('lType')?.value)).toLowerCase();
+  const strategy=String(firstText(source.strategy,$('lStrategy')?.value)).toLowerCase();
+  if(/identity|fraud|theft|not mine|not-mine|unrecognized/.test(text)){
+    return /inquiry|hard pull/.test(text) ? 'identity-theft-inquiry' : 'fraudulent-account';
+  }
+  if(/inquiry|permissible|unauthorized inquiry|hard pull/.test(text)||type.includes('inquiry')||strategy.includes('permissible')){
+    return 'unauthorized-hard-inquiry';
+  }
+  if(/obsolete|outdated|too old|7 year|seven year|first delinquency|dofd|§605/.test(text)||strategy.includes('obsolete')){
+    return 'out-of-statute-debt';
+  }
+  if(/mixed file|wrong person|belongs to someone else/.test(text))return 'mixed-credit-file';
+  if(/personal information|wrong address|wrong name|ssn|social security/.test(text)||type.includes('personal'))return 'incorrect-personal-information';
+  if(/collection/.test(text)||type.includes('collection')){
+    if(/duplicate/.test(text))return 'duplicate-collection';
+    return 'collection-verification';
+  }
+  if(/charge.?off/.test(text)||type.includes('charge')){
+    if(/balance|amount|utilization/.test(text))return 'chargeoff-balance-accuracy';
+    if(/payment|history|late/.test(text))return 'chargeoff-payment-history';
+    return 'chargeoff-verification';
+  }
+  if(/balance|limit|utilization/.test(text))return 'incorrect-balance';
+  if(/date|opened|reported|delinquency/.test(text))return 'incorrect-account-dates';
+  if(/status/.test(text))return 'incorrect-account-status';
+  if(/goodwill/.test(strategy))return 'goodwill-late-payment';
+  if(/late/.test(text)||type.includes('late'))return 'incorrect-late-payment';
+  return 'incorrect-account-status';
+}
+function smartLetterData(templateId){
+  const source=scanTemplateSource();
+  const customer=letterCustomerProfile();
+  const bureau=letterBureauName(firstText(source.bureau,$('lBureau')?.value));
+  const accountNumber=maskAccountNumber(firstText(source.account_number,source.accountNumber,source.account));
+  return {
+    fullName:customer.fullName || '[YOUR FULL NAME]',
+    address:customer.address || '[YOUR STREET ADDRESS]',
+    cityStateZip:customer.cityStateZip || '[CITY, STATE ZIP]',
+    creditor:firstText(source.creditor,$('lCreditor')?.value,'See attached report'),
+    accountNumber:accountNumber || 'See attached report',
+    bureau,
+    recipientName:firstText(source.creditor,$('lCreditor')?.value),
+    recipientAddress:firstText(source.recipientAddress),
+    date:new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}),
+    disputeReason:firstText(source.dispute_reason,source.reason,source.violation,$('lStrategy')?.value),
+    templateId
+  };
+}
+function describeSmartLetterReadiness(data={},template={}){
+  const missing=[];
+  if(!data.fullName||/^\[/.test(data.fullName))missing.push('client full name');
+  if(!data.address||/^\[/.test(data.address)||!data.cityStateZip||/^\[/.test(data.cityStateZip))missing.push('mailing address');
+  if(!data.creditor||data.creditor==='See attached report')missing.push('company/creditor');
+  return {
+    missing,
+    message: missing.length
+      ? `Draft generated with placeholders for ${missing.join(', ')}. Add those in Settings > Mailing Profile to make future letters fully automatic.`
+      : `Draft generated with client info, ${data.bureau} bureau address, company, masked account, and legal basis.`
+  };
+}
+async function generateSmartTemplateLetter(){
+  const source=scanTemplateSource();
+  const templateId=window._pendingRecommendedTemplateId||bestTemplateIdForSource(source);
+  const data=smartLetterData(templateId);
+  const response=await api.post('/api/disputes/generate',{templateId,data});
+  const bureauAddress=bureauMailingAddress(data.bureau);
+  window._pendingRecommendedTemplateId=templateId;
+  window._pendingDispute={
+    ...(window._pendingDispute||{}),
+    creditor:data.creditor,
+    bureau:data.bureau,
+    item_type:firstText(source.type,$('lType')?.value),
+    account_number:data.accountNumber,
+    templateId,
+    templateLabel:response.template?.label||templateId,
+    law_context:(response.template?.legalBasis||[]).join(', ')||letterLawContext(),
+    mailingAddress:bureauAddress
+  };
+  const readiness=describeSmartLetterReadiness(data,response.template||{});
+  return {letter:response.letter,template:response.template,checklist:response.checklist||[],data,readiness};
+}
+function latestScanLetterContext(){
+  const scan=store('lastScan')||{};
+  return {
+    summary:scan.summary||null,
+    action_plan:scan.action_plan||[],
+    quality:scan.quality||null,
+    metadata:scan.metadata||null,
+    disputes:Array.isArray(scan.disputes)?scan.disputes.slice(0,8):[]
+  };
+}
+async function generateGeminiLetter({bureau,dispute_type,client_name,creditor,account_number,reason,law_context,additional_context,scan_item,report_analysis,preview}){
+  const res=await fetch(api.url('/api/ai/generate'),{method:'POST',headers:api.headers(),body:JSON.stringify({
+    dispute_type,
+    bureau,
+    client_name,
+    creditor,
+    account_number,
+    reason,
+    law_context,
+    additional_context,
+    scan_item,
+    report_analysis,
+    supporting_docs:Array.isArray(scan_item?.supporting_evidence)?scan_item.supporting_evidence.join('; '):''
+  })});
+  if(!res.ok){const err=await res.json().catch(()=>({}));throw Object.assign(new Error(err.error||'Letter generation failed.'),{status:res.status});}
+  const reader=res.body.getReader(),decoder=new TextDecoder(); let buffer='';
+  while(true){
+    const {done,value}=await reader.read(); if(done)break;
+    buffer+=decoder.decode(value,{stream:true});
+    const lines=buffer.split('\n'); buffer=lines.pop();
+    for(const line of lines){
+      if(!line.startsWith('data: '))continue;
+      const raw=line.slice(6).trim(); if(raw==='[DONE]')continue;
+      try{ const p=JSON.parse(raw); const d=p?.delta?.text||''; if(d)appendDraftText(preview,d); }catch{}
+    }
+  }
+}
 async function generateLetter(){
   if(!getAuthToken()){openAuthModal();return}
   const bureau=$('lBureau').value, dispute_type=$('lType').value, strategy=$('lStrategy').value;
-  const client_name=$('letterClientName').value.trim()||getProfile()?.name||'Client';
+  const customer=letterCustomerProfile();
+  const client_name=$('letterClientName').value.trim()||customer.fullName||getProfile()?.name||'Client';
   const creditor=$('lCreditor').value.trim();
   const preview=$('letterPreview'), btn=$('letterGenBtn');
-  btn.disabled=true; btn.textContent='Writing your letter…'; preview.textContent='';
+  const source=scanTemplateSource();
+  const law_context=letterLawContext();
+  const pending=window._pendingDispute||{};
+  const account_number=maskAccountNumber(firstText(pending.account_number,pending.accountNumber,pending.account));
+  const resolvedCreditor=firstText(creditor,source.creditor,scanItemCompany(source),'Unknown');
+  const reason=[strategy,pending.dispute_reason,pending.reason,pending.violation].filter(Boolean).join(' — ');
+  const additional_context=$('letterExtraContext')?.value.trim()||'';
+  btn.disabled=true; btn.textContent='Asking Gemini…'; setDraftText(preview,'');
   try{
-    const res=await fetch('/api/ai/generate',{method:'POST',headers:api.headers(),body:JSON.stringify({dispute_type,bureau,client_name,creditor,reason:strategy})});
-    if(!res.ok){const err=await res.json().catch(()=>({}));throw Object.assign(new Error(err.error||'Letter generation failed.'),{status:res.status});}
-    const reader=res.body.getReader(),decoder=new TextDecoder(); let buffer='';
-    while(true){
-      const {done,value}=await reader.read(); if(done)break;
-      buffer+=decoder.decode(value,{stream:true});
-      const lines=buffer.split('\n'); buffer=lines.pop();
-      for(const line of lines){
-        if(!line.startsWith('data: '))continue;
-        const raw=line.slice(6).trim(); if(raw==='[DONE]')continue;
-        try{ const p=JSON.parse(raw); const d=p?.delta?.text||''; if(d)preview.textContent+=d; }catch{}
-      }
-    }
-    if(!preview.textContent)preview.textContent='Letter generated — but the stream came back empty. Try again.';
+    await generateGeminiLetter({bureau,dispute_type,client_name,creditor:resolvedCreditor,account_number,reason,law_context,additional_context,scan_item:source,report_analysis:latestScanLetterContext(),preview});
+    if(!draftText(preview))setDraftText(preview,'Letter generated — but the stream came back empty. Try again.');
     else{
       awardBadge('letter');
-      await saveLetterToHistory(dispute_type,preview.textContent,creditor);
+      await saveLetterToHistory(`Gemini ${dispute_type}`,draftText(preview),resolvedCreditor);
       await loadLetterHistory();
-      window._pendingDispute=window._pendingDispute||{creditor:creditor||'Unknown',bureau,item_type:dispute_type};
-      toast('Letter ready ✓ — tap "Track this dispute" to follow it');
+      window._pendingDispute={
+        ...(window._pendingDispute||{}),
+        creditor:resolvedCreditor,
+        bureau,
+        item_type:dispute_type,
+        account_number,
+        dispute_reason:reason,
+        law_context,
+        mailingAddress:bureauMailingAddress(bureau)
+      };
+      updateLetterLawPanel();
+      toast('Gemini dispute letter ready with automatic law basis ✓');
     }
   }catch(e){
-    if(e.status===402){preview.textContent='You\'re out of credits — upgrade to generate more letters.';openUpgrade();}
-    else preview.textContent=`Error: ${e.message}`;
-  }finally{ btn.disabled=false; btn.textContent='Generate letter — 1 credit'; }
+    if(e.status===402){
+      setDraftText(preview,'You\'re out of credits — upgrade to generate more Gemini letters.');
+      openUpgrade();
+      btn.disabled=false; btn.textContent='Generate Gemini dispute letter';
+      return;
+    }
+    try{
+      btn.textContent='Preparing backup draft…';
+      const smart=await generateSmartTemplateLetter();
+      setDraftText(preview,smart.letter||'Letter generated — but no text was returned. Try again.');
+      if(!draftText(preview))setDraftText(preview,'Letter generated — but the stream came back empty. Try again.');
+      else{
+        awardBadge('letter');
+        await saveLetterToHistory(smart.template?.label||dispute_type,draftText(preview),smart.data?.creditor||resolvedCreditor);
+        await loadLetterHistory();
+        if(smart.template?.id){
+          const strategySelect=$('lStrategy');
+          if(strategySelect && [...strategySelect.options].some(opt=>opt.value===smart.template.strategy)) strategySelect.value=smart.template.strategy;
+          updateLetterLawPanel();
+        }
+        toast('Gemini was unavailable, so a backup draft was prepared. Review before sending.');
+      }
+    }catch(templateError){ setDraftText(preview,`Error: ${templateError.message}`); }
+  }finally{ btn.disabled=false; btn.textContent='Generate Gemini dispute letter'; }
 }
 async function trackCurrentLetter(){
   const p=window._pendingDispute;
@@ -3707,10 +4385,11 @@ async function trackCurrentLetter(){
   showPage('disputes');
 }
 async function shipCurrentLetter(){
-  const text=$('letterPreview')?.textContent?.trim();
+  const text=draftText('letterPreview').trim();
   if(!text||/appears here|stream here/i.test(text)){ toast('Generate the dispute letter first.'); return; }
   if(!getAuthToken()){ openAuthModal(); return; }
   const p=window._pendingDispute || {creditor:$('lCreditor').value.trim()||'Unknown',bureau:$('lBureau').value,bureauName:$('lBureau').value,item_type:$('lType').value};
+  p.mailingAddress = p.mailingAddress || bureauMailingAddress(p.bureau || $('lBureau').value);
   if(!p.id){
     const savedId = await DisputeStore.add({...p,status:'draft'});
     if(savedId) p.id = savedId;
@@ -3730,7 +4409,7 @@ async function shipCurrentLetter(){
       postalCode: p.mailingAddress?.postalCode || '',
       country: p.mailingAddress?.country || 'United States'
     },
-    message: 'Enter the bureau mailing address, then continue to secure checkout.'
+    message: 'Bureau mailing address auto-filled. Review the packet, then continue to secure checkout.'
   });
 }
 Object.assign(window,{
@@ -3745,25 +4424,25 @@ Object.assign(window,{
 async function generateEscalation(){
   if(!getAuthToken()){openAuthModal();return}
   const btn=$('escBtn'),preview=$('escPreview');
-  btn.disabled=true;btn.textContent='Writing…';preview.textContent='Writing your escalation letter…';
+  btn.disabled=true;btn.textContent='Writing…';setDraftText(preview,'Writing your escalation letter…');
   try{
     const data=await api.post('/api/ai/escalation',{client_name:$('escName').value.trim()||getProfile()?.name||'Client',bureau:$('escBureau').value,creditor:$('escCreditor').value.trim(),original_response:$('escResponse').value.trim()});
-    preview.textContent=data.letter||'No letter returned.';
-    await saveLetterToHistory('escalation',preview.textContent,$('escCreditor').value.trim());
+    setDraftText(preview,data.letter||'No letter returned.');
+    await saveLetterToHistory('escalation',draftText(preview),$('escCreditor').value.trim());
     await loadLetterHistory();
-  }catch(e){ if(e.status===402)openUpgrade(); preview.textContent=`Error: ${e.message}`; }
+  }catch(e){ if(e.status===402)openUpgrade(); setDraftText(preview,`Error: ${e.message}`); }
   finally{ btn.disabled=false;btn.textContent='Generate escalation — 1 credit'; }
 }
 async function generateGoodwill(){
   if(!getAuthToken()){openAuthModal();return}
   const btn=$('gwBtn'),preview=$('gwPreview');
-  btn.disabled=true;btn.textContent='Writing…';preview.textContent='Writing your goodwill letter…';
+  btn.disabled=true;btn.textContent='Writing…';setDraftText(preview,'Writing your goodwill letter…');
   try{
     const data=await api.post('/api/ai/goodwill',{client_name:$('gwName').value.trim()||getProfile()?.name||'Client',creditor:$('gwCreditor').value.trim(),account_number:$('gwAccount').value.trim(),months_late:$('gwMonths').value.trim(),hardship_reason:$('gwHardship').value.trim()});
-    preview.textContent=data.letter||'No letter returned.';
-    await saveLetterToHistory('goodwill',preview.textContent,$('gwCreditor').value.trim());
+    setDraftText(preview,data.letter||'No letter returned.');
+    await saveLetterToHistory('goodwill',draftText(preview),$('gwCreditor').value.trim());
     await loadLetterHistory();
-  }catch(e){ if(e.status===402)openUpgrade(); preview.textContent=`Error: ${e.message}`; }
+  }catch(e){ if(e.status===402)openUpgrade(); setDraftText(preview,`Error: ${e.message}`); }
   finally{ btn.disabled=false;btn.textContent='Generate goodwill — 1 credit'; }
 }
 let bulkRowCount=0;
@@ -4022,6 +4701,26 @@ function pbClamp(n,lo=0,hi=100){return Math.max(lo,Math.min(hi,n));}
 function pbSafeId(...parts){return parts.filter(Boolean).join('-').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,90)||'account';}
 function pbText(...parts){return parts.filter(v=>v!==undefined&&v!==null).map(v=>Array.isArray(v)?v.join(' '):String(v)).join(' ').toLowerCase();}
 function pbDisplay(v,fallback='Not provided in scan'){return v===undefined||v===null||String(v).trim()===''?fallback:String(v);}
+function isGenericCreditorName(value){
+  const text=String(value||'').trim().toLowerCase();
+  return !text || /^(unknown|unknown creditor|review report item|company sold|company sold -|creditor|account|tradeline|see attached report)$/i.test(text);
+}
+function cleanCreditorName(value,fallback='Creditor not identified'){
+  const text=String(value||'').replace(/\s+/g,' ').trim();
+  if(isGenericCreditorName(text)) return fallback;
+  return text.replace(/\s+-\s*$/,'').trim() || fallback;
+}
+function creditorNameFromScanItem(item={}){
+  const candidates=[
+    item.creditor_name,item.creditorName,item.account_name,item.accountName,item.furnisher_name,item.furnisherName,
+    item.furnisher,item.original_creditor,item.originalCreditor,item.creditor,item.company,item.name
+  ];
+  for(const candidate of candidates){
+    const cleaned=cleanCreditorName(candidate,'');
+    if(cleaned) return cleaned;
+  }
+  return 'Creditor not identified';
+}
 function pbKeyFor(values={}){
   return pbSafeId(values.creditor||values.furnisher||'unknown',values.bureau||'bureau',values.item_type||values.type||values.accountType||'item');
 }
@@ -4061,8 +4760,8 @@ function pbAccountFromScan(item,idx,tracked=[],scan={}){
     id:`scan-${idx}-${pbKeyFor({...item,accountType:type})}`,
     source:'scan',
     raw:item,
-    creditor:item.creditor||item.furnisher||'Unknown creditor',
-    furnisher:item.furnisher||item.creditor||'Unknown furnisher',
+    creditor:creditorNameFromScanItem(item),
+    furnisher:cleanCreditorName(item.furnisher||item.furnisher_name||item.creditor||item.creditor_name,'Unknown furnisher'),
     bureau:['Experian','Equifax','TransUnion'].includes(item.bureau)?item.bureau:(item.bureau||'All bureaus'),
     accountType:type,
     rawType,
@@ -4498,25 +5197,19 @@ async function preparePlaybookLetter(mode='recommended'){
   if(analysis.templateId==='cfpb'||analysis.recommendation==='CFPB Escalation'){generatePlaybookCfpbPackage();return}
   showPage('letters');
   switchLetterTab('dispute',document.querySelector('[data-ltab="dispute"]'));
-  const profile=getProfile()||{},mail=mailingProfileState(),billing=mail.billingAddress||{};
+  const profile=getProfile()||{},mail=mailingProfileState();
   maybeFillField('lCreditor',account.creditor,true);
   maybeFillField('lBureau',['Experian','Equifax','TransUnion'].includes(account.bureau)?account.bureau:'Experian',true);
   maybeFillField('lType',playbookLetterType(account),true);
   maybeFillField('lStrategy',playbookLetterStrategy(analysis),true);
   maybeFillField('letterClientName',profile.name||mail.fullName||'',true);
-  window._pendingDispute={creditor:account.creditor,bureau:['Experian','Equifax','TransUnion'].includes(account.bureau)?account.bureau:'Experian',item_type:playbookLetterType(account)};
+  window._pendingDispute={creditor:account.creditor,bureau:['Experian','Equifax','TransUnion'].includes(account.bureau)?account.bureau:'Experian',item_type:playbookLetterType(account),account_number:maskAccountNumber(account.accountNumber||''),dispute_reason:analysis.reason||analysis.weakness||analysis.recommendation||'',law_context:scanConsumerLawBasis({...account,...analysis,type:playbookLetterType(account)}).map(law=>`${law.code}: ${law.why}`).join('\n')};
+  window._pendingScanItem={...account,...analysis,type:playbookLetterType(account)};
+  window._pendingRecommendedTemplateId=analysis.templateId;
+  updateLetterLawPanel();
   const preview=$('letterPreview');
-  preview.textContent='Generating the recommended Playbook letter...';
-  try{
-    const cityStateZip=[billing.city,billing.state,billing.postalCode].filter(Boolean).join(', ');
-    const data=await api.post('/api/disputes/generate',{templateId:analysis.templateId,data:{fullName:mail.fullName||profile.name||'',address:billing.address1||'',cityStateZip,creditor:account.creditor,accountNumber:account.accountNumber||'',bureau:['Experian','Equifax','TransUnion'].includes(account.bureau)?account.bureau:'Experian'}});
-    preview.textContent=data.letter||'Letter generated, but no text was returned.';
-    await saveLetterToHistory(`playbook-${analysis.recommendation}`,preview.textContent,account.creditor);
-    toast('Recommended Playbook letter generated ✓');
-  }catch(e){
-    preview.textContent=`The form is pre-filled. Tap Generate letter if you want the AI-written version.\n\nReason: ${e.message}`;
-    toast('Letter form prepared from the Playbook.');
-  }
+  setDraftText(preview,'Generating the recommended Gemini letter from Playbook analysis...');
+  await generateLetter();
 }
 async function trackSelectedPlaybookAccount(){
   const {account}=selectedPlaybook();
@@ -5267,7 +5960,7 @@ async function generateCfpbComplaint(){
   };
   _cfpbState.loading=true; renderCfpbPage();
   try{
-    const data=await fetch('/api/disputes/cfpb',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(r=>r.json());
+    const data=await fetch(api.url('/api/disputes/cfpb'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(r=>r.json());
     if(!data.success)throw new Error(data.error||'Could not generate the complaint.');
     $('cfpbNarrative').textContent=`Draft — review before sending.\n\n${data.complaint.narrative}`;
     const readyChip=$('cfpbReadyChip');
@@ -5429,6 +6122,7 @@ function clearLocalData(){
 
 if($('mailDlInput')) $('mailDlInput').addEventListener('change',()=>uploadMailingDoc('driver_license','mailDlInput','mailDlStatus').catch(e=>{$('mailDlStatus').textContent=e.message||'Upload failed.';toast('Driver license upload failed.');}));
 if($('mailSsnInput')) $('mailSsnInput').addEventListener('change',()=>uploadMailingDoc('ssn_card','mailSsnInput','mailSsnStatus').catch(e=>{$('mailSsnStatus').textContent=e.message||'Upload failed.';toast('SSN card upload failed.');}));
+if($('mailProofAddressInput')) $('mailProofAddressInput').addEventListener('change',()=>uploadMailingDoc('proof_of_address','mailProofAddressInput','mailProofAddressStatus').catch(e=>{$('mailProofAddressStatus').textContent=e.message||'Upload failed.';toast('Proof of address upload failed.');}));
 
 // ── Boot ───────────────────────────────────────────────────────
 initReportUpload();
