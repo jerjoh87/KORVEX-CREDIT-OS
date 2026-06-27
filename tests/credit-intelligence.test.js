@@ -68,6 +68,28 @@ test('enhanceCreditAnalysis masks model account numbers and preserves normalized
   assert.ok(enhanced.normalized_report.accounts.length >= 2);
 });
 
+test('enhanceCreditAnalysis backfills creditor, last four, and report facts when the AI response is vague', () => {
+  const enhanced = enhanceCreditAnalysis({
+    summary: {},
+    disputes: [{
+      creditor: 'Company',
+      account: 'see attached report',
+      type: 'late_payment',
+      priority: 'high',
+      payment_status: '',
+      balance: '',
+      credit_limit: ''
+    }]
+  }, sampleReport);
+
+  assert.equal(enhanced.disputes[0].creditor, 'Capital One');
+  assert.equal(enhanced.disputes[0].account_number, '****6789');
+  assert.equal(enhanced.disputes[0].account, '****6789');
+  assert.equal(enhanced.disputes[0].balance, '$5200');
+  assert.equal(enhanced.disputes[0].credit_limit, '$5000');
+  assert.equal(enhanced.disputes[0].payment_status, '30 days late 60 days late');
+});
+
 test('maskAccountNumber keeps only masked/last-four form', () => {
   assert.equal(maskAccountNumber('123456789'), '****6789');
   assert.equal(maskAccountNumber('xxxx4321'), '****4321');

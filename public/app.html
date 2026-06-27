@@ -3512,6 +3512,18 @@ function confidenceTone(value){
   if(n>=55)return 'warn';
   return 'gray';
 }
+function scanFactPairs(it={}){
+  const facts=[
+    ['Status',firstText(it.payment_status,it.account_status)],
+    ['Balance',firstText(it.balance)],
+    ['Limit',firstText(it.credit_limit)],
+    ['Opened',firstText(it.opened_date)],
+    ['Reported',firstText(it.reported_date)],
+    ['DOFD',firstText(it.first_delinquency_date)],
+    ['Late history',firstText(it.late_payments,it.months_late)]
+  ].filter(([,value])=>String(value||'').trim());
+  return facts.slice(0,6);
+}
 function scanItemCompany(it={}){
   return creditorNameFromScanItem(it) || 'Company not clearly identified';
 }
@@ -3663,6 +3675,10 @@ function renderScanFindings(analysis,meta=_pendingScanMeta||{}){
     : 'No obvious dispute items were detected. Keep monitoring and review the original report for anything the AI may have missed.';
   const rows=items.map((it,idx)=>{
     const evidence=(it.supporting_evidence||[]).slice(0,3).map(v=>`<span class="chip info">${escapeHtml(v)}</span>`).join('');
+    const facts=scanFactPairs(it);
+    const factGrid=facts.length
+      ? `<div class="recommendGrid">${facts.map(([label,value])=>`<div class="recommendField"><small>${escapeHtml(label)}</small><b>${escapeHtml(value)}</b></div>`).join('')}</div>`
+      : '';
     const priority=String(it.priority||'review').toLowerCase();
     const company=scanItemCompany(it);
     const bureau=scanItemBureau(it);
@@ -3689,6 +3705,7 @@ function renderScanFindings(analysis,meta=_pendingScanMeta||{}){
         <div class="recommendField"><small>Account</small><b>${account?escapeHtml(account):'Not clearly identified'}</b></div>
         <div class="recommendField"><small>Item type</small><b>${escapeHtml(itemType)}</b></div>
       </div>
+      ${factGrid}
       <div class="recommendPanel problem"><small>Problem</small><b>${escapeHtml(disputeTarget)}</b></div>
       <div class="recommendPanel"><small>Why it matters</small><p>${escapeHtml(why)}</p></div>
       <div class="recommendPanel law">

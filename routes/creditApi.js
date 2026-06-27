@@ -360,6 +360,8 @@ ${reportText.slice(0, MAX_AI_REPORT_TEXT_CHARS)}
 
 Extract personal information, tradelines, collections, charge-offs, late payments, student loans, public records, hard inquiries, soft inquiries, utilization, payment history, balances, credit limits, account status, payment status, remarks, Metro 2 codes, date opened, date reported, date updated, DOFD, high balance, monthly payment, and creditor information wherever those fields are clearly present.
 
+For every dispute item, prefer the exact creditor/company name from the report and the masked last four of the related account whenever the report contains them. Do not return placeholders like "Company", "Unknown creditor", "see attached report", or "review report item" if the report gives a specific company name or masked account reference.
+
 Run validation checks for duplicate accounts, mixed-file signals, missing dates, wrong balance/status, obsolete accounts, re-aged accounts, payment-history inconsistencies, collection-validation issues, and FCRA/FDCPA/FACTA/Metro 2 concerns. Explain WHY each item matters. Do not invent missing facts.
 
 Return ONLY valid JSON (no markdown, no commentary) in this exact format:
