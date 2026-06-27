@@ -14,7 +14,7 @@
   <h2>2. Information We Collect</h2>
   <p><strong>Account Information:</strong> When you create an account, we collect your name, email address, and password (stored as a secure hash). If you sign in with Google, we receive your name and email from Google.</p>
   <p><strong>Usage Data:</strong> We collect information about how you use the platform, including features accessed, letters generated (not the content), and session timestamps.</p>
-  <p><strong>Credit Report Data:</strong> When you upload or paste credit report text for scanning, this data is sent to our AI provider (Gemini) for processing and is not permanently stored on our servers after the session ends.</p>
+  <p><strong>Credit Report Data:</strong> When you upload or paste credit report text for scanning, this data is sent to our AI provider (currently OpenAI) for processing and is not permanently stored on our servers after the session ends.</p>
   <p><strong>Payment Information:</strong> Payment processing is handled entirely by Stripe. We never see or store your full credit card number. We receive confirmation of successful payments and subscription status from Stripe.</p>
   <p><strong>Client Data:</strong> Information you enter about your clients (names, emails, credit scores, dispute history) is stored in your account and is your data. We do not access it except to provide the service.</p>
 
@@ -32,7 +32,7 @@
   <h2>4. Third-Party Services</h2>
   <p>We use the following third-party services to operate the platform:</p>
   <ul>
-    <li><strong>Gemini</strong> — AI processing for letter generation and report scanning. Credit report text is sent to Gemini's API and subject to their data handling policies.</li>
+    <li><strong>OpenAI</strong> — AI processing for letter generation and report scanning. Credit report text is sent to OpenAI's API and subject to their data handling policies.</li>
     <li><strong>Supabase</strong> — Database and authentication. Your account data is stored on Supabase's secure infrastructure.</li>
     <li><strong>Stripe</strong> — Payment processing. All payment data is handled by Stripe and subject to their privacy policy.</li>
     <li><strong>Lob</strong> — Physical mail fulfillment (optional). When you use the "Mail It For Me" feature, the letter content and mailing address are sent to Lob to print and mail the letter.</li>

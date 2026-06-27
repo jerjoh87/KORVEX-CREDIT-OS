@@ -11,7 +11,7 @@
 //  Endpoints are deterministic, stateless, and unauthenticated — they transform
 //  caller-provided inputs and expose no stored user data, sitting behind the
 //  global /api rate limiter. The one exception is /playbook with `ai:true`,
-//  which makes a single Gemini call to write the Case Analyst narrative and
+//  which makes a single live-model call to write the Case Analyst narrative and
 //  falls back to the deterministic analyst on any error.
 // ─────────────────────────────────────────────
 import { Router } from 'express';
@@ -21,23 +21,23 @@ import {
 } from '../lib/disputeLibrary.js';
 import { recommendStrategy, buildCfpbComplaint, STRATEGIES } from '../lib/disputeStrategy.js';
 import { buildPlaybook, enrichRecommendation, caseAnalystPrompt } from '../lib/disputePlaybook.js';
-import { callGemini, geminiConfigured, toGeminiText } from '../lib/gemini.js';
+import { aiConfigured, callAi, toAiText } from '../lib/ai.js';
 
 const router = Router();
 
 // Compose the optional live-LLM Case Analyst narrative. Races a hard timeout so
-// a slow Gemini call can never hang the request; any failure → deterministic.
+// a slow AI call can never hang the request; any failure → deterministic.
 async function aiCaseAnalyst(playbook, timeoutMs = 30000) {
   const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), timeoutMs));
   const resp = await Promise.race([
-    // Some Gemini models use thinking tokens that count against the output
+    // Some models use thinking tokens that count against the output
     // budget, so give it enough room to both reason and emit the JSON.
-    callGemini({ max_tokens: 2048, temperature: 0.3, responseMimeType: 'application/json', prompt: caseAnalystPrompt(playbook) }),
+    callAi({ max_tokens: 2048, temperature: 0.3, responseMimeType: 'application/json', prompt: caseAnalystPrompt(playbook) }),
     timeout,
   ]);
-  if (!resp.ok) throw new Error(`Gemini ${resp.status}`);
+  if (!resp.ok) throw new Error(`AI ${resp.status}`);
   const data = await resp.json();
-  const parsed = JSON.parse(toGeminiText(data).replace(/```json|```/g, '').trim());
+  const parsed = JSON.parse(toAiText(data).replace(/```json|```/g, '').trim());
   // Merge AI prose over the deterministic skeleton so required fields always exist.
   return {
     ...playbook.caseAnalyst,
@@ -78,7 +78,7 @@ router.post('/recommend', (req, res) => {
 // POST /api/disputes/playbook — structured tradeline → full per-account analysis:
 // detected reporting issues, recommended strategy, strength score + factor
 // breakdown, the 6-step action plan, a document checklist, and a Case Analyst
-// summary. Pass { ai: true } to have Gemini write the analyst narrative.
+// summary. Pass { ai: true } to have the live model write the analyst narrative.
 router.post('/playbook', async (req, res) => {
   const body = req.body || {};
   const account = body.account && typeof body.account === 'object' ? body.account : body;
@@ -89,7 +89,7 @@ router.post('/playbook', async (req, res) => {
   const playbook = buildPlaybook(account);
   playbook.caseAnalyst.source = 'deterministic';
 
-  if (body.ai === true && geminiConfigured()) {
+  if (body.ai === true && aiConfigured()) {
     try {
       playbook.caseAnalyst = await aiCaseAnalyst(playbook);
     } catch (e) {

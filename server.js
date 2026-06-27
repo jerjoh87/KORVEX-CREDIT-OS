@@ -18,7 +18,7 @@ import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { requireAuth, supabaseAdmin, hasSupabaseAdmin } from './lib/server-state.js';
 import { createTestAdminToken, testAdminCredentials, testAdminModeEnabled, validateTestAdminCredentials } from './lib/test-admin.js';
-import { geminiConfigured } from './lib/gemini.js';
+import { aiConfigured, aiProviderLabel } from './lib/ai.js';
 
 import aiRoutes from './routes/ai.js';
 import creditsRoutes from './routes/credits.js';
@@ -186,7 +186,8 @@ app.get('/api/runtime-status', (req, res) => {
       supabase: !!supabaseAdmin,
       stripe: !!process.env.STRIPE_SECRET_KEY,
       click2mail: !!(process.env.CLICK2MAIL_USERNAME && process.env.CLICK2MAIL_PASSWORD),
-      gemini: geminiConfigured(),
+      ai: aiConfigured(),
+      aiProvider: aiProviderLabel(),
       ocr: 'browser',
       pdf: 'browser'
     }

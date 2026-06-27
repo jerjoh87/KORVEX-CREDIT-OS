@@ -140,12 +140,13 @@ failed = !validateUrl('SUPABASE_URL', 'SUPABASE_URL') || failed;
 failed = !requireKey('SUPABASE_ANON_KEY', 'SUPABASE_ANON_KEY') || failed;
 failed = !requireKey('SUPABASE_SERVICE_ROLE_KEY', 'SUPABASE_SERVICE_ROLE_KEY') || failed;
 
-failed = !requireAnyKey(['GEMINI_API_KEY','GOOGLE_GEMINI_API_KEY','GOOGLE_AI_API_KEY','GOOGLE_API_KEY'], 'Gemini API key') || failed;
-if (hasValue('GEMINI_MODEL') || hasValue('GOOGLE_GEMINI_MODEL')) {
+failed = !requireAnyKey(['OPENAI_API_KEY', 'GEMINI_API_KEY', 'GOOGLE_GEMINI_API_KEY', 'GOOGLE_AI_API_KEY', 'GOOGLE_API_KEY'], 'AI provider API key') || failed;
+if (hasValue('OPENAI_MODEL') || hasValue('GEMINI_MODEL') || hasValue('GOOGLE_GEMINI_MODEL')) {
+  optionalKey('OPENAI_MODEL', 'OPENAI_MODEL');
   optionalKey('GEMINI_MODEL', 'GEMINI_MODEL');
   optionalKey('GOOGLE_GEMINI_MODEL', 'GOOGLE_GEMINI_MODEL');
 } else {
-  report('na', 'Gemini model not set; default model will be used');
+  report('na', 'AI model not set; the default provider model will be used');
 }
 const googleOcrConfigured = hasValue('GOOGLE_SERVICE_ACCOUNT_JSON') || hasValue('GOOGLE_SERVICE_ACCOUNT_JSON_BASE64');
 if (googleOcrConfigured || hasValue('GOOGLE_DOCUMENT_AI_PROCESSOR_ID') || hasValue('GOOGLE_CLOUD_PROJECT_ID')) {

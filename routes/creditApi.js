@@ -12,7 +12,7 @@ import { Router } from 'express';
 import { requireAuth, supabaseAdmin } from '../lib/server-state.js';
 import { isAdminUser } from '../lib/admin.js';
 import { isUnlimitedPlan } from '../lib/billing.js';
-import { callGemini, geminiConfigured, toGeminiText } from '../lib/gemini.js';
+import { aiConfigured, callAi, toAiText } from '../lib/ai.js';
 import { buildCreditIntelligenceAnalysis, enhanceCreditAnalysis } from '../lib/credit-intelligence.js';
 import { isMissingSchemaError, withTimeout } from '../lib/supabase-errors.js';
 import { testAdminModeEnabled, testAdminUser } from '../lib/test-admin.js';
@@ -349,7 +349,7 @@ async function deductCredits(userId, amount) {
   return data === true;
 }
 
-// Call Gemini and run a full credit report scan.
+// Call the configured AI provider and run a full credit report scan.
 async function runAiScan(reportText) {
   const prompt = `You are an expert credit analyst and FCRA compliance specialist. Analyze this credit report and identify every potential dispute item.
 
@@ -420,13 +420,13 @@ Return ONLY valid JSON (no markdown, no commentary) in this exact format:
 
 Only populate bureau_scores when the corresponding score is explicitly present in the report. Never infer or manufacture a bureau score. Priority reflects review urgency, not a probability that an item will be removed. Estimated score impacts are non-guaranteed model estimates.`;
 
-  if (!geminiConfigured()) {
-    const error = new Error('AI service unavailable (Gemini not configured).');
+  if (!aiConfigured()) {
+    const error = new Error('AI service unavailable (provider not configured).');
     error.status = 503;
     throw error;
   }
 
-  const resp = await callGemini({
+  const resp = await callAi({
     max_tokens: 2500,
     prompt,
     responseMimeType: 'application/json',
@@ -435,11 +435,11 @@ Only populate bureau_scores when the corresponding score is explicitly present i
 
   if (!resp.ok) {
     const err = await resp.json().catch(() => ({}));
-    throw new Error(err.error?.message || `Gemini API error (${resp.status})`);
+    throw new Error(err.error?.message || `AI provider error (${resp.status})`);
   }
 
   const data = await resp.json();
-  const text = toGeminiText(data);
+  const text = toAiText(data);
 
   try {
     const clean = text.replace(/```json|```/g, '').trim();
@@ -450,7 +450,7 @@ Only populate bureau_scores when the corresponding score is explicitly present i
     analysis.summary.bureau_scores = extractExplicitBureauScores(reportText);
     return enhanceCreditAnalysis(analysis, reportText);
   } catch {
-    // If Gemini didn't return clean JSON, surface a helpful error
+    // If the provider didn't return clean JSON, surface a helpful error
     throw new Error('AI returned an unexpected response format. Please try again.');
   }
 }
@@ -478,7 +478,7 @@ router.post('/analyze-credit', requireAuth, async (req, res) => {
   const testAdmin = !!req.testAdmin || await isAdminUser(req.user?.id, req.user?.email || null);
 
   if (supabaseAdmin && !testAdmin) {
-    // Deduct 1 credit atomically before hitting Gemini
+    // Deduct 1 credit atomically before hitting the AI provider
     let ok;
     try {
       ok = await deductCredits(req.user.id, 1);

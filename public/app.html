@@ -121,12 +121,14 @@ textarea{min-height:96px;resize:vertical}
 .mailModeActions{display:grid;grid-template-columns:repeat(auto-fit,minmax(122px,1fr));gap:8px;width:100%}
 .mailModeActions .ghost{width:100%;min-height:42px}
 .mailPresetGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:10px}
-.mailPresetCard{width:100%;display:grid;grid-template-columns:32px minmax(0,1fr);align-items:flex-start;gap:10px;text-align:left;padding:13px;min-height:116px}
+.opt.mailPresetCard{width:100%;display:grid;grid-template-columns:32px minmax(0,1fr) 12px;align-items:flex-start;gap:10px;text-align:left;padding:13px;min-height:116px}
 .mailPresetCard .em{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:rgba(124,168,255,.10);border:1px solid rgba(124,168,255,.18);font-size:18px;line-height:1;flex:none}
 .mailPresetCopy{min-width:0;display:grid;gap:5px}
 .mailPresetTitle{display:block;color:var(--ink);font-size:13.5px;font-weight:800;line-height:1.2;overflow-wrap:anywhere}
 .mailPresetCard small{display:block;color:var(--muted);font-size:11.5px;line-height:1.38;font-weight:600;overflow-wrap:anywhere}
-.mailPresetStatus{grid-column:2;justify-self:start;margin-top:2px;max-width:100%}
+.mailPresetStatus{display:block;grid-column:3;grid-row:1;justify-self:end;align-self:start;width:10px;height:10px;border-radius:50%;margin-top:3px;box-shadow:0 0 0 4px rgba(255,255,255,.04)}
+.mailPresetStatus.ready{background:#34d8a0;box-shadow:0 0 0 4px rgba(16,185,129,.16),0 0 12px rgba(52,216,160,.34)}
+.mailPresetStatus.notReady{background:var(--red);box-shadow:0 0 0 4px rgba(255,91,123,.14),0 0 12px rgba(255,107,129,.28)}
 .mailingStatusBox{padding:13px!important}
 .mailingStatusBox span{line-height:1.45}
 .bizProfileCard{display:grid;gap:12px}.bizProfileCard .formGrid{grid-template-columns:1fr}.bizProfileCard input,.bizProfileCard select,.bizProfileCard textarea{min-width:0}
@@ -729,9 +731,9 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
             <label style="margin-top:13px">Strategy <span class="info" title="FCRA Validation = make them prove it. Metro 2 = reporting-format errors. Goodwill = polite ask. Round 2 = they ignored you.">i</span><select id="lStrategy" onchange="updateLetterLawPanel()"><option>FCRA Validation</option><option>Factual Accuracy Dispute</option><option>Metro 2 Inaccuracy</option><option>Direct Furnisher Dispute</option><option>Goodwill Adjustment</option><option>Round 2 Escalation</option><option>Method of Verification Request</option><option>Permissible Purpose Inquiry</option><option>Obsolete Reporting</option><option>Debt Validation</option><option>Identity Theft Block</option></select></label>
             <label style="margin-top:13px">Your full name<input id="letterClientName" placeholder="e.g. Jordan Carter"></label>
             <label style="margin-top:13px">Creditor / company being disputed<input id="lCreditor" placeholder="e.g. Midland Credit" oninput="updateLetterLawPanel()"></label>
-            <label style="margin-top:13px">Optional details for Gemini<textarea id="letterExtraContext" placeholder="Optional: add anything the report scan missed, such as payment proof, identity-theft report details, or a specific correction you want requested." style="min-height:78px"></textarea></label>
+            <label style="margin-top:13px">Optional details for AI<textarea id="letterExtraContext" placeholder="Optional: add anything the report scan missed, such as payment proof, identity-theft report details, or a specific correction you want requested." style="min-height:78px"></textarea></label>
             <div class="letterLawPanel" id="letterLawPanel"><strong>Consumer-law basis</strong><span style="color:var(--muted);font-size:12.5px">Choose an item type or generate from a scan to see the draft law support here.</span></div>
-            <button id="letterGenBtn" class="primary" style="margin-top:15px;width:100%" onclick="generateLetter()">Generate Gemini dispute letter</button>
+            <button id="letterGenBtn" class="primary" style="margin-top:15px;width:100%" onclick="generateLetter()">Generate AI dispute letter</button>
           </div>
           <div class="card"><div class="letterReviewHead"><div><h3>Draft Review Studio</h3><p>Preview and edit the dispute letter here. The text in this box is the exact version used for copy, PDF, tracking, and shipping.</p></div><span class="chip info">Editable draft</span></div><textarea id="letterPreview" class="letterEditor" spellcheck="true">Your letter will stream here as it's written...</textarea>
             <div class="letterActions"><button class="ghost" onclick="insertLawBasisIntoLetter()">Insert law basis</button><button class="ghost" onclick="copyText('letterPreview')">Copy</button><button class="ghost" onclick="downloadText('letterPreview','creditos-dispute-letter')">Download .txt</button><button class="ghost" onclick="downloadLetterPdf('letterPreview','Dispute Letter','creditos-dispute-letter')">Download PDF</button><button class="primary" onclick="shipCurrentLetter()">Ship letter</button><button class="ghost wide" onclick="trackCurrentLetter()">Track only</button></div>
@@ -1614,11 +1616,11 @@ function renderServiceStatus(){
     s.supabase===true?connected('Supabase'):(s.supabase===false?setup('Supabase'):serviceRow('Supabase','Checking','Loading service status…','gray')),
     s.stripe===true?connected('Stripe'):(s.stripe===false?setup('Stripe'):serviceRow('Stripe','Checking','Loading service status…','gray')),
     s.click2mail===true?connected('Click2Mail'):(s.click2mail===false?setup('Click2Mail'):serviceRow('Click2Mail','Checking','Loading service status…','gray')),
-    s.gemini===true?connected('Gemini'):(s.gemini===false?setup('Gemini'):serviceRow('Gemini','Checking','Loading service status…','gray')),
+    s.ai===true?connected(s.aiProvider||'OpenAI'):(s.ai===false?setup(s.aiProvider||'OpenAI'):serviceRow(s.aiProvider||'OpenAI','Checking','Loading service status…','gray')),
     browser('OCR'),
     browser('PDF export')
   ].join('');
-  note.textContent = s.supabase===false || s.stripe===false || s.click2mail===false || s.gemini===false
+  note.textContent = s.supabase===false || s.stripe===false || s.click2mail===false || s.ai===false
     ? 'Live services are still in setup mode. Local features continue to work, and API calls show a clean status message instead of crashing.'
     : 'All configured live services report ready status, and browser-powered OCR / PDF export stay available locally.';
 }
@@ -1948,10 +1950,6 @@ function recipientTypeLabel(type) {
   return map[String(type || '').toLowerCase()] || 'Custom';
 }
 
-function presetClassForType(type) {
-  return ['experian', 'equifax', 'transunion', 'cfpb'].includes(String(type || '').toLowerCase()) ? 'chip info' : 'chip gray';
-}
-
 async function loadMailingRecipients(force = false) {
   if (_mailingRecipientsLoaded && !force) return _mailingRecipients;
   if (!getAuthToken()) return [];
@@ -2026,12 +2024,12 @@ function renderMailingRecipientsUI() {
       const sub = type === 'custom'
         ? (rec ? (rec.address_line_1 || 'Saved custom recipient.') : 'Add creditor or collector address.')
         : rec ? rec.address_line_1 || 'Ready to load from address book.' : 'Not saved in address book yet.';
-      const statusText = rec ? (active ? 'Ready' : 'Inactive') : (type === 'custom' ? 'Optional' : 'Missing');
-      const statusClass = rec ? presetClassForType(type) : (type === 'custom' ? 'chip gray' : 'chip warn');
+      const statusReady = !!rec && active;
+      const statusText = statusReady ? 'Ready' : 'Not ready';
       return `<button class="opt mailPresetCard ${_mailingMode==='saved' && _mailingSelectionId===rec?.id ? 'sel' : ''}" onclick="selectMailingPreset('${type}')">
         <span class="em">${type === 'custom' ? '✎' : '📬'}</span>
         <span class="mailPresetCopy"><span class="mailPresetTitle">${escapeHtml(label)}</span><small>${escapeHtml(sub)}</small></span>
-        <span class="${statusClass} mailPresetStatus">${statusText}</span>
+        <span class="mailPresetStatus ${statusReady ? 'ready' : 'notReady'}" aria-label="${statusText}" title="${statusText}"></span>
       </button>`;
     }).join('');
   }
@@ -3755,7 +3753,7 @@ function disputeFromScan(idx){
   };
   window._pendingRecommendedTemplateId=templateId;
   updateLetterLawPanel();
-  setDraftText('letterPreview',`Generating your Gemini dispute draft from the scan...\n\nCompany: ${scanItemCompany(it)}\nBureau: ${bureau}\nItem: ${friendlyScanType(firstText(it.type,it.account_type,it.category))}\nWhat we are disputing: ${scanDisputeTarget(it)}\n\nThe consumer-law basis has been added automatically from the credit-report analysis. You can still edit the optional details or the final draft before sending.`);
+  setDraftText('letterPreview',`Generating your AI dispute draft from the scan...\n\nCompany: ${scanItemCompany(it)}\nBureau: ${bureau}\nItem: ${friendlyScanType(firstText(it.type,it.account_type,it.category))}\nWhat we are disputing: ${scanDisputeTarget(it)}\n\nThe consumer-law basis has been added automatically from the credit-report analysis. You can still edit the optional details or the final draft before sending.`);
   toast('Generating letter from your scan ✓');
   setTimeout(()=>generateLetter(),80);
 }
@@ -4287,7 +4285,7 @@ function latestScanLetterContext(){
     disputes:Array.isArray(scan.disputes)?scan.disputes.slice(0,8):[]
   };
 }
-async function generateGeminiLetter({bureau,dispute_type,client_name,creditor,account_number,reason,law_context,additional_context,scan_item,report_analysis,preview}){
+async function generateAiLetter({bureau,dispute_type,client_name,creditor,account_number,reason,law_context,additional_context,scan_item,report_analysis,preview}){
   const res=await fetch(api.url('/api/ai/generate'),{method:'POST',headers:api.headers(),body:JSON.stringify({
     dispute_type,
     bureau,
@@ -4328,13 +4326,13 @@ async function generateLetter(){
   const resolvedCreditor=firstText(creditor,source.creditor,scanItemCompany(source),'Unknown');
   const reason=[strategy,pending.dispute_reason,pending.reason,pending.violation].filter(Boolean).join(' — ');
   const additional_context=$('letterExtraContext')?.value.trim()||'';
-  btn.disabled=true; btn.textContent='Asking Gemini…'; setDraftText(preview,'');
+  btn.disabled=true; btn.textContent='Asking OpenAI…'; setDraftText(preview,'');
   try{
-    await generateGeminiLetter({bureau,dispute_type,client_name,creditor:resolvedCreditor,account_number,reason,law_context,additional_context,scan_item:source,report_analysis:latestScanLetterContext(),preview});
+    await generateAiLetter({bureau,dispute_type,client_name,creditor:resolvedCreditor,account_number,reason,law_context,additional_context,scan_item:source,report_analysis:latestScanLetterContext(),preview});
     if(!draftText(preview))setDraftText(preview,'Letter generated — but the stream came back empty. Try again.');
     else{
       awardBadge('letter');
-      await saveLetterToHistory(`Gemini ${dispute_type}`,draftText(preview),resolvedCreditor);
+      await saveLetterToHistory(`AI ${dispute_type}`,draftText(preview),resolvedCreditor);
       await loadLetterHistory();
       window._pendingDispute={
         ...(window._pendingDispute||{}),
@@ -4347,13 +4345,13 @@ async function generateLetter(){
         mailingAddress:bureauMailingAddress(bureau)
       };
       updateLetterLawPanel();
-      toast('Gemini dispute letter ready with automatic law basis ✓');
+      toast('AI dispute letter ready with automatic law basis ✓');
     }
   }catch(e){
     if(e.status===402){
-      setDraftText(preview,'You\'re out of credits — upgrade to generate more Gemini letters.');
+      setDraftText(preview,'You\'re out of credits — upgrade to generate more AI letters.');
       openUpgrade();
-      btn.disabled=false; btn.textContent='Generate Gemini dispute letter';
+      btn.disabled=false; btn.textContent='Generate AI dispute letter';
       return;
     }
     try{
@@ -4370,10 +4368,10 @@ async function generateLetter(){
           if(strategySelect && [...strategySelect.options].some(opt=>opt.value===smart.template.strategy)) strategySelect.value=smart.template.strategy;
           updateLetterLawPanel();
         }
-        toast('Gemini was unavailable, so a backup draft was prepared. Review before sending.');
+        toast('The live AI was unavailable, so a backup draft was prepared. Review before sending.');
       }
     }catch(templateError){ setDraftText(preview,`Error: ${templateError.message}`); }
-  }finally{ btn.disabled=false; btn.textContent='Generate Gemini dispute letter'; }
+  }finally{ btn.disabled=false; btn.textContent='Generate AI dispute letter'; }
 }
 async function trackCurrentLetter(){
   const p=window._pendingDispute;
@@ -5208,7 +5206,7 @@ async function preparePlaybookLetter(mode='recommended'){
   window._pendingRecommendedTemplateId=analysis.templateId;
   updateLetterLawPanel();
   const preview=$('letterPreview');
-  setDraftText(preview,'Generating the recommended Gemini letter from Playbook analysis...');
+  setDraftText(preview,'Generating the recommended AI letter from Playbook analysis...');
   await generateLetter();
 }
 async function trackSelectedPlaybookAccount(){
@@ -5707,7 +5705,7 @@ async function loadRuntimeStatus(){
     if (data?.appUrl) _appBaseUrl = String(data.appUrl).trim().replace(/\/+$/, '');
     updateTestAdminUI();
   }catch{
-    _runtimeStatus={supabase:null,stripe:null,click2mail:null,gemini:null,ocr:'browser',pdf:'browser',testAdminMode:false};
+    _runtimeStatus={supabase:null,stripe:null,click2mail:null,ai:null,aiProvider:'OpenAI',ocr:'browser',pdf:'browser',testAdminMode:false};
   }
   renderSettings();
 }

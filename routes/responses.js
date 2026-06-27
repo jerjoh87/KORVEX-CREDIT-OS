@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { Router } from 'express';
 import { requireAuth, supabaseAdmin } from '../lib/server-state.js';
 import { hasPremiumAccess } from '../lib/billing.js';
-import { callGemini, geminiConfigured, toGeminiText } from '../lib/gemini.js';
+import { aiConfigured, callAi, toAiText } from '../lib/ai.js';
 import { ensureCaseForDispute, getCaseByDisputeId, recordCaseEvent } from '../lib/cases.js';
 import {
   RESPONSE_ACTIONS,
@@ -153,7 +153,7 @@ Return only valid JSON:
   "method_of_verification_recommended": false
 }`;
 
-  if (!geminiConfigured()) {
+  if (!aiConfigured()) {
     if (!extractedText) throw apiError('AI document analysis is unavailable. Try again when the AI service is connected.', 503);
     return preliminaryAnalysis(extractedText, selectedBureau);
   }
@@ -162,7 +162,7 @@ Return only valid JSON:
   if (!extractedText || mimeType.startsWith('image/')) {
     parts.push({ inlineData: { mimeType, data: buffer.toString('base64') } });
   }
-  const response = await callGemini({
+  const response = await callAi({
     contents: [{ role: 'user', parts }],
     max_tokens: 4000,
     temperature: 0.1,
@@ -173,7 +173,7 @@ Return only valid JSON:
     throw apiError(detail.error?.message || 'AI response analysis failed.', response.status || 502);
   }
   const data = await response.json();
-  const raw = toGeminiText(data).replace(/```json|```/g, '').trim();
+  const raw = toAiText(data).replace(/```json|```/g, '').trim();
   let parsed;
   try {
     parsed = JSON.parse(raw);
@@ -409,13 +409,13 @@ router.post('/:id/letter', requireAuth, requirePremium, async (req, res) => {
     const profileName = String(req.body?.clientName || response.client_name || 'Consumer').slice(0, 180);
 
     let letter = '';
-    if (geminiConfigured()) {
-      const upstream = await callGemini({
+    if (aiConfigured()) {
+      const upstream = await callAi({
         prompt: letterPrompt({ response, round, letterType, profileName }),
         max_tokens: 2200,
         temperature: 0.2
       });
-      if (upstream.ok) letter = toGeminiText(await upstream.json()).trim();
+      if (upstream.ok) letter = toAiText(await upstream.json()).trim();
     }
     if (!letter) letter = fallbackLetter({ response, round, letterType, profileName });
 
@@ -482,13 +482,13 @@ router.post('/rounds/:id/no-response-letter', requireAuth, requirePremium, async
       recommended_letter_type: 'no_response_follow_up'
     };
     let letter = '';
-    if (geminiConfigured()) {
-      const upstream = await callGemini({
+    if (aiConfigured()) {
+      const upstream = await callAi({
         prompt: letterPrompt({ response, round, letterType: 'no_response_follow_up', profileName }),
         max_tokens: 2000,
         temperature: 0.2
       });
-      if (upstream.ok) letter = toGeminiText(await upstream.json()).trim();
+      if (upstream.ok) letter = toAiText(await upstream.json()).trim();
     }
     if (!letter) letter = fallbackLetter({ response, round, letterType: 'no_response_follow_up', profileName });
     const { data: savedLetter, error: letterError } = await supabaseAdmin.from('letters').insert({
