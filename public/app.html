@@ -380,6 +380,8 @@ textarea{min-height:96px;resize:vertical}
 .generatorHead h4{font-size:18px;line-height:1.1}.generatorStatus{display:flex;gap:7px;align-items:center;color:#4EDEA3;font-size:12px;font-weight:800}.generatorDot{width:9px;height:9px;border-radius:50%;background:#4EDEA3;box-shadow:0 0 12px rgba(78,222,163,.5)}
 .generatorCallout,.docItem,.nextActionBox,.savedNote{border:1px solid rgba(124,168,255,.18);border-radius:8px;background:rgba(59,130,246,.11);padding:12px;color:var(--muted);font-size:12.5px;line-height:1.5}
 .docList{display:grid;gap:8px}.docItem{display:grid;grid-template-columns:auto minmax(0,1fr);gap:9px;align-items:start;background:rgba(255,255,255,.025)}.docItem .material-symbols-outlined{font-size:19px;color:var(--amber)}.docItem strong,.docItem span,.nextActionBox strong,.nextActionBox span,.savedNote strong,.savedNote span{display:block}.docItem strong,.nextActionBox strong,.savedNote strong{color:var(--ink);font-size:12.5px;line-height:1.25}.docItem span,.nextActionBox span,.savedNote span{font-size:11.5px;line-height:1.35}
+.docItem.complete{border-color:rgba(16,185,129,.26);background:rgba(16,185,129,.055)}.docItem.complete .material-symbols-outlined{color:#4EDEA3}.docItem.pending{border-color:rgba(244,201,93,.22)}.docItem.custom .material-symbols-outlined{color:#7CA8FF}
+.docItemActions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.docItemActions button{padding:6px 8px;border-radius:7px;font-size:11px}.docAddRow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}.docAddRow input{min-height:38px;padding:8px 10px;border-radius:8px}.docAddRow button{border-radius:8px;padding:8px 10px;white-space:nowrap}
 .nextActionBox{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:center;background:rgba(124,168,255,.06)}
 .nextActionBox .aiBrain{width:40px;height:40px;border-radius:14px}
 .generatorActions{display:grid;gap:9px}.generatorActions button{width:100%;justify-content:center;border-radius:7px}.genSave{background:#2E7CF6}.genSave:hover{background:#256BE1}.genRun{background:linear-gradient(135deg,#6945D7,#4B32A3);border-color:rgba(139,92,246,.45);color:#fff}.genClear{border-color:rgba(255,91,123,.72)!important;color:#FF6B81!important;background:rgba(255,91,123,.04)!important}
@@ -3918,15 +3920,88 @@ function runGeneratorAgent(){
   toast(missing.length?'Audit built with missing-doc flags.':'Audit + next steps generated for review.');
   renderCreditReviewWorkspace();
 }
-function generatorMissingDocs(scan=store('lastScan')||{}){
+const REVIEW_DOC_REQUIREMENTS=[
+  {key:'consumer_name',icon:'badge',title:'Consumer name',copy:'Needed for the audit cover sheet.'},
+  {key:'mailing_address',icon:'home',title:'Mailing address',copy:'Needed before any letter packet can be prepared.'},
+  {key:'government_id',icon:'assignment_ind',title:'Government ID',copy:'Needed for identity verification.'},
+  {key:'proof_of_address',icon:'article',title:'Proof of address',copy:'Needed for identity and address verification.'},
+  {key:'human_review',icon:'fact_check',title:'Human review',copy:'Required before any final dispute output.'}
+];
+function reviewDocState(scan=store('lastScan')||{}){
+  const state=scan.reviewDocs&&typeof scan.reviewDocs==='object'?scan.reviewDocs:{};
+  return {items:{...(state.items||{})},custom:Array.isArray(state.custom)?state.custom:[]};
+}
+function saveReviewDocState(nextState){
+  const scan=store('lastScan')||{};
+  store('lastScan',{...scan,reviewDocs:nextState});
+}
+function docTextSources(scan=store('lastScan')||{}){
   const consumer=scan.review?.consumer||{};
-  const missing=[];
-  if(!firstText(consumer.name,getProfile()?.name,$('round1ConsumerName')?.value))missing.push(['badge','Consumer name','Needed for the audit cover sheet.']);
-  if(!firstText($('round1ConsumerAddress')?.value))missing.push(['home','Mailing address','Needed before any letter packet can be prepared.']);
   const docs=String($('round1SupportingDocs')?.value||'').toLowerCase();
-  if(!docs.includes('id'))missing.push(['assignment_ind','Government ID','Needed for identity verification.']);
-  if(!docs.includes('address')&&!docs.includes('utility'))missing.push(['article','Proof of address','Needed for identity and address verification.']);
-  return missing;
+  const mail=mailingProfileState();
+  const docTypes=new Set((mail.documents||[]).map(doc=>String(doc.docType||'').toLowerCase()));
+  return {consumer,docs,mail,docTypes};
+}
+function isReviewDocComplete(key,scan=store('lastScan')||{}){
+  const state=reviewDocState(scan);
+  if(state.items[key]?.added)return true;
+  const {consumer,docs,mail,docTypes}=docTextSources(scan);
+  if(key==='consumer_name')return !!firstText(consumer.name,getProfile()?.name,$('round1ConsumerName')?.value,mail.fullName);
+  if(key==='mailing_address')return !!firstText($('round1ConsumerAddress')?.value,mail.billingAddress?.line1,mail.recipientAddress?.line1);
+  if(key==='government_id')return docs.includes('id')||docs.includes('driver')||docTypes.has('driver_license')||docTypes.has('government_id');
+  if(key==='proof_of_address')return docs.includes('address')||docs.includes('utility')||docTypes.has('proof_of_address');
+  if(key==='human_review')return !!state.items[key]?.added;
+  return false;
+}
+function reviewDocChecklist(scan=store('lastScan')||{}){
+  return REVIEW_DOC_REQUIREMENTS.map(item=>({...item,complete:isReviewDocComplete(item.key,scan)}));
+}
+function generatorMissingDocs(scan=store('lastScan')||{}){
+  return reviewDocChecklist(scan).filter(item=>!item.complete && item.key!=='human_review').map(item=>[item.icon,item.title,item.copy,item.key]);
+}
+function syncSupportingDocText(title){
+  const el=$('round1SupportingDocs');
+  if(!el)return;
+  const lines=String(el.value||'').split('\n').map(v=>v.trim()).filter(Boolean);
+  if(!lines.some(line=>line.toLowerCase()===title.toLowerCase())){
+    el.value=[...lines,title].join('\n');
+  }
+}
+function markReviewDoc(key,complete=true){
+  const scan=store('lastScan')||{};
+  const state=reviewDocState(scan);
+  state.items[key]={...(state.items[key]||{}),added:!!complete,updatedAt:new Date().toISOString()};
+  const req=REVIEW_DOC_REQUIREMENTS.find(item=>item.key===key);
+  if(complete&&req&&['government_id','proof_of_address'].includes(key))syncSupportingDocText(req.title);
+  saveReviewDocState(state);
+  toast(complete?`${req?.title||'Document'} marked added.`:`${req?.title||'Document'} marked missing.`);
+  renderCreditReviewWorkspace();
+}
+function addReviewCustomDoc(prefix='panel'){
+  const input=$(`reviewDocAdd-${prefix}`);
+  const title=String(input?.value||'').trim();
+  if(!title){toast('Add a document name first.');return;}
+  const scan=store('lastScan')||{};
+  const state=reviewDocState(scan);
+  state.custom=[...state.custom,{id:`doc-${Date.now()}`,title,added:false,createdAt:new Date().toISOString()}];
+  saveReviewDocState(state);
+  if(input)input.value='';
+  toast('Missing doc added.');
+  renderCreditReviewWorkspace();
+}
+function toggleCustomReviewDoc(id){
+  const scan=store('lastScan')||{};
+  const state=reviewDocState(scan);
+  state.custom=state.custom.map(item=>item.id===id?{...item,added:!item.added,updatedAt:new Date().toISOString()}:item);
+  saveReviewDocState(state);
+  renderCreditReviewWorkspace();
+}
+function removeCustomReviewDoc(id){
+  const scan=store('lastScan')||{};
+  const state=reviewDocState(scan);
+  state.custom=state.custom.filter(item=>item.id!==id);
+  saveReviewDocState(state);
+  renderCreditReviewWorkspace();
 }
 function generatorCandidateScore(item={},idx=0){
   const priority=String(item.priority||'').toLowerCase();
@@ -3939,6 +4014,8 @@ function generatorCandidateScore(item={},idx=0){
   return Math.max(1,Math.min(99,score-idx));
 }
 function buildGeneratorAudit(review={},scan={},missing=[]){
+  const docState=reviewDocState(scan);
+  const customMissing=(docState.custom||[]).filter(item=>!item.added).map(item=>item.title);
   const candidates=(review.disputes||[]).map((item,idx)=>({
     index:idx,
     score:generatorCandidateScore(item,idx),
@@ -3951,6 +4028,7 @@ function buildGeneratorAudit(review={},scan={},missing=[]){
   })).sort((a,b)=>b.score-a.score).slice(0,8);
   const blockers=[];
   if(missing.length)blockers.push(`${missing.length} intake requirement${missing.length===1?'':'s'} missing`);
+  if(customMissing.length)blockers.push(`${customMissing.length} custom document${customMissing.length===1?'':'s'} still needed`);
   if(candidates.length)blockers.push(`${candidates.length} candidate item${candidates.length===1?'':'s'} need human fact-check`);
   else blockers.push('No dispute candidates were strong enough to rank');
   if(review.metrics?.utilization!=null && Number(review.metrics.utilization)>30)blockers.push('Utilization may need paydown planning before funding applications');
@@ -3963,7 +4041,7 @@ function buildGeneratorAudit(review={},scan={},missing=[]){
       `Ranked ${candidates.length} dispute candidate${candidates.length===1?'':'s'} from the latest report scan.`,
       'Final dispute letters remain locked until intake documents and human review are complete.'
     ],
-    missingDocs:missing.map(([,title,copy])=>({title,copy})),
+    missingDocs:[...missing.map(([,title,copy])=>({title,copy})),...customMissing.map(title=>({title,copy:'Added from the review dashboard.'}))],
     blockers,
     candidates,
     nextSteps:[
@@ -3976,6 +4054,14 @@ function buildGeneratorAudit(review={},scan={},missing=[]){
 }
 function humanReviewDocItem(){
   return '<div class="docItem"><span class="material-symbols-outlined">fact_check</span><div><strong>Human review</strong><span>Required before any final dispute output.</span></div></div>';
+}
+function renderMissingDocsManager(scan=store('lastScan')||{},prefix='panel',limit=null){
+  const required=reviewDocChecklist(scan);
+  const state=reviewDocState(scan);
+  const custom=state.custom||[];
+  const requiredRows=(limit?required.slice(0,limit):required).map(item=>`<div class="docItem ${item.complete?'complete':'pending'}"><span class="material-symbols-outlined">${escapeHtml(item.complete?'check_circle':item.icon)}</span><div><strong>${escapeHtml(item.title)}</strong><span>${escapeHtml(item.complete?'Added / available':item.copy)}</span><div class="docItemActions"><button class="tinyAction ${item.complete?'active':''}" onclick="markReviewDoc('${item.key}',${!item.complete})">${item.complete?'Mark missing':'Mark added'}</button></div></div></div>`).join('');
+  const customRows=custom.map(item=>`<div class="docItem custom ${item.added?'complete':'pending'}"><span class="material-symbols-outlined">${item.added?'check_circle':'note_add'}</span><div><strong>${escapeHtml(item.title)}</strong><span>${item.added?'Added to the audit file.':'Custom missing requirement.'}</span><div class="docItemActions"><button class="tinyAction ${item.added?'active':''}" onclick="toggleCustomReviewDoc('${escapeHtml(item.id)}')">${item.added?'Mark missing':'Mark added'}</button><button class="tinyAction" onclick="removeCustomReviewDoc('${escapeHtml(item.id)}')">Remove</button></div></div></div>`).join('');
+  return `<div class="docList">${requiredRows}${customRows}</div><div class="docAddRow"><input id="reviewDocAdd-${escapeHtml(prefix)}" placeholder="Add missing doc or note"><button class="ghost" onclick="addReviewCustomDoc('${escapeHtml(prefix)}')">Add</button></div>`;
 }
 function renderReviewMetrics(review,scan){
   const m=review.metrics||{};
@@ -4056,7 +4142,7 @@ function renderGeneratorTab(review,scan){
   <div class="reviewSectionHead"><h4>Ranked dispute candidates</h4><span class="chip warn">Human review required</span></div>
   <div class="reviewTableWrap"><table class="reviewTable"><thead><tr><th>Candidate</th><th>Bureau</th><th>Rank</th><th>Next move</th></tr></thead><tbody>${candidateRows||'<tr><td colspan="4"><div class="empty">No ranked candidates yet. Review the scan output manually.</div></td></tr>'}</tbody></table></div>
   <div class="reviewGrid"><div class="reviewCard"><span>Blockers</span>${blockers.length?`<ul class="lawList">${blockers.map(item=>`<li>${escapeHtml(item)}</li>`).join('')}</ul>`:'<span>No blockers listed.</span>'}</div><div class="reviewCard"><span>Next steps</span>${nextSteps.length?`<ul class="lawList">${nextSteps.map(item=>`<li>${escapeHtml(item)}</li>`).join('')}</ul>`:'<span>Review candidates before generating letters.</span>'}</div></div>`:`<div class="scannerState" style="padding:13px"><strong>What happens next</strong><span>Run the generator to compile a plain-English audit, rank legitimate dispute candidates, list missing evidence, and prepare a reviewed next-step plan. Final PDFs stay behind a human review gate.</span></div>`}
-  <div class="reviewSectionHead"><h4>Missing requirements</h4></div><div class="docList">${missing.map(([icon,title,copy])=>`<div class="docItem"><span class="material-symbols-outlined">${icon}</span><div><strong>${escapeHtml(title)}</strong><span>${escapeHtml(copy)}</span></div></div>`).join('')||'<div class="docItem"><span class="material-symbols-outlined">check_circle</span><div><strong>Core documents noted</strong><span>Confirm files are legible before final packet creation.</span></div></div>'}${humanReviewDocItem()}</div>`;
+  <div class="reviewSectionHead"><h4>Missing requirements</h4><span class="chip info">Editable</span></div>${renderMissingDocsManager(scan,'tab')}`;
 }
 function renderGeneratorPanel(review,scan){
   const missing=generatorMissingDocs(scan);
@@ -4064,7 +4150,7 @@ function renderGeneratorPanel(review,scan){
   const status=saved?'Saved':scan.generatorState==='audit-ready'?'Audit ready':missing.length?'Missing docs':'Ready to build audit';
   return `<aside class="generatorPanel"><div class="generatorHead"><div class="generatorIcon"><span class="material-symbols-outlined">smart_toy</span></div><div><h4>Generator Agent</h4><div class="generatorStatus"><span class="generatorDot"></span>${escapeHtml(status)}</div></div></div>
     <div class="generatorCallout">I have analyzed the report and organized items that may be inaccurate or unverifiable. Review the tabs, then run the generator when intake is complete.</div>
-    <div><div class="reviewSectionHead" style="margin-bottom:8px"><h4>Missing docs</h4></div><div class="docList">${missing.slice(0,3).map(([icon,title,copy])=>`<div class="docItem"><span class="material-symbols-outlined">${icon}</span><div><strong>${escapeHtml(title)}</strong><span>${escapeHtml(copy)}</span></div></div>`).join('')||'<div class="docItem"><span class="material-symbols-outlined">check_circle</span><div><strong>Core intake ready</strong><span>Final human review is still required.</span></div></div>'}${humanReviewDocItem()}</div></div>
+    <div><div class="reviewSectionHead" style="margin-bottom:8px"><h4>Missing docs</h4><span class="chip ${missing.length?'warn':'up'}">${missing.length||'Ready'}</span></div>${renderMissingDocsManager(scan,'panel',4)}</div>
     <div class="nextActionBox"><div class="aiBrain"><span class="material-symbols-outlined">auto_fix_high</span></div><div><strong>Run Generator</strong><span>Build audit + next steps from the issues found.</span></div></div>
     <div class="generatorActions"><button class="primary genSave" onclick="saveCurrentScan()"><span class="material-symbols-outlined" style="font-size:18px">save</span> Save Scan</button><button class="ghost genRun" onclick="runGeneratorAgent()"><span class="material-symbols-outlined" style="font-size:18px">auto_fix_high</span> Run Generator</button><button class="ghost genClear" onclick="clearCurrentScan()"><span class="material-symbols-outlined" style="font-size:18px">delete</span> Clear Scan</button></div>
     ${saved?'<div class="savedNote"><span class="material-symbols-outlined">verified_user</span><div><strong>This scan is saved to Audit History.</strong><span>You can re-run the generator anytime.</span></div></div>':''}
