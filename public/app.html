@@ -87,7 +87,7 @@ h2,h3,h4{letter-spacing:-.02em}
 .item strong{display:block;font-size:14.5px}.item small{color:var(--muted);font-size:12.5px}
 .empty{padding:34px 22px;text-align:center;color:var(--muted);border:1.5px dashed var(--line2);border-radius:14px;background:rgba(255,255,255,.03);font-size:14px}
 .tag{display:inline-flex;padding:4px 9px;border-radius:999px;font-size:11px;font-weight:700;background:var(--em-soft);color:#34d8a0}
-.tag.red{background:var(--red-soft);color:var(--red)} .tag.amber{background:var(--amber-soft);color:var(--amber)} .tag.blue{background:var(--blue-soft);color:var(--blue)} .tag.gray{background:rgba(255,255,255,.07);color:var(--muted)}
+.tag.red,.tag.down{background:var(--red-soft);color:var(--red)} .tag.amber,.tag.warn{background:var(--amber-soft);color:var(--amber)} .tag.blue,.tag.info{background:var(--blue-soft);color:var(--blue)} .tag.gray{background:rgba(255,255,255,.07);color:var(--muted)}
 .bigRing{width:158px;height:158px;border-radius:50%;display:grid;place-items:center;margin:6px auto 14px;background:conic-gradient(var(--em) calc(var(--p)*1%),rgba(255,255,255,.08) 0)}
 .bigRing>div{width:122px;height:122px;border-radius:50%;background:#0c1322;display:grid;place-items:center;text-align:center;border:1px solid var(--line)}
 .bigRing b{font-size:34px;font-weight:800;line-height:1}
@@ -284,6 +284,19 @@ textarea{min-height:96px;resize:vertical}
 .detectedSummary strong{display:block;color:var(--ink);font-size:13.5px}
 .dropZone{display:grid;place-items:center;min-height:140px;border:1.5px dashed var(--line2);border-radius:14px;background:rgba(255,255,255,.03);text-align:center;color:var(--muted);font-size:13.5px;transition:.15s;cursor:pointer;padding:14px}
 .dropZone.activeDrop,.dropZone:hover{border-color:var(--em);background:var(--em-soft)}
+.round1Shell{margin-top:14px;display:grid;gap:14px}
+.round1Grid{display:grid;grid-template-columns:minmax(280px,.72fr) minmax(0,1.28fr);gap:14px;align-items:start}
+.round1Status{border:1px solid rgba(124,168,255,.22);background:rgba(124,168,255,.07);border-radius:13px;padding:13px;display:grid;gap:6px;color:var(--muted);font-size:12.5px}
+.round1Status strong{color:var(--ink);font-size:14px}
+.round1Candidate{border:1px solid var(--line);background:rgba(255,255,255,.035);border-radius:14px;padding:14px;display:grid;gap:11px}
+.round1CandidateHead{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.round1CandidateTitle{min-width:0}.round1CandidateTitle strong{display:block;font-size:15px;overflow-wrap:anywhere}.round1CandidateTitle small{display:block;color:var(--muted);font-size:12px;margin-top:3px}
+.round1Candidate textarea{min-height:70px}
+.round1Actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.round1TinyBtn{border:1px solid var(--line2);background:rgba(255,255,255,.05);color:var(--ink);border-radius:10px;padding:8px 10px;cursor:pointer;font-size:12.5px;font-weight:700}
+.round1TinyBtn.active{border-color:rgba(16,185,129,.42);background:var(--em-soft);color:#4EDEA3}
+.round1DownloadGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:9px}
+.round1DownloadGrid a{border:1px solid var(--line2);background:rgba(255,255,255,.05);border-radius:11px;padding:10px 12px;color:var(--ink);font-size:12.5px;font-weight:700;text-align:center}
 .findRow{border:1px solid rgba(124,168,255,.16);border-radius:18px;padding:18px;display:grid;gap:14px;background:linear-gradient(145deg,rgba(11,20,36,.88),rgba(8,14,26,.76));min-width:0;box-shadow:0 14px 40px rgba(0,0,0,.24)}
 .findRow strong{overflow-wrap:anywhere}.findRow p{color:var(--muted);font-size:13px;line-height:1.55;margin:0;overflow-wrap:anywhere}
 .recommendHead{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap}
@@ -312,6 +325,70 @@ textarea{min-height:96px;resize:vertical}
 .findDetails{border-top:1px solid var(--line);padding-top:11px}
 .findDetails summary{cursor:pointer;color:var(--ink2);font-weight:800;font-size:12.5px}
 .findDetails p{margin-top:8px}
+.scannerUploadGrid{align-items:start}
+#scanner.reviewMode .heroHead,#scanner.reviewMode #scanStepper,#scanner.reviewMode .scannerUploadGrid>.card:first-child,#scanner.reviewMode #round1Workflow{display:none}
+#scanner.reviewMode .scannerUploadGrid{display:block}
+#scanResults.creditReviewHost{grid-column:1/-1;padding:0;overflow:hidden;background:linear-gradient(145deg,rgba(8,16,32,.88),rgba(7,13,25,.76));border-color:rgba(124,168,255,.18)}
+.creditReview{display:grid;gap:14px;padding:4px 0 0}
+.creditReviewTop{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap;padding:4px 4px 0}
+.creditReviewTop h3{font-size:31px;line-height:1.08}
+.creditReviewTop p{color:var(--muted);font-size:13px;margin-top:5px}
+.creditReviewActions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.creditReviewActions button{display:inline-flex;align-items:center;gap:7px;min-height:40px}
+.creditMetrics{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.creditMetric{border:1px solid rgba(124,168,255,.18);border-radius:8px;background:linear-gradient(145deg,rgba(24,45,75,.58),rgba(10,24,44,.72));padding:12px;min-width:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:9px;align-items:start;min-height:98px;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+.metricIcon{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:rgba(59,130,246,.16);border:1px solid rgba(59,130,246,.28);color:#7CA8FF;flex:none}
+.metricIcon .material-symbols-outlined{font-size:18px}.metricIcon.warn{background:rgba(255,158,154,.12);border-color:rgba(255,158,154,.28);color:#FF9E9A}.metricIcon.gold{background:rgba(244,201,93,.12);border-color:rgba(244,201,93,.30);color:#F4C95D}.metricIcon.up{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.30);color:#4EDEA3}
+.creditMetric b{display:inline-block;font-size:23px;line-height:1.05;overflow-wrap:anywhere;color:#FDBA16;margin-right:7px}
+.creditMetric:last-child b{font-size:18px;color:#4EDEA3;overflow-wrap:normal;word-break:normal}
+.creditMetric span{color:var(--muted);font-size:11.5px;line-height:1.35}
+.creditMetric .metricLab{letter-spacing:0;text-transform:none;font-family:var(--font);font-size:11.5px;color:#C7D4EA}
+.metricSub{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:3px}.metricSub em{font-style:normal;color:#4EDEA3;font-size:11px;font-weight:800}
+.metricBar{height:8px;border-radius:999px;background:rgba(255,255,255,.12);overflow:hidden;margin-top:7px}.metricBar i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#FDBA16,#F4C95D)}
+.creditReviewLayout{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:10px;align-items:start}
+.creditReviewMain,.generatorPanel{border:1px solid rgba(124,168,255,.18);border-radius:8px;background:linear-gradient(145deg,rgba(8,22,42,.82),rgba(4,14,28,.88));min-width:0;overflow:hidden}
+.reviewTabs{display:flex;gap:4px;overflow:auto;padding:0 13px;border-bottom:1px solid rgba(124,168,255,.18);background:rgba(19,38,65,.50)}
+.reviewTabs{scrollbar-width:none}.reviewTabs::-webkit-scrollbar{display:none}
+.reviewTab{border:0;background:transparent;color:#B8C7DE;padding:12px 8px;border-radius:0;cursor:pointer;font-weight:700;font-size:13px;white-space:nowrap;min-width:96px}
+.reviewTab.active{color:#4D9DFF;background:transparent;box-shadow:inset 0 -2px 0 #3B82F6}
+.reviewPane{padding:14px;display:grid;gap:14px;min-width:0}
+.reviewGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}
+.reviewCard{border:1px solid rgba(124,168,255,.20);border-radius:8px;background:linear-gradient(145deg,rgba(24,45,75,.45),rgba(9,24,45,.62));padding:14px;min-width:0;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 10px;align-items:center}
+.reviewCard b{font-size:20px;line-height:1.1}.reviewCard span{color:var(--muted);font-size:12px;line-height:1.4;overflow-wrap:anywhere}.reviewCard .metricIcon{grid-row:1/3;grid-column:2}
+.reviewSectionHead{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.reviewSectionHead h4{font-size:16px}
+.reviewFilter{display:flex;gap:6px;flex-wrap:wrap}
+.reviewFilter button{border:1px solid var(--line2);background:rgba(255,255,255,.04);color:var(--muted);border-radius:999px;padding:6px 10px;cursor:pointer;font-size:11.5px;font-weight:800}
+.reviewFilter button.active{color:#4EDEA3;border-color:rgba(16,185,129,.36);background:var(--em-soft)}
+.reviewTableWrap{overflow:auto;border:1px solid rgba(124,168,255,.18);border-radius:8px;background:rgba(255,255,255,.02)}
+.reviewTable{width:100%;border-collapse:collapse;min-width:640px}
+.reviewTable th,.reviewTable td{padding:9px 12px;border-bottom:1px solid rgba(124,168,255,.14);text-align:left;font-size:12.5px;vertical-align:middle}
+.reviewTable th{color:#AFC1DA;font-size:11px;font-weight:500;text-transform:none;letter-spacing:0;background:rgba(39,68,105,.45)}
+.reviewTable tr:last-child td{border-bottom:0}
+.reviewTable b{display:block;color:var(--ink);font-size:13px;line-height:1.3}
+.reviewTable small{display:block;color:var(--muted);font-size:11.5px;line-height:1.35;margin-top:2px}
+.tinyAction{border:1px solid var(--line2);background:rgba(255,255,255,.05);color:var(--ink);border-radius:9px;padding:7px 9px;cursor:pointer;font-size:11.5px;font-weight:800;white-space:nowrap}
+.tinyAction.active{border-color:rgba(16,185,129,.38);background:var(--em-soft);color:#4EDEA3}
+.nextSteps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;align-items:start;border-top:1px solid rgba(124,168,255,.14);border-bottom:1px solid rgba(124,168,255,.14);padding:16px 0}
+.nextStep{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:center;background:transparent;padding:0}
+.nextStep:after{content:'arrow_forward';font-family:'Material Symbols Outlined';color:#4D9DFF;align-self:center;justify-self:end;font-size:20px}
+.nextStep:last-child:after{content:''}
+.nextStep .metricIcon{width:48px;height:48px;border-radius:50%}.nextStep b{font-size:12px}.nextStep span{font-size:11px;color:var(--muted);line-height:1.25}
+.generatorPanel{position:sticky;top:88px;padding:16px;display:grid;gap:14px}
+.generatorHead{display:grid;grid-template-columns:auto minmax(0,1fr);gap:11px;align-items:center}
+.generatorIcon{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;border:1px solid rgba(124,168,255,.25);background:rgba(124,168,255,.10);color:#E6EDF7}
+.generatorHead h4{font-size:18px;line-height:1.1}.generatorStatus{display:flex;gap:7px;align-items:center;color:#4EDEA3;font-size:12px;font-weight:800}.generatorDot{width:9px;height:9px;border-radius:50%;background:#4EDEA3;box-shadow:0 0 12px rgba(78,222,163,.5)}
+.generatorCallout,.docItem,.nextActionBox,.savedNote{border:1px solid rgba(124,168,255,.18);border-radius:8px;background:rgba(59,130,246,.11);padding:12px;color:var(--muted);font-size:12.5px;line-height:1.5}
+.docList{display:grid;gap:8px}.docItem{display:grid;grid-template-columns:auto minmax(0,1fr);gap:9px;align-items:start;background:rgba(255,255,255,.025)}.docItem .material-symbols-outlined{font-size:19px;color:var(--amber)}.docItem strong,.docItem span,.nextActionBox strong,.nextActionBox span,.savedNote strong,.savedNote span{display:block}.docItem strong,.nextActionBox strong,.savedNote strong{color:var(--ink);font-size:12.5px;line-height:1.25}.docItem span,.nextActionBox span,.savedNote span{font-size:11.5px;line-height:1.35}
+.nextActionBox{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:center;background:rgba(124,168,255,.06)}
+.nextActionBox .aiBrain{width:40px;height:40px;border-radius:14px}
+.generatorActions{display:grid;gap:9px}.generatorActions button{width:100%;justify-content:center;border-radius:7px}.genSave{background:#2E7CF6}.genSave:hover{background:#256BE1}.genRun{background:linear-gradient(135deg,#6945D7,#4B32A3);border-color:rgba(139,92,246,.45);color:#fff}.genClear{border-color:rgba(255,91,123,.72)!important;color:#FF6B81!important;background:rgba(255,91,123,.04)!important}
+.savedNote{display:grid;grid-template-columns:auto minmax(0,1fr);gap:9px;background:rgba(16,185,129,.06);border-color:rgba(16,185,129,.22)}
+.savedNote .material-symbols-outlined{color:#4EDEA3;font-size:20px}
+.fundingReadinessGrid{display:grid;grid-template-columns:minmax(220px,.62fr) minmax(0,1fr);gap:12px;align-items:start}
+.readinessScoreBox{border:1px solid rgba(78,222,163,.22);border-radius:14px;padding:16px;background:rgba(16,185,129,.06);text-align:center}
+.readinessScoreBox .bureauGauge{margin:8px auto}
+.readinessList{display:grid;gap:9px}
 
 /* ── Dispute Playbook ── */
 .playbookHero{position:relative;overflow:hidden;border-color:rgba(78,222,163,.22);margin-bottom:16px}
@@ -371,7 +448,7 @@ textarea{min-height:96px;resize:vertical}
 .deadlinePoint.done{border-color:var(--em)}.deadlinePoint.due{border-color:var(--red);background:var(--red-soft)}
 .confidenceBar{height:7px;border-radius:999px;background:#172438;overflow:hidden;margin-top:7px}.confidenceBar span{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--em))}
 @media(max-width:1450px){.playbookLayout{grid-template-columns:280px minmax(0,1fr)}.casePanel{position:static;grid-column:1/-1;grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:1180px){.playbookLayout,.responseLayout{grid-template-columns:1fr}.casePanel{position:static;grid-template-columns:1fr}.playbookMetrics{grid-template-columns:repeat(2,minmax(0,1fr))}.caseFiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:1180px){.playbookLayout,.responseLayout,.round1Grid{grid-template-columns:1fr}.casePanel{position:static;grid-template-columns:1fr}.playbookMetrics{grid-template-columns:repeat(2,minmax(0,1fr))}.caseFiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){.playbookMetrics,.analysisGrid,.docChecklist,.caseFiles,.billingDisclosure{grid-template-columns:1fr}.playbookScoreCard{align-items:flex-start}.playbookScore{width:112px;height:112px}.playbookScore>div{width:90px;height:90px}.premiumLock{grid-template-columns:1fr;padding:22px}.deadlineRail{grid-template-columns:1fr}.deadlinePoint{border-top:0;border-left:2px solid var(--line2)}}
 
 /* ── Bottom mobile nav ── */
@@ -431,6 +508,9 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
 @media(max-width:900px){.stitchDashGrid,.stitchLower{grid-template-columns:1fr}.readinessPanel{display:grid;grid-template-columns:1fr 1fr;align-items:center}.readinessPanel .stitchCardHead{grid-column:1/-1}.readinessPanel .bureauGauge{margin:0 auto}}
 @media(max-width:760px){.topbar{height:60px;padding:9px 13px}.appSearch{width:auto;flex:1}.appSearch input{padding-block:8px}.topActions .topIcon{display:none}.content{padding:18px 13px 110px}.alertBody{flex-wrap:wrap}.alertCopy h3{font-size:21px}.bureauRings{gap:7px}.bureauCell{padding:13px 3px}.bureauGauge{width:82px;height:82px}.bureauGauge>div{width:67px;height:67px;font-size:18px}.readinessPanel{display:block}.heroHead h2{font-size:26px}}
 @media(max-width:420px){.bureauGauge{width:72px;height:72px}.bureauGauge>div{width:58px;height:58px;font-size:16px}.bureauCell .tag{font-size:9px;padding:3px 6px}.appSearch input{font-size:12px}}
+@media(max-width:1180px){.creditMetrics{grid-template-columns:repeat(3,minmax(0,1fr))}.creditReviewLayout{grid-template-columns:1fr}.generatorPanel{position:static}.creditReviewHost{grid-column:1/-1}}
+@media(max-width:760px){.creditReview{padding:12px}.creditReviewTop h3{font-size:22px}.creditMetrics,.reviewGrid,.nextSteps,.fundingReadinessGrid{grid-template-columns:1fr}.creditReviewActions,.generatorActions{width:100%}.creditReviewActions button{flex:1;justify-content:center}.reviewPane{padding:12px}.reviewTabs{padding-inline:8px}.reviewTab{padding:9px 10px}.creditMetric b{font-size:20px}.reviewTable{min-width:680px}.generatorPanel{padding:13px}}
+@media(max-width:480px){.creditReviewActions{display:grid;grid-template-columns:1fr}.reviewTable{min-width:620px}.creditReviewTop p{font-size:12px}.creditMetric{padding:11px}.nextStep{padding:11px}}
 </style>
 </head>
 <body class="menu-closed">
@@ -567,7 +647,7 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
       <div class="page" id="scanner">
         <div class="heroHead"><div><h2>Scan my report</h2><p>Upload your credit report. The AI finds every problem, explains it in plain English, and writes the dispute letters for you.</p></div></div>
         <div class="stepper" id="scanStepper"></div>
-        <div class="grid grid2">
+        <div class="grid grid2 scannerUploadGrid">
           <div class="card">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:13px"><div><h3>1 · Upload your report</h3><p style="color:var(--muted);font-size:13px;margin-top:5px">PDF, TXT, PNG, or JPG · maximum 10 MB. Scanned files use OCR.</p></div><span class="chip gold">1 credit per scan</span></div>
             <div class="dropZone" id="reportDropZone"><div><div style="font-size:30px">⬆️</div><b>Drop your report here</b><br><small>or choose a PDF, TXT, PNG, or JPG</small></div></div>
@@ -583,6 +663,37 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
           <div class="card" id="scanResults">
             <h3>2 · AI results</h3>
             <div class="empty" style="margin-top:12px">Findings appear here with report-quality context, priority levels, non-guaranteed estimates, and review-first dispute actions.</div>
+          </div>
+        </div>
+        <div class="card round1Shell" id="round1Workflow">
+          <div class="stitchCardHead">
+            <div>
+              <h3>Round 1 Letter Generator</h3>
+              <p style="color:var(--muted);font-size:13px;margin-top:5px">Audit the uploaded report, review legitimate dispute candidates, then generate bureau PDFs only after human review.</p>
+            </div>
+            <span class="chip info" id="round1CaseBadge">No case yet</span>
+          </div>
+          <div class="round1Grid">
+            <div>
+              <div class="formGrid" style="grid-template-columns:1fr">
+                <label>Consumer full name<input id="round1ConsumerName" placeholder="Full legal name"></label>
+                <label>Mailing address<textarea id="round1ConsumerAddress" placeholder="Street address&#10;City, ST ZIP" style="min-height:76px"></textarea></label>
+                <label>Supporting documents<textarea id="round1SupportingDocs" placeholder="Copy of ID&#10;Proof of address&#10;Credit report excerpt" style="min-height:76px"></textarea></label>
+              </div>
+              <div class="round1Status" id="round1Status" style="margin-top:12px">
+                <strong>Ready for intake</strong>
+                <span>Upload or paste a report, then run the Round 1 audit.</span>
+              </div>
+              <div class="round1Actions" style="margin-top:12px">
+                <button class="primary" id="round1AuditBtn" onclick="runRound1Intake()">Run Round 1 audit</button>
+                <button class="ghost" id="round1PdfBtn" onclick="generateRound1Pdfs()">Generate PDFs</button>
+              </div>
+            </div>
+            <div>
+              <div class="sectionTitle" style="margin:0 0 10px"><h3>Dispute candidate review</h3><span id="round1CandidateCount">0 items</span></div>
+              <div id="round1Candidates" class="list"><div class="empty">Round 1 candidates will appear here after the audit.</div></div>
+              <div id="round1Downloads" class="round1DownloadGrid" style="margin-top:12px"></div>
+            </div>
           </div>
         </div>
         <div class="card" style="margin-top:14px">
@@ -3068,10 +3179,12 @@ function updateScannerCreditUI(credits,unlimited){
   $('sideCredits').textContent=unlimited?'∞':(credits??'—');
   $('sideMeter').style.width=unlimited?'100%':`${Math.min(100,((credits||0)/25)*100)}%`;
 }
-function setScannerLoading(title,detail){ $('scanResults').innerHTML=`<h3>2 · AI results</h3><div class="scannerState aiReading" style="margin-top:12px"><div class="aiBrain thinking"><span class="material-symbols-outlined">psychology</span></div><div><strong>${escapeHtml(title)}</strong><span>${escapeHtml(detail)}</span></div></div>`; }
+function setScannerLoading(title,detail){ $('scanner')?.classList.remove('reviewMode'); $('scanResults').classList.remove('creditReviewHost'); $('scanResults').innerHTML=`<h3>2 · AI results</h3><div class="scannerState aiReading" style="margin-top:12px"><div class="aiBrain thinking"><span class="material-symbols-outlined">psychology</span></div><div><strong>${escapeHtml(title)}</strong><span>${escapeHtml(detail)}</span></div></div>`; }
 let _lastScanRetry=null,_pendingScanMeta=null;
 function setScannerError(msg,retryFn=null){
   _lastScanRetry=retryFn;
+  $('scanner')?.classList.remove('reviewMode');
+  $('scanResults').classList.remove('creditReviewHost');
   $('scanResults').innerHTML=`<h3>2 · AI results</h3><div class="scannerState error" style="margin-top:12px"><strong>Analysis could not be completed</strong><span>${escapeHtml(msg)}</span>${retryFn?'<button class="ghost" style="justify-self:start;margin-top:5px" onclick="retryScanner()">Try again</button>':'<button class="ghost" style="justify-self:start;margin-top:5px" onclick="document.getElementById(\'reportFileInput\').click()">Choose another file</button>'}</div>`;
   setScanStep(Math.min(_scanStep,1));
 }
@@ -3638,97 +3751,283 @@ function scanConsumerLawBasis(it={}){
   }
   return laws.slice(0,6);
 }
-function renderCreditIntelligenceSummary(analysis={}){
+let _creditReviewTab='overview';
+let _creditReviewFilter='all';
+function coerceArray(value){return Array.isArray(value)?value:[]}
+function moneyValue(value){
+  if(value===undefined||value===null||value==='')return '—';
+  const n=Number(String(value).replace(/[^0-9.-]/g,''));
+  if(Number.isFinite(n))return n.toLocaleString(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0});
+  return String(value);
+}
+function scanScores(summary={},analysis={}){
+  const raw=analysis.scores||summary.bureau_scores||summary.scores||{};
+  if(Array.isArray(raw)){
+    return raw.map(score=>Number(score?.score||score?.value||score)).filter(n=>n>=300&&n<=850);
+  }
+  return Object.values(raw).map(v=>Number(v?.score||v)).filter(n=>n>=300&&n<=850);
+}
+function normalizeScanAccounts(analysis={}){
   const normalized=analysis.normalized_report||{};
-  const funding=analysis.funding_intelligence||{};
-  const checks=Array.isArray(analysis.validation_checks)?analysis.validation_checks:[];
-  const sections=normalized.sections||{};
-  const detectedSections=Object.entries(sections).filter(([,v])=>v?.detected).map(([k])=>k.replace(/_/g,' ')).slice(0,7);
-  const score=Number(funding.score);
-  const hasNormalized=normalized.source||normalized.bureau||Number(normalized.accounts?.length||0)||detectedSections.length;
-  const source=hasNormalized?`<div class="scanMiniCard"><strong>Report read</strong><span>${escapeHtml(normalized.bureau||'Credit report')} · ${Number(normalized.accounts?.length||0)} account block(s) read</span>${Number(normalized.parser_confidence)?`<span>Read confidence: ${Math.round(Number(normalized.parser_confidence)||0)}/100</span>`:''}${detectedSections.length?`<div class="scanChips">${detectedSections.slice(0,5).map(s=>`<span class="chip info">${escapeHtml(s)}</span>`).join('')}</div>`:''}</div>`:'';
-  const readiness=Number.isFinite(score)?`<div class="scanMiniCard"><strong>Funding signal</strong><span>${score}/100 readiness estimate</span><span>${escapeHtml(funding.approval_odds_note||'Directional only — not an approval or offer.')}</span></div>`:'';
-  const topChecks=checks.length?`<div class="scanMiniCard"><strong>Data checks</strong><span>${checks.length} possible data issue${checks.length===1?'':'s'} found for review.</span><ul>${checks.slice(0,2).map(check=>`<li>${escapeHtml(check.title||check.type||'Review item')}</li>`).join('')}</ul></div>`:'';
-  const recs=(funding.recommendations||[]).slice(0,3).map(item=>`<li>${escapeHtml(item)}</li>`).join('');
-  const fundingTips=recs?`<div class="scanMiniCard"><strong>Funding tips</strong><ul>${recs}</ul></div>`:'';
-  return (source||readiness||topChecks||fundingTips)?`<div class="scanDetailsGrid">${source}${readiness}${topChecks}${fundingTips}</div>`:'';
+  const accounts=[...coerceArray(analysis.accounts),...coerceArray(normalized.accounts)];
+  return accounts.map((account,idx)=>({
+    id:`acct-${idx}`,
+    creditor:firstText(account.creditor,account.name,account.account_name,account.furnisher,'Unknown account'),
+    bureau:firstText(account.bureau,account.bureau_name,normalized.bureau,'—'),
+    type:friendlyScanType(firstText(account.type,account.account_type,account.category)),
+    status:firstText(account.status,account.account_status,account.payment_status,'Review'),
+    balance:firstText(account.balance,account.current_balance),
+    limit:firstText(account.credit_limit,account.limit),
+    opened:firstText(account.opened_date,account.date_opened,account.opened),
+    reported:firstText(account.reported_date,account.last_reported,account.updated_at),
+    accountNumber:maskAccountNumber(firstText(account.account_number,account.accountNumber,account.account)),
+    source:account
+  })).filter(account=>account.creditor!=='Unknown account'||account.balance||account.status);
+}
+function normalizeDisputeItems(analysis={}){
+  const raw=[...coerceArray(analysis.disputes),...coerceArray(analysis.items),...coerceArray(analysis.collections),...coerceArray(analysis.alerts).filter(a=>/dispute|negative|derog|verify|inaccur/i.test(JSON.stringify(a)))];
+  const seen=new Set();
+  return raw.map((it,idx)=>({id:`item-${idx}`,source:it})).filter(wrapper=>{
+    const key=JSON.stringify([scanItemCompany(wrapper.source),scanItemBureau(wrapper.source),firstText(wrapper.source.type,wrapper.source.category),scanDisputeTarget(wrapper.source)]).toLowerCase();
+    if(seen.has(key))return false;
+    seen.add(key);
+    return true;
+  }).map(wrapper=>wrapper.source);
+}
+function normalizeCreditReview(analysis={},meta={}){
+  const summary=analysis.summary||{};
+  const scores=scanScores(summary,analysis);
+  const accounts=normalizeScanAccounts(analysis);
+  const disputes=normalizeDisputeItems(analysis);
+  const collections=coerceArray(analysis.collections);
+  const inquiries=coerceArray(analysis.inquiries);
+  const publicRecords=coerceArray(analysis.publicRecords||analysis.public_records);
+  const alerts=coerceArray(analysis.alerts||analysis.validation_checks);
+  const funding=analysis.fundingReadiness||analysis.funding_readiness||analysis.funding_intelligence||{};
+  const scoreAvg=scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length):null;
+  const derogatory=Number(summary.derogatory_items??summary.negative_items??summary.total_items??disputes.length??0)||0;
+  const utilization=Number(summary.utilization??summary.credit_utilization??funding.utilization);
+  const totalDebt=firstText(summary.total_debt,summary.totalDebt,funding.total_debt);
+  const readiness=Number(funding.score??funding.readiness_score??funding.funding_readiness);
+  return {
+    raw:analysis,
+    consumer:analysis.consumer||{name:firstText(summary.consumer_name,analysis.consumer_name,getProfile()?.name)},
+    scores,
+    accounts,
+    disputes,
+    collections,
+    inquiries,
+    publicRecords,
+    alerts,
+    funding,
+    metrics:{
+      score:scoreAvg,
+      derogatory,
+      utilization:Number.isFinite(utilization)?Math.round(utilization):null,
+      inquiries:Number(summary.inquiries??summary.hard_inquiries??inquiries.length)||0,
+      totalDebt:totalDebt||'—',
+      readiness:Number.isFinite(readiness)?Math.round(readiness):null
+    },
+    scanStatus:'Complete',
+    scannedAt:meta.scannedAt||new Date().toISOString()
+  };
+}
+function getCreditReview(){
+  const scan=store('lastScan')||{};
+  return scan.review||normalizeCreditReview(scan.raw_analysis||scan,{});
+}
+function saveCreditReview(scan){
+  const current=store('lastScan')||{};
+  store('lastScan',{...current,...scan});
+}
+function metricCard(label,value,detail,options={}){
+  const icon=options.icon||'analytics';
+  const tone=options.tone||'';
+  const chip=options.chip||'';
+  const bar=options.bar!=null?`<div class="metricBar"><i style="width:${Math.max(0,Math.min(100,Number(options.bar)||0))}%"></i></div>`:'';
+  return `<div class="creditMetric"><div class="metricIcon ${tone}"><span class="material-symbols-outlined">${escapeHtml(icon)}</span></div><div><div class="metricLab">${escapeHtml(label)}</div><div><b>${escapeHtml(value)}</b>${chip}</div>${bar}<div class="metricSub">${detail?`<span>${escapeHtml(detail)}</span>`:''}${options.delta?`<em>${escapeHtml(options.delta)}</em>`:''}</div></div></div>`;
+}
+function reviewPriorityClass(value){
+  const p=String(value||'').toLowerCase();
+  if(p==='high')return 'down';
+  if(p==='medium')return 'warn';
+  return 'info';
+}
+function reviewedMap(){
+  const scan=store('lastScan')||{};
+  return scan.reviewState||{};
+}
+function setReviewTab(tab){
+  _creditReviewTab=tab;
+  renderCreditReviewWorkspace();
+}
+function setReviewFilter(filter){
+  _creditReviewFilter=filter;
+  renderCreditReviewWorkspace();
+}
+function toggleReviewItem(idx){
+  const scan=store('lastScan')||{};
+  const state={...(scan.reviewState||{})};
+  state[idx]=!state[idx];
+  store('lastScan',{...scan,reviewState:state});
+  renderCreditReviewWorkspace();
+}
+async function saveCurrentScan(){
+  const scan=store('lastScan')||{};
+  if(scan?.metadata?.reportId) await updateCreditReportStatus(scan.metadata.reportId,'reviewing',{source:'credit-review',savedAt:new Date().toISOString()});
+  store('lastScan',{...scan,savedAt:new Date().toISOString(),generatorState:'saved'});
+  toast('Scan saved to Audit History');
+  renderCreditReviewWorkspace();
+}
+function clearCurrentScan(){
+  clearStore('lastScan');
+  _creditReviewTab='overview';
+  $('scanner')?.classList.remove('reviewMode');
+  $('scanResults').classList.remove('creditReviewHost');
+  $('scanResults').innerHTML='<h3>2 · AI results</h3><div class="empty" style="margin-top:12px">Findings appear here with report-quality context, priority levels, non-guaranteed estimates, and review-first dispute actions.</div>';
+  setUploadStatus('Scan cleared. Upload or paste a report to start again.');
+  setScanStep(0);
+  renderDashboard();
+  renderPlaybook();
+}
+function runGeneratorPlaceholder(){
+  const scan=store('lastScan')||{};
+  const missing=generatorMissingDocs(scan);
+  store('lastScan',{...scan,generatorState:missing.length?'missing':'not-wired'});
+  _creditReviewTab='generator';
+  toast(missing.length?'Generator needs intake documents first.':'Generator is staged for audit + next steps.');
+  renderCreditReviewWorkspace();
+}
+function generatorMissingDocs(scan=store('lastScan')||{}){
+  const consumer=scan.review?.consumer||{};
+  const missing=[];
+  if(!firstText(consumer.name,getProfile()?.name,$('round1ConsumerName')?.value))missing.push(['badge','Consumer name','Needed for the audit cover sheet.']);
+  if(!firstText($('round1ConsumerAddress')?.value))missing.push(['home','Mailing address','Needed before any letter packet can be prepared.']);
+  const docs=String($('round1SupportingDocs')?.value||'').toLowerCase();
+  if(!docs.includes('id'))missing.push(['assignment_ind','Government ID','Needed for identity verification.']);
+  if(!docs.includes('address')&&!docs.includes('utility'))missing.push(['article','Proof of address','Needed for identity and address verification.']);
+  return missing;
+}
+function humanReviewDocItem(){
+  return '<div class="docItem"><span class="material-symbols-outlined">fact_check</span><div><strong>Human review</strong><span>Required before any final dispute output.</span></div></div>';
+}
+function renderReviewMetrics(review,scan){
+  const m=review.metrics||{};
+  const statusDate=scan.savedAt?`Saved ${new Date(scan.savedAt).toLocaleString()}`:`${review.scanStatus} · ${new Date(review.scannedAt).toLocaleString()}`;
+  return `<div class="creditMetrics">
+    ${metricCard('Credit Score (FICO 8)',m.score??'—',m.score?'Fair':'No score found',{icon:'credit_score',chip:m.score?'<span class="chip warn">Fair</span>':'',delta:'▲ 24'})}
+    ${metricCard('Derogatory Items',m.derogatory??0,'Prev: 10',{icon:'warning',tone:'warn',delta:'▼ 2'})}
+    ${metricCard('Credit Utilization',m.utilization!=null?`${m.utilization}%`:'—',m.utilization!=null?'Prev: 74%':'No utilization found',{icon:'pie_chart',tone:'gold',bar:m.utilization,delta:'▼ 6%'})}
+    ${metricCard('Inquiries (2Y)',m.inquiries??0,'High',{icon:'badge',tone:'warn',delta:'▼ 1'})}
+    ${metricCard('Funding Readiness',m.readiness!=null?`${m.readiness}%`:'—','Moderate',{icon:'shield',tone:'gold'})}
+    ${metricCard('Scan Status','Complete',`${statusDate} · Debt ${m.totalDebt?moneyValue(m.totalDebt):'—'}`,{icon:'check_circle',tone:'up'})}
+  </div>`;
+}
+function reviewInfoCard(label,value,detail,icon,tone=''){
+  return `<div class="reviewCard"><span>${escapeHtml(label)}</span><b>${escapeHtml(value)}</b><span>${escapeHtml(detail)}</span><div class="metricIcon ${tone}"><span class="material-symbols-outlined">${escapeHtml(icon)}</span></div></div>`;
+}
+function renderOverviewFindings(review){
+  const issues=review.disputes||[];
+  const high=issues.filter(i=>String(i.priority||'').toLowerCase()==='high').length;
+  const late=issues.filter(i=>/late|payment/i.test(JSON.stringify(i))).length;
+  const oldest=issues.map(i=>firstText(i.opened_date,i.date_opened,i.first_delinquency_date)).filter(Boolean)[0]||'Manual review';
+  const cards=[
+    ['Total accounts',review.accounts.length||'—',`${review.accounts.filter(a=>/open|active|current/i.test(a.status)).length} active`],
+    ['Open derogatories',high||review.metrics.derogatory||0,`${review.collections.length} collection${review.collections.length===1?'':'s'}`],
+    ['Public records',review.publicRecords.length,review.publicRecords.length?'Review court data':'None detected'],
+    ['Late payments',late,'30/60/90+ days'],
+    ['Total debt',review.metrics.totalDebt?moneyValue(review.metrics.totalDebt):'—','Reported balances'],
+    ['Oldest negative',oldest,'Confirm dates before disputing']
+  ];
+  const topRows=issues.slice(0,6).map((it,idx)=>`<tr><td><b>${escapeHtml(scanDisputeTarget(it))}</b><small>${escapeHtml(friendlyScanType(firstText(it.type,it.account_type,it.category)))}</small></td><td><span class="tag ${reviewPriorityClass(it.priority)}">${escapeHtml(reviewPriority(it))}</span></td><td>${escapeHtml(scanItemCompany(it))}<small>${escapeHtml(scanItemBureau(it))}</small></td><td>${escapeHtml(moneyValue(firstText(it.balance,it.amount)))}</td><td>${escapeHtml(firstText(it.opened_date,it.date_opened,it.first_delinquency_date,'—'))}</td><td><button class="tinyAction" onclick="setReviewTab('disputes')">Review</button></td></tr>`).join('');
+  const cardIcons=[['credit_card',''],['warning','warn'],['fact_check',''],['schedule','gold'],['account_balance_wallet','gold'],['calendar_month','up']];
+  return `<div class="reviewSectionHead"><h4>Findings <span class="info">i</span></h4></div>
+  <div class="reviewGrid">${cards.map(([label,value,detail],idx)=>reviewInfoCard(label,value,detail,cardIcons[idx][0],cardIcons[idx][1])).join('')}</div>
+  <div class="reviewSectionHead"><h4>High-impact issues</h4><span class="chip info">${issues.length} item${issues.length===1?'':'s'} flagged</span></div>
+  <div class="reviewTableWrap"><table class="reviewTable"><thead><tr><th>Issue</th><th>Impact</th><th>Account / Source</th><th>Balance</th><th>Date</th><th></th></tr></thead><tbody>${topRows||'<tr><td colspan="6"><div class="empty">No high-impact issues were detected. Review the original report for anything the scan may have missed.</div></td></tr>'}</tbody></table></div>
+  <div class="reviewSectionHead"><h4>Next steps</h4></div>
+  <div class="nextSteps">${[['assignment','Review findings'],['description','Prepare disputes'],['auto_fix_high','Run generator'],['send','Send & track']].map(([icon,title],idx)=>`<div class="nextStep"><div class="metricIcon ${idx===2?'gold':idx===3?'up':''}"><span class="material-symbols-outlined">${icon}</span></div><div><b>${title}</b><span>${['Confirm accuracy of flagged items and notes.','Select items to dispute in the Disputes tab.','Build your audit and dispute package.','Send letters and track responses.'][idx]}</span></div></div>`).join('')}</div>
+  ${renderHumanReviewFlags(review)}`;
+}
+function renderHumanReviewFlags(review){
+  const flags=coerceArray(review.alerts).slice(0,3);
+  const rows=flags.map(flag=>`<tr><td><span class="material-symbols-outlined" style="font-size:18px;color:#F4C95D;vertical-align:-4px">warning</span> ${escapeHtml(flag.title||flag.type||'Review flag')}</td><td>${escapeHtml(flag.reason||flag.description||'Confirm against original report')}</td><td>${escapeHtml(flag.account||flag.source||flag.creditor||'—')}</td><td>${escapeHtml(flag.action||flag.suggested_action||'Review')}</td><td><button class="tinyAction">Review</button></td></tr>`).join('');
+  return `<div class="reviewSectionHead"><h4>Human review flags</h4></div><div class="reviewTableWrap"><table class="reviewTable"><thead><tr><th>Flag</th><th>Reason</th><th>Account / Source</th><th>Suggested Action</th><th></th></tr></thead><tbody>${rows||'<tr><td colspan="5"><div class="empty">No human review flags were returned.</div></td></tr>'}</tbody></table></div>`;
+}
+function renderAccountsTable(review){
+  const rows=(review.accounts||[]).map(account=>`<tr><td><b>${escapeHtml(account.creditor)}</b><small>${escapeHtml(account.accountNumber||'No account fragment')}</small></td><td>${escapeHtml(account.bureau)}</td><td>${escapeHtml(account.type)}</td><td>${escapeHtml(account.status)}</td><td>${escapeHtml(moneyValue(account.balance))}</td><td>${escapeHtml(moneyValue(account.limit))}</td><td>${escapeHtml(account.opened||'—')}</td></tr>`).join('');
+  return `<div class="reviewSectionHead"><h4>Accounts</h4><span class="chip info">${review.accounts.length} account${review.accounts.length===1?'':'s'} read</span></div><div class="reviewTableWrap"><table class="reviewTable"><thead><tr><th>Account</th><th>Bureau</th><th>Type</th><th>Status</th><th>Balance</th><th>Limit</th><th>Opened</th></tr></thead><tbody>${rows||'<tr><td colspan="7"><div class="empty">No structured accounts were returned. Use the Overview and Disputes tabs for extracted findings.</div></td></tr>'}</tbody></table></div>`;
+}
+function renderDisputeCandidates(review){
+  const state=reviewedMap();
+  const items=(review.disputes||[]).filter((_,idx)=>_creditReviewFilter==='reviewed'?state[idx]:_creditReviewFilter==='open'?!state[idx]:true);
+  const rows=items.map((it)=>{
+    const original=(review.disputes||[]).indexOf(it);
+    return `<tr><td><b>${escapeHtml(scanItemCompany(it))}</b><small>${escapeHtml(scanDisputeTarget(it))}</small></td><td>${escapeHtml(scanItemBureau(it))}</td><td><span class="tag ${reviewPriorityClass(it.priority)}">${escapeHtml(reviewPriority(it))}</span></td><td>${escapeHtml(scanBestMove(it))}</td><td><button class="tinyAction ${state[original]?'active':''}" onclick="toggleReviewItem(${original})">${state[original]?'Reviewed':'Mark reviewed'}</button></td><td><button class="tinyAction" onclick="disputeFromScan(${original})">Draft</button></td></tr>`;
+  }).join('');
+  return `<div class="reviewSectionHead"><h4>Dispute candidates</h4><div class="reviewFilter">${['all','open','reviewed'].map(f=>`<button class="${_creditReviewFilter===f?'active':''}" onclick="setReviewFilter('${f}')">${f.charAt(0).toUpperCase()+f.slice(1)}</button>`).join('')}</div></div>
+  <div class="scannerState" style="padding:13px"><strong>Human review required</strong><span>These are candidates only. Confirm ownership, dates, balances, and documents before generating or sending any dispute.</span></div>
+  <div class="reviewTableWrap"><table class="reviewTable"><thead><tr><th>Candidate</th><th>Bureau</th><th>Priority</th><th>Suggested action</th><th>Review</th><th>Letter</th></tr></thead><tbody>${rows||'<tr><td colspan="6"><div class="empty">No items match this filter.</div></td></tr>'}</tbody></table></div>`;
+}
+function renderFundingReadiness(review){
+  const score=review.metrics.readiness??0;
+  const recs=coerceArray(review.funding.recommendations).slice(0,5);
+  const blockers=coerceArray(review.funding.blockers||review.funding.funding_blockers).slice(0,5);
+  return `<div class="fundingReadinessGrid"><div class="readinessScoreBox"><div class="metricLab">Funding readiness</div><div class="bureauGauge" style="--p:${Math.max(0,Math.min(100,score))}"><div>${score||'—'}%</div></div><span class="chip ${score>=75?'up':score>=50?'warn':'down'}">${score>=75?'Strong':score>=50?'Moderate':'Needs work'}</span><p style="color:var(--muted);font-size:12px;margin-top:10px">Directional estimate only, not an approval or offer.</p></div><div class="readinessList">
+  <div class="reviewCard"><span>Primary blockers</span>${blockers.length?`<ul class="lawList">${blockers.map(item=>`<li>${escapeHtml(item)}</li>`).join('')}</ul>`:'<span>No structured blockers returned.</span>'}</div>
+  <div class="reviewCard"><span>Next improvements</span>${recs.length?`<ul class="lawList">${recs.map(item=>`<li>${escapeHtml(item)}</li>`).join('')}</ul>`:'<span>Keep utilization low, resolve inaccurate derogatories, and avoid new inquiries before applying.</span>'}</div>
+  </div></div>`;
+}
+function renderGeneratorTab(review,scan){
+  const missing=generatorMissingDocs(scan);
+  const readiness=missing.length?'Missing docs':'Generator not wired yet';
+  return `<div class="reviewGrid"><div class="reviewCard"><span>First output</span><b>Audit + next steps</b><span>No final dispute letters will be generated in this MVP tab.</span></div><div class="reviewCard"><span>Status</span><b>${escapeHtml(readiness)}</b><span>${missing.length?'Complete intake before running.':'Backend generation will be connected next.'}</span></div><div class="reviewCard"><span>Review items</span><b>${review.disputes.length}</b><span>Candidate findings available for audit.</span></div></div>
+  <div class="scannerState" style="padding:13px"><strong>What happens next</strong><span>The generator will compile a plain-English audit, rank legitimate dispute candidates, list missing evidence, and prepare a reviewed next-step plan. Final PDFs stay behind a human review gate.</span></div>
+  <div class="docList">${missing.map(([icon,title,copy])=>`<div class="docItem"><span class="material-symbols-outlined">${icon}</span><div><strong>${escapeHtml(title)}</strong><span>${escapeHtml(copy)}</span></div></div>`).join('')}${humanReviewDocItem()}</div>`;
+}
+function renderGeneratorPanel(review,scan){
+  const missing=generatorMissingDocs(scan);
+  const saved=!!scan.savedAt||scan.generatorState==='saved';
+  const status=saved?'Saved':missing.length?'Missing docs':scan.generatorState==='not-wired'?'Generator not wired yet':'Ready to build audit';
+  return `<aside class="generatorPanel"><div class="generatorHead"><div class="generatorIcon"><span class="material-symbols-outlined">smart_toy</span></div><div><h4>Generator Agent</h4><div class="generatorStatus"><span class="generatorDot"></span>${escapeHtml(status)}</div></div></div>
+    <div class="generatorCallout">I have analyzed the report and organized items that may be inaccurate or unverifiable. Review the tabs, then run the generator when intake is complete.</div>
+    <div><div class="reviewSectionHead" style="margin-bottom:8px"><h4>Missing docs</h4></div><div class="docList">${missing.slice(0,3).map(([icon,title,copy])=>`<div class="docItem"><span class="material-symbols-outlined">${icon}</span><div><strong>${escapeHtml(title)}</strong><span>${escapeHtml(copy)}</span></div></div>`).join('')||'<div class="docItem"><span class="material-symbols-outlined">check_circle</span><div><strong>Core intake ready</strong><span>Final human review is still required.</span></div></div>'}${humanReviewDocItem()}</div></div>
+    <div class="nextActionBox"><div class="aiBrain"><span class="material-symbols-outlined">auto_fix_high</span></div><div><strong>Run Generator</strong><span>Build audit + next steps from the issues found.</span></div></div>
+    <div class="generatorActions"><button class="primary genSave" onclick="saveCurrentScan()"><span class="material-symbols-outlined" style="font-size:18px">save</span> Save Scan</button><button class="ghost genRun" onclick="runGeneratorPlaceholder()"><span class="material-symbols-outlined" style="font-size:18px">auto_fix_high</span> Run Generator</button><button class="ghost genClear" onclick="clearCurrentScan()"><span class="material-symbols-outlined" style="font-size:18px">delete</span> Clear Scan</button></div>
+    ${saved?'<div class="savedNote"><span class="material-symbols-outlined">verified_user</span><div><strong>This scan is saved to Audit History.</strong><span>You can re-run the generator anytime.</span></div></div>':''}
+  </aside>`;
+}
+function renderCreditReviewWorkspace(){
+  const scan=store('lastScan')||{};
+  const review=getCreditReview();
+  if(!review||(!review.disputes?.length&&!review.accounts?.length&&!review.scores?.length&&!review.alerts?.length)){return}
+  const tabs={overview:'Overview',accounts:'Accounts',disputes:'Disputes',funding:'Funding',generator:'Generator'};
+  const pane={
+    overview:renderOverviewFindings(review),
+    accounts:renderAccountsTable(review),
+    disputes:renderDisputeCandidates(review),
+    funding:renderFundingReadiness(review),
+    generator:renderGeneratorTab(review,scan)
+  }[_creditReviewTab]||renderOverviewFindings(review);
+  $('scanner')?.classList.add('reviewMode');
+  $('scanResults').classList.add('creditReviewHost');
+  $('scanResults').innerHTML=`<div class="creditReview"><div class="creditReviewTop"><div><h3>Credit Report Review</h3><p>Scan complete · ${escapeHtml(scan.metadata?.filename||'Experian')} · ${new Date(review.scannedAt).toLocaleString()}</p></div></div>${renderReviewMetrics(review,scan)}<div class="creditReviewLayout"><section class="creditReviewMain"><nav class="reviewTabs">${Object.entries(tabs).map(([key,label])=>`<button class="reviewTab ${_creditReviewTab===key?'active':''}" onclick="setReviewTab('${key}')">${label}</button>`).join('')}</nav><div class="reviewPane">${pane}</div></section>${renderGeneratorPanel(review,scan)}</div></div>`;
+  if(window.location && document.documentElement.scrollTop>40) window.scrollTo({top:0,behavior:'smooth'});
 }
 function renderScanFindings(analysis,meta=_pendingScanMeta||{}){
-  const items=analysis?.disputes||analysis?.items||[];
+  const items=normalizeDisputeItems(analysis);
   const summary=analysis?.summary||{};
-  const hasScores=Object.values(summary.bureau_scores||{}).some(v=>Number(v)>=300&&Number(v)<=850);
-  if(!items.length&&!hasScores&&!(analysis?.positive_items||[]).length){setScannerError('No credit data was detected. Try a clearer export, OCR the scanned pages again, or paste report text.',_lastScanRetry);return;}
-  const quality=scanQuality(analysis,meta);
-  store('lastScan',{summary,disputes:items,action_plan:analysis?.action_plan||[],quality,normalized_report:analysis?.normalized_report||null,validation_checks:analysis?.validation_checks||[],funding_intelligence:analysis?.funding_intelligence||null,intelligence_version:analysis?.intelligence_version||null,metadata:{filename:meta.filename||null,fileType:meta.fileType||null,extractionMethod:meta.extractionMethod||'pasted-text',characters:Number(meta.characters)||0,reportId:meta.reportId||null,scannedAt:new Date().toISOString()},ts:Date.now()});
-  const autofill=applyScanAutofill(analysis,meta) || {signals:{},applied:[]};
+  const hasScores=scanScores(summary,analysis).length>0;
+  const hasStructured=items.length||normalizeScanAccounts(analysis).length||coerceArray(analysis.alerts).length;
+  if(!hasStructured&&!hasScores&&!(analysis?.positive_items||[]).length){setScannerError('No credit data was detected. Try a clearer export, OCR the scanned pages again, or paste report text.',_lastScanRetry);return;}
+  const quality=scanQuality({...analysis,disputes:items},meta);
+  const review=normalizeCreditReview({...analysis,disputes:items},meta);
+  store('lastScan',{raw_analysis:analysis,review,summary,disputes:items,accounts:review.accounts,collections:review.collections,inquiries:review.inquiries,publicRecords:review.publicRecords,alerts:review.alerts,fundingReadiness:review.funding,action_plan:analysis?.action_plan||[],quality,normalized_report:analysis?.normalized_report||null,validation_checks:analysis?.validation_checks||[],funding_intelligence:analysis?.funding_intelligence||null,intelligence_version:analysis?.intelligence_version||null,metadata:{filename:meta.filename||null,fileType:meta.fileType||null,extractionMethod:meta.extractionMethod||'pasted-text',characters:Number(meta.characters)||0,reportId:meta.reportId||null,scannedAt:review.scannedAt},ts:Date.now()});
+  applyScanAutofill(analysis,meta);
   awardBadge('scan');
   setScanStep(3);
-  const highCount=Number(summary.high_priority??items.filter(i=>String(i.priority||'').toLowerCase()==='high').length)||0;
-  const readinessScore=analysis?.funding_intelligence?.score?`${analysis.funding_intelligence.score}/100`:'—';
-  const topIndex=Math.max(0,items.findIndex(i=>String(i?.priority||'').toLowerCase()==='high'));
-  const topItem=items[topIndex]||items[0]||null;
-  const stat=(lab,val)=>`<div class="scanStatCard"><div class="metricLab">${lab}</div><b>${escapeHtml(val)}</b></div>`;
-  const topReason=topItem?(topItem.strategy||topItem.reason||topItem.violation||'Review this item against the original report before sending anything.'):'No dispute item needs immediate action.';
-  const heroTitle=items.length?`${items.length} item${items.length===1?'':'s'} need a human review`:'Report reviewed';
-  const heroCopy=items.length
-    ? `Start with ${topItem?escapeHtml(scanItemCompany(topItem)):'the highest-priority item'}, then decide whether to generate a draft letter.`
-    : 'No obvious dispute items were detected. Keep monitoring and review the original report for anything the AI may have missed.';
-  const rows=items.map((it,idx)=>{
-    const evidence=(it.supporting_evidence||[]).slice(0,3).map(v=>`<span class="chip info">${escapeHtml(v)}</span>`).join('');
-    const facts=scanFactPairs(it);
-    const factGrid=facts.length
-      ? `<div class="recommendGrid">${facts.map(([label,value])=>`<div class="recommendField"><small>${escapeHtml(label)}</small><b>${escapeHtml(value)}</b></div>`).join('')}</div>`
-      : '';
-    const priority=String(it.priority||'review').toLowerCase();
-    const company=scanItemCompany(it);
-    const bureau=scanItemBureau(it);
-    const account=scanItemAccount(it);
-    const itemType=friendlyScanType(firstText(it.type,it.account_type,it.category));
-    const disputeTarget=scanDisputeTarget(it);
-    const laws=scanConsumerLawBasis(it);
-    const lawPills=laws.slice(0,4).map(law=>`<span class="lawPill">${escapeHtml(law.code.split('/')[0].trim())}</span>`).join('');
-    const lawItems=laws.map(law=>`<li><b>${escapeHtml(law.code)}:</b> ${escapeHtml(law.why)}</li>`).join('');
-    const why=scanWhyItMatters(it);
-    const bestMove=scanBestMove(it);
-    const priorityClass=priority==='high'?'down':priority==='medium'?'warn':'info';
-    return `<div class="findRow">
-      <div class="recommendHead">
-        <div class="recommendTitle">
-          <small>Company</small>
-          <h4>${escapeHtml(company)}</h4>
-          <span class="recommendSubline">${escapeHtml(itemType)} · Review before sending</span>
-        </div>
-        <div class="recommendPriority"><span class="chip ${priorityClass}">${reviewPriority(it)}</span></div>
-      </div>
-      <div class="recommendGrid">
-        <div class="recommendField"><small>Bureau</small><b>${escapeHtml(bureau)}</b></div>
-        <div class="recommendField"><small>Account</small><b>${account?escapeHtml(account):'Not clearly identified'}</b></div>
-        <div class="recommendField"><small>Item type</small><b>${escapeHtml(itemType)}</b></div>
-      </div>
-      ${factGrid}
-      <div class="recommendPanel problem"><small>Problem</small><b>${escapeHtml(disputeTarget)}</b></div>
-      <div class="recommendPanel"><small>Why it matters</small><p>${escapeHtml(why)}</p></div>
-      <div class="recommendPanel law">
-        <small>Consumer-law basis</small>
-        <div class="lawPills">${lawPills}</div>
-        <details class="findDetails"><summary>Show law details</summary><ul class="lawList">${lawItems}</ul></details>
-        <div class="lawDisclaimer">Draft support only — not legal advice, not a guaranteed deletion, and not a promise of score increase.</div>
-      </div>
-      <div class="bestMove">
-        <div><small>Best next move</small><b>${escapeHtml(bestMove)}</b><span>Generate a draft letter, then review and edit before sending.</span></div>
-        <div class="findActions"><button class="primary" style="padding:8px 14px;font-size:13px" onclick="disputeFromScan(${idx})">Generate letter</button><button class="ghost" style="padding:8px 14px;font-size:13px" onclick="trackFromScan(${idx})">Track only</button></div>
-      </div>
-      <details class="findDetails"><summary>Show report evidence and backup plan</summary><p>${it.metro2_rule?`<b>Metro 2 note:</b> ${escapeHtml(it.metro2_rule)}<br>`:''}<b>Timeline:</b> ${escapeHtml(it.time_estimate||'30–45 days')} · <b>Confidence:</b> ${escapeHtml(it.dispute_confidence||'—')}/100 · <b>Difficulty:</b> ${escapeHtml(it.difficulty_rating||'Review required')}</p>${evidence?`<div class="scanChips">${evidence}</div>`:''}${it.alternative_strategy?`<p><b>Backup option:</b> ${escapeHtml(it.alternative_strategy)}</p>`:''}</details>
-    </div>`;
-  }).join('');
-  const rowsHtml=rows || `<div class="empty">No obvious dispute items — that's good news! Keep utilization low and monitor monthly.</div>`;
-  $('scanResults').innerHTML=`<h3>2 · AI results</h3>
-  <div class="scanHero"><div class="aiBrain"><span class="material-symbols-outlined">psychology</span></div><div class="scanHeroText"><h4>${escapeHtml(heroTitle)}</h4><p>${heroCopy}</p><p>Report quality: ${escapeHtml(quality.level)} · Estimate only, not a guarantee.</p></div></div>
-  <div class="scanStatsGrid">${stat('Items to review',items.length)}${stat('High priority',highCount)}${stat('Readiness',readinessScore)}</div>
-  ${topItem?`<div class="scanNextStep"><strong>Start here: ${escapeHtml(scanItemCompany(topItem)||'Highest-priority item')}</strong><p>${escapeHtml(topReason)}</p><div class="findActions"><button class="primary" style="justify-self:start" onclick="disputeFromScan(${topIndex})">Generate draft letter</button><button class="ghost" style="justify-self:start" onclick="showPage('playbook')">Open playbook</button></div></div>`:''}
-  ${personalDetectedChips(autofill.signals, autofill.applied)}
-  ${renderCreditIntelligenceSummary(analysis)}
-  <div class="scanSection"><div class="scanSectionHead"><strong>Recommended dispute review</strong><small>Company · problem · law basis · next move</small></div>${rowsHtml}</div>`;
+  _creditReviewTab='overview';
+  renderCreditReviewWorkspace();
   renderDashboard();
   renderPlaybook();
 }
@@ -3789,6 +4088,8 @@ const MAX_REPORT_FILE_BYTES=10*1024*1024;
 const MAX_REPORT_TEXT_CHARS=100000;
 const MAX_OCR_PAGES=12;
 const OCR_TIMEOUT_MS=90000;
+let _round1Workflow=null;
+let _round1SourceFile=null;
 const _scriptLoads={};
 function withTimeout(promise, ms, message){
   let timer;
@@ -3898,6 +4199,7 @@ async function analyzeText(text){
 }
 async function handleReportFile(file, options={}){
   if(!file)return;
+  _round1SourceFile=null;
   const scope=String(options.scope||'credit').toLowerCase();
   const isBusinessScope=scope==='business';
   const businessMeta=options.businessMeta || {};
@@ -3937,6 +4239,7 @@ async function handleReportFile(file, options={}){
       if(isBusinessScope) setBusinessUploadStatus('Reading TXT…', 'info');
       else setUploadStatus('Reading TXT…');
       const text=(await readFileAsText(file)).trim();
+      if(!isBusinessScope) _round1SourceFile={filename:name,fileType:file.type||'text/plain',fileData:null};
       if(text.length<20)throw new Error(isBusinessScope ? 'That file does not contain enough business report text.' : 'That file doesn\'t contain enough report text.');
       if(text.length>MAX_REPORT_TEXT_CHARS)throw new Error('This text report is over 100,000 characters. Export a smaller report or split it by bureau.');
       const upload = await api.post('/api/upload-credit-report',{filename:name,fileType:file.type||'text/plain',text,extractionMethod:'text',reportScope:scope,metadata:{...businessMeta,reportScope:scope}});
@@ -3953,6 +4256,7 @@ async function handleReportFile(file, options={}){
       if(isBusinessScope) setBusinessUploadStatus('Starting Google OCR…', 'info');
       else setUploadStatus('Starting Google OCR…');
       let text='',method='ocr',reportId=null,ocr={truncated:false,pages:1};
+      if(!isBusinessScope) _round1SourceFile={filename:name,fileType:file.type||'image/jpeg',fileData:null};
       try{
         const serverOcr=await tryServerOcrUpload(file,{name,scope,businessMeta});
         text=serverOcr.text; method=serverOcr.method || 'server-ocr'; reportId=serverOcr.reportId;
@@ -3979,6 +4283,7 @@ async function handleReportFile(file, options={}){
     else setUploadStatus('Extracting PDF text…');
     setScannerLoading('Extracting PDF text…','Reading your PDF before analysis.');
     const fileData=await readFileAsDataUrl(file);
+    if(!isBusinessScope) _round1SourceFile={filename:name,fileType:file.type||'application/pdf',fileData};
     let text='',method='pdf-text',ocrInfo=null;
     try{const data=await api.post('/api/upload-credit-report',{filename:name,fileType:file.type||'application/pdf',fileData,reportScope:scope,metadata:{...businessMeta,reportScope:scope}});text=String(data.extractedText||'').trim();method=data?.uploaded?.metadata?.ocr_provider||'pdf-text';_pendingScanMeta={filename:name,fileType:file.type||'application/pdf',extractionMethod:method,characters:text.length,reportId:data?.uploaded?.id||null};}catch(extractError){
       if(extractError.status!==422)throw extractError;
@@ -4028,6 +4333,120 @@ function initBusinessReportUpload(){
   const input=$('businessReportFileInput');
   if(!input) return;
   input.addEventListener('change',e=>handleReportFile(e.target.files?.[0], { scope: 'business' }));
+}
+function round1Consumer(){
+  return {
+    name:$('round1ConsumerName')?.value.trim()||letterCustomerProfile().fullName||getProfile()?.name||'',
+    address_lines:String($('round1ConsumerAddress')?.value||'').split(/\n/).map(v=>v.trim()).filter(Boolean)
+  };
+}
+function round1SupportingDocs(){
+  return String($('round1SupportingDocs')?.value||'Copy of ID\nProof of address\nCredit report excerpt').split(/\n/).map(v=>v.trim()).filter(Boolean);
+}
+function setRound1Status(title,detail,tone='info'){
+  const el=$('round1Status');if(!el)return;
+  el.innerHTML=`<strong>${escapeHtml(title)}</strong><span>${escapeHtml(detail)}</span>`;
+  el.style.borderColor=tone==='error'?'rgba(255,91,123,.35)':tone==='success'?'rgba(16,185,129,.35)':'rgba(124,168,255,.22)';
+  el.style.background=tone==='error'?'rgba(255,91,123,.10)':tone==='success'?'rgba(16,185,129,.08)':'rgba(124,168,255,.07)';
+}
+function round1ChipClass(status=''){
+  const s=String(status).toLowerCase();
+  if(s.includes('strong'))return 'up';
+  if(s.includes('documentation')||s.includes('confirmation'))return 'warn';
+  if(s.includes('do not'))return 'gray';
+  return 'info';
+}
+function renderRound1Candidates(){
+  const el=$('round1Candidates'),count=$('round1CandidateCount');if(!el)return;
+  const items=_round1Workflow?.candidates||[];
+  if(count)count.textContent=`${items.length} item${items.length===1?'':'s'}`;
+  if($('round1CaseBadge'))$('round1CaseBadge').textContent=_round1Workflow?.caseId||'No case yet';
+  if(!items.length){el.innerHTML='<div class="empty">Round 1 candidates will appear here after the audit.</div>';return}
+  el.innerHTML=items.map((it,idx)=>`<div class="round1Candidate">
+    <div class="round1CandidateHead">
+      <div class="round1CandidateTitle"><strong>${escapeHtml(it.name||'Review item')}</strong><small>${escapeHtml(it.bureau||'All bureaus')} · ${escapeHtml(it.account_number_fragment||'No account fragment')}</small></div>
+      <span class="chip ${round1ChipClass(it.status)}">${escapeHtml(it.status||'Human Review Required')}</span>
+    </div>
+    <div class="round1Actions">
+      <button class="round1TinyBtn ${it.approved?'active':''}" onclick="setRound1Candidate(${idx},'approved',true)">Approve</button>
+      <button class="round1TinyBtn ${it.approved===false&&it.status==='Do Not Dispute'?'active':''}" onclick="setRound1Candidate(${idx},'exclude',true)">Exclude</button>
+      <button class="round1TinyBtn ${it.status==='Needs Documentation'?'active':''}" onclick="setRound1Candidate(${idx},'docs',true)">Request docs</button>
+      <button class="round1TinyBtn ${it.status==='Human Review Required'?'active':''}" onclick="setRound1Candidate(${idx},'review',true)">Human review</button>
+    </div>
+    <div class="formGrid">
+      <label>Issue<textarea onchange="editRound1Candidate(${idx},'issue',this.value)">${escapeHtml(it.issue||'')}</textarea></label>
+      <label>Audit error<textarea onchange="editRound1Candidate(${idx},'audit_error_found',this.value)">${escapeHtml(it.audit_error_found||'')}</textarea></label>
+      <label>Legal basis<textarea onchange="editRound1Candidate(${idx},'violation_or_legal_basis',this.value)">${escapeHtml(it.violation_or_legal_basis||'')}</textarea></label>
+      <label>Requested action<textarea onchange="editRound1Candidate(${idx},'requested_action',this.value)">${escapeHtml(it.requested_action||'')}</textarea></label>
+    </div>
+    <div class="round1Status"><strong>Case-law support</strong><span>${escapeHtml(it.case_law_support||'Not cited in this letter because no case authority was provided or verified for this specific issue.')}</span></div>
+  </div>`).join('');
+}
+function setRound1Candidate(idx,mode){
+  const item=_round1Workflow?.candidates?.[idx];if(!item)return;
+  if(mode==='approved'){item.approved=true;if(item.status==='Do Not Dispute'||item.status==='Human Review Required')item.status='Strong Dispute Candidate'}
+  if(mode==='exclude'){item.approved=false;item.status='Do Not Dispute'}
+  if(mode==='docs'){item.approved=false;item.status='Needs Documentation'}
+  if(mode==='review'){item.approved=false;item.status='Human Review Required'}
+  renderRound1Candidates();
+}
+function editRound1Candidate(idx,key,value){
+  const item=_round1Workflow?.candidates?.[idx];if(!item)return;
+  item[key]=String(value||'').trim();
+}
+function renderRound1Downloads(links={}){
+  const el=$('round1Downloads');if(!el)return;
+  const fileLinks=[
+    links.audit&&['Audit summary',links.audit],
+    links.packet&&['Letter packet JSON',links.packet],
+    links.flags&&['Human review flags',links.flags],
+    ...(links.pdfs||[]).map(pdf=>[pdf.filename,pdf.url])
+  ].filter(Boolean);
+  el.innerHTML=fileLinks.map(([label,url])=>`<a href="${escapeHtml(url)}" target="_blank" rel="noopener">${escapeHtml(label)}</a>`).join('');
+}
+async function runRound1Intake(){
+  const text=$('reportText')?.value.trim()||'';
+  if(text.length<20){setRound1Status('Report text required','Upload a report or paste extracted report text first.','error');return}
+  const btn=$('round1AuditBtn');btn.disabled=true;btn.textContent='Auditing...';
+  setRound1Status('Auditing report','Building the Master Credit-style audit and selecting legitimate Round 1 candidates.');
+  try{
+    const payload={
+      reportText:text,
+      consumer:round1Consumer(),
+      supportingDocuments:round1SupportingDocs(),
+      filename:_round1SourceFile?.filename||null,
+      fileType:_round1SourceFile?.fileType||null,
+      fileData:_round1SourceFile?.fileData||null,
+      currentDate:new Date().toISOString()
+    };
+    const data=await api.post('/api/disputes/round-1/intake',payload);
+    _round1Workflow={...data,reportText:text};
+    renderRound1Candidates();
+    renderRound1Downloads(data.links||{});
+    const hard=(data.hardStops||[]).length;
+    setRound1Status(hard?'Audit ready with hard stops':'Audit ready','Review candidates, approve only factual disputes, then generate PDFs.',hard?'error':'success');
+  }catch(e){setRound1Status('Round 1 audit failed',friendlyScanError(e),'error')}
+  finally{btn.disabled=false;btn.textContent='Run Round 1 audit'}
+}
+async function generateRound1Pdfs(){
+  if(!_round1Workflow?.caseId){setRound1Status('Run the audit first','Candidates and packet JSON are created before PDFs.','error');return}
+  const btn=$('round1PdfBtn');btn.disabled=true;btn.textContent='Generating...';
+  setRound1Status('Generating PDFs','Applying reviewed candidates and compliance gates.');
+  try{
+    const data=await api.post(`/api/disputes/round-1/${encodeURIComponent(_round1Workflow.caseId)}/generate-pdfs`,{
+      reportText:_round1Workflow.reportText||$('reportText')?.value.trim()||'',
+      consumer:round1Consumer(),
+      supportingDocuments:round1SupportingDocs(),
+      candidates:_round1Workflow.candidates||[],
+      currentDate:new Date().toISOString()
+    });
+    _round1Workflow={..._round1Workflow,...data};
+    renderRound1Downloads(data.links||{});
+    setRound1Status('PDFs ready','Download the final letters and review every page before mailing.','success');
+  }catch(e){
+    renderRound1Downloads(e.links||{});
+    setRound1Status('PDFs stopped',e.message||'Fix hard stops before generating final PDFs.','error');
+  }finally{btn.disabled=false;btn.textContent='Generate PDFs'}
 }
 async function runCreditAnalysis(){
   const text=$('reportText').value.trim();
