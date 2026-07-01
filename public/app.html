@@ -1894,13 +1894,31 @@ async function syncBusinessCloudState(){
 }
 
 const LOCAL_API_BASE = 'http://127.0.0.1:3001';
+async function parseApiResponse(res){
+  const raw=await res.text();
+  if(!raw)return {};
+  try{return JSON.parse(raw)}
+  catch{
+    const clean=raw.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,180);
+    const status=res.status?`Server returned ${res.status}`:'Server returned a non-JSON response';
+    return {error:`${status}${res.statusText?` ${res.statusText}`:''}. ${clean||'Try again in a moment.'}`};
+  }
+}
+async function requestJson(method,path,body){
+  const options={method,headers:api.headers()};
+  if(body!==undefined)options.body=JSON.stringify(body);
+  const res=await fetch(api.url(path),options);
+  const data=await parseApiResponse(res);
+  if(!res.ok){const e=new Error(data.error||'Request failed.');e.status=res.status;e.details=data;throw e;}
+  return data;
+}
 const api = {
   url(path){ return /^https?:\/\//i.test(path) ? path : `${location.protocol === 'file:' ? LOCAL_API_BASE : ''}${path}`; },
   headers(){ const h={'Content-Type':'application/json'}; const t=getAuthToken(); if(t)h['Authorization']=`Bearer ${t}`; return h; },
-  async post(path,body){ const res=await fetch(this.url(path),{method:'POST',headers:this.headers(),body:JSON.stringify(body)}); const data=await res.json().catch(()=>({error:'Invalid server response.'})); if(!res.ok){const e=new Error(data.error||'Request failed.');e.status=res.status;throw e;} return data; },
-  async patch(path,body){ const res=await fetch(this.url(path),{method:'PATCH',headers:this.headers(),body:JSON.stringify(body)}); const data=await res.json().catch(()=>({error:'Invalid server response.'})); if(!res.ok){const e=new Error(data.error||'Request failed.');e.status=res.status;throw e;} return data; },
-  async get(path){ const res=await fetch(this.url(path),{headers:this.headers()}); const data=await res.json().catch(()=>({error:'Invalid server response.'})); if(!res.ok){const e=new Error(data.error||'Request failed.');e.status=res.status;throw e;} return data; },
-  async del(path){ const res=await fetch(this.url(path),{method:'DELETE',headers:this.headers()}); const data=await res.json().catch(()=>({error:'Invalid server response.'})); if(!res.ok){const e=new Error(data.error||'Request failed.');e.status=res.status;throw e;} return data; }
+  async post(path,body){ return requestJson('POST',path,body); },
+  async patch(path,body){ return requestJson('PATCH',path,body); },
+  async get(path){ return requestJson('GET',path); },
+  async del(path){ return requestJson('DELETE',path); }
 };
 
 function normalizeMailingAddress(address = {}) {
@@ -4163,6 +4181,31 @@ function loadExternalScript(src,ready){
   _scriptLoads[src]=new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.async=true;s.onload=()=>ready()?resolve():reject(new Error('OCR library did not initialize.'));s.onerror=()=>reject(new Error('OCR library could not load. Check your connection and try again.'));document.head.appendChild(s)});
   return withTimeout(_scriptLoads[src], OCR_TIMEOUT_MS, 'OCR library took too long to load.');
 }
+async function loadPdfJs(){
+  const pdfjs=await withTimeout(import('https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.min.mjs'), OCR_TIMEOUT_MS, 'PDF library took too long to load.');
+  pdfjs.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.worker.min.mjs';
+  return pdfjs;
+}
+async function extractPdfTextInBrowser(file){
+  const pdfjs=await loadPdfJs();
+  const pdf=await withTimeout(pdfjs.getDocument({data:await file.arrayBuffer()}).promise, OCR_TIMEOUT_MS, 'PDF text extraction timed out.');
+  const pageTotal=pdf.numPages;
+  const parts=[];
+  try{
+    for(let i=1;i<=pageTotal;i++){
+      setUploadStatus(`Reading PDF page ${i} of ${pageTotal}…`);
+      const page=await pdf.getPage(i);
+      const content=await withTimeout(page.getTextContent(), OCR_TIMEOUT_MS, `Page ${i} text extraction timed out.`);
+      const pageText=(content.items||[]).map(item=>String(item.str||'').trim()).filter(Boolean).join(' ');
+      if(pageText)parts.push(pageText);
+      page.cleanup?.();
+      if(parts.join('\n\n').length>MAX_REPORT_TEXT_CHARS)break;
+    }
+  }finally{
+    await pdf.destroy?.();
+  }
+  return {text:parts.join('\n\n').trim(),pages:pageTotal};
+}
 async function recognizeOcrSource(source,label){
   await loadExternalScript('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js',()=>!!window.Tesseract);
   const result=await withTimeout(
@@ -4179,8 +4222,7 @@ async function ocrReportFile(file){
     const text=await recognizeOcrSource(file,'Reading image');
     return {text,truncated:false,pages:1};
   }
-  const pdfjs=await withTimeout(import('https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.min.mjs'), OCR_TIMEOUT_MS, 'PDF OCR library took too long to load.');
-  pdfjs.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.worker.min.mjs';
+  const pdfjs=await loadPdfJs();
   const pdf=await withTimeout(pdfjs.getDocument({data:await file.arrayBuffer()}).promise, OCR_TIMEOUT_MS, 'PDF OCR processing timed out.');
   const pageCount=Math.min(pdf.numPages,MAX_OCR_PAGES),parts=[];
   for(let i=1;i<=pageCount;i++){
@@ -4198,7 +4240,7 @@ function friendlyScanError(error){
   const raw=String(error?.message||error||'').toLowerCase();
   if(raw.includes('authorization')||raw.includes('unauthorized')||raw.includes('invalid or expired session')||raw.includes('missing authorization'))return 'Please sign in again, then upload your report.';
   if(raw.includes('unsupported')||raw.includes('txt or pdf'))return 'Unsupported file. Use PDF, TXT, PNG, or JPG.';
-  if(raw.includes('too large')||raw.includes('10 mb'))return 'File too large. Choose a report smaller than 10 MB.';
+  if(raw.includes('too large')||raw.includes('10 mb')||raw.includes('413')||raw.includes('payload'))return 'The upload hit a size limit. I will read searchable PDF text in the browser first; if it still fails, export a TXT copy or split the report by bureau.';
   if(raw.includes('timed out')||raw.includes('ocr_timeout'))return 'OCR is taking too long. Try a searchable PDF, a smaller file, or paste the report text instead.';
   if(raw.includes('ocr'))return 'OCR failed. Try a clearer image, a searchable PDF export, or paste the report text.';
   if(raw.includes('no readable')||raw.includes('enough report text'))return 'The report is unreadable. Try a clearer scan or paste the report text.';
@@ -4337,11 +4379,22 @@ async function handleReportFile(file, options={}){
     if(isBusinessScope) setBusinessUploadStatus('Extracting PDF text…', 'info');
     else setUploadStatus('Extracting PDF text…');
     setScannerLoading('Extracting PDF text…','Reading your PDF before analysis.');
-    const fileData=await readFileAsDataUrl(file);
-    if(!isBusinessScope) _round1SourceFile={filename:name,fileType:file.type||'application/pdf',fileData};
+    let fileData=null;
+    if(!isBusinessScope && file.size<4*1024*1024){
+      fileData=await readFileAsDataUrl(file);
+      _round1SourceFile={filename:name,fileType:file.type||'application/pdf',fileData};
+    }
     let text='',method='pdf-text',ocrInfo=null;
-    try{const data=await api.post('/api/upload-credit-report',{filename:name,fileType:file.type||'application/pdf',fileData,reportScope:scope,metadata:{...businessMeta,reportScope:scope}});text=String(data.extractedText||'').trim();method=data?.uploaded?.metadata?.ocr_provider||'pdf-text';_pendingScanMeta={filename:name,fileType:file.type||'application/pdf',extractionMethod:method,characters:text.length,reportId:data?.uploaded?.id||null};}catch(extractError){
-      if(extractError.status!==422)throw extractError;
+    try{
+      const localPdf=await extractPdfTextInBrowser(file);
+      text=localPdf.text;
+      method='browser-pdf-text';
+      if(text.length<20)throw Object.assign(new Error('No readable text layer found.'),{status:422});
+      if(text.length>MAX_REPORT_TEXT_CHARS)throw new Error('This PDF contains over 100,000 characters. Export a smaller report or split it by bureau.');
+      const upload=await api.post('/api/upload-credit-report',{filename:name,fileType:file.type||'application/pdf',text,extractionMethod:method,reportScope:scope,metadata:{...businessMeta,reportScope:scope,pages:localPdf.pages}});
+      _pendingScanMeta={filename:name,fileType:file.type||'application/pdf',extractionMethod:method,characters:text.length,pages:localPdf.pages,reportId:upload?.uploaded?.id||null};
+    }catch(extractError){
+      if(extractError.status!==422 && text)throw extractError;
       if(isBusinessScope) setBusinessUploadStatus('No text layer found — switching to OCR…', 'warn');
       else setUploadStatus('No text layer found — switching to OCR…');
       ocrInfo=await ocrReportFile(file);text=ocrInfo.text;method='ocr';
