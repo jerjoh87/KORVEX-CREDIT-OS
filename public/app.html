@@ -3890,12 +3890,14 @@ function clearCurrentScan(){
   renderDashboard();
   renderPlaybook();
 }
-function runGeneratorPlaceholder(){
+function runGeneratorAgent(){
   const scan=store('lastScan')||{};
   const missing=generatorMissingDocs(scan);
-  store('lastScan',{...scan,generatorState:missing.length?'missing':'not-wired'});
+  const review=scan.review||getCreditReview();
+  const audit=buildGeneratorAudit(review,scan,missing);
+  store('lastScan',{...scan,generatorState:missing.length?'missing':'audit-ready',generatorAudit:audit,generatorRanAt:new Date().toISOString()});
   _creditReviewTab='generator';
-  toast(missing.length?'Generator needs intake documents first.':'Generator is staged for audit + next steps.');
+  toast(missing.length?'Audit built with missing-doc flags.':'Audit + next steps generated for review.');
   renderCreditReviewWorkspace();
 }
 function generatorMissingDocs(scan=store('lastScan')||{}){
@@ -3907,6 +3909,52 @@ function generatorMissingDocs(scan=store('lastScan')||{}){
   if(!docs.includes('id'))missing.push(['assignment_ind','Government ID','Needed for identity verification.']);
   if(!docs.includes('address')&&!docs.includes('utility'))missing.push(['article','Proof of address','Needed for identity and address verification.']);
   return missing;
+}
+function generatorCandidateScore(item={},idx=0){
+  const priority=String(item.priority||'').toLowerCase();
+  let score=priority==='high'?90:priority==='medium'?68:48;
+  const text=JSON.stringify(item||{}).toLowerCase();
+  if(/collection|charge|late|identity|fraud|mixed file|not mine/.test(text))score+=8;
+  if(/balance|date|dofd|ownership|permissible|authorized|unverifiable|inaccurate/.test(text))score+=6;
+  if(scanItemCompany(item)!=='Company not clearly identified')score+=3;
+  if(scanItemBureau(item)!=='Bureau not clearly identified')score+=3;
+  return Math.max(1,Math.min(99,score-idx));
+}
+function buildGeneratorAudit(review={},scan={},missing=[]){
+  const candidates=(review.disputes||[]).map((item,idx)=>({
+    index:idx,
+    score:generatorCandidateScore(item,idx),
+    creditor:scanItemCompany(item),
+    bureau:scanItemBureau(item),
+    issue:scanDisputeTarget(item),
+    priority:reviewPriority(item),
+    bestMove:scanBestMove(item),
+    why:scanWhyItMatters(item)
+  })).sort((a,b)=>b.score-a.score).slice(0,8);
+  const blockers=[];
+  if(missing.length)blockers.push(`${missing.length} intake requirement${missing.length===1?'':'s'} missing`);
+  if(candidates.length)blockers.push(`${candidates.length} candidate item${candidates.length===1?'':'s'} need human fact-check`);
+  else blockers.push('No dispute candidates were strong enough to rank');
+  if(review.metrics?.utilization!=null && Number(review.metrics.utilization)>30)blockers.push('Utilization may need paydown planning before funding applications');
+  if((review.inquiries||[]).length)blockers.push('Recent inquiries should be reviewed for permissible purpose');
+  return {
+    createdAt:new Date().toISOString(),
+    title:'Credit audit + next steps',
+    summary:[
+      `Scan status: ${review.scanStatus||'Complete'}.`,
+      `Ranked ${candidates.length} dispute candidate${candidates.length===1?'':'s'} from the latest report scan.`,
+      'Final dispute letters remain locked until intake documents and human review are complete.'
+    ],
+    missingDocs:missing.map(([,title,copy])=>({title,copy})),
+    blockers,
+    candidates,
+    nextSteps:[
+      'Confirm each candidate against the original report: creditor, bureau, account fragment, dates, balance, and status.',
+      'Collect government ID, proof of address, mailing address, and any account-level evidence.',
+      'Mark reviewed items in the Disputes tab before drafting any letter.',
+      'Only generate final dispute letters after human review is complete.'
+    ]
+  };
 }
 function humanReviewDocItem(){
   return '<div class="docItem"><span class="material-symbols-outlined">fact_check</span><div><strong>Human review</strong><span>Required before any final dispute output.</span></div></div>';
@@ -3980,20 +4028,27 @@ function renderFundingReadiness(review){
 }
 function renderGeneratorTab(review,scan){
   const missing=generatorMissingDocs(scan);
-  const readiness=missing.length?'Missing docs':'Generator not wired yet';
-  return `<div class="reviewGrid"><div class="reviewCard"><span>First output</span><b>Audit + next steps</b><span>No final dispute letters will be generated in this MVP tab.</span></div><div class="reviewCard"><span>Status</span><b>${escapeHtml(readiness)}</b><span>${missing.length?'Complete intake before running.':'Backend generation will be connected next.'}</span></div><div class="reviewCard"><span>Review items</span><b>${review.disputes.length}</b><span>Candidate findings available for audit.</span></div></div>
-  <div class="scannerState" style="padding:13px"><strong>What happens next</strong><span>The generator will compile a plain-English audit, rank legitimate dispute candidates, list missing evidence, and prepare a reviewed next-step plan. Final PDFs stay behind a human review gate.</span></div>
-  <div class="docList">${missing.map(([icon,title,copy])=>`<div class="docItem"><span class="material-symbols-outlined">${icon}</span><div><strong>${escapeHtml(title)}</strong><span>${escapeHtml(copy)}</span></div></div>`).join('')}${humanReviewDocItem()}</div>`;
+  const audit=scan.generatorAudit;
+  const readiness=scan.generatorState==='audit-ready'?'Audit ready':missing.length?'Missing docs':'Ready to build audit';
+  const candidateRows=coerceArray(audit?.candidates).map(item=>`<tr><td><b>${escapeHtml(item.creditor)}</b><small>${escapeHtml(item.issue)}</small></td><td>${escapeHtml(item.bureau)}</td><td><span class="tag ${item.score>=82?'down':item.score>=62?'warn':'info'}">${item.score}/100</span></td><td>${escapeHtml(item.bestMove)}</td></tr>`).join('');
+  const blockers=coerceArray(audit?.blockers);
+  const nextSteps=coerceArray(audit?.nextSteps);
+  return `<div class="reviewGrid"><div class="reviewCard"><span>First output</span><b>Audit + next steps</b><span>Final dispute letters stay locked.</span></div><div class="reviewCard"><span>Status</span><b>${escapeHtml(readiness)}</b><span>${audit?.createdAt?'Built '+new Date(audit.createdAt).toLocaleString():'Run the generator to create the audit.'}</span></div><div class="reviewCard"><span>Review items</span><b>${review.disputes.length}</b><span>Candidate findings available for audit.</span></div></div>
+  ${audit?`<div class="scannerState success" style="padding:13px"><strong>${escapeHtml(audit.title)}</strong><span>${coerceArray(audit.summary).map(escapeHtml).join(' ')}</span></div>
+  <div class="reviewSectionHead"><h4>Ranked dispute candidates</h4><span class="chip warn">Human review required</span></div>
+  <div class="reviewTableWrap"><table class="reviewTable"><thead><tr><th>Candidate</th><th>Bureau</th><th>Rank</th><th>Next move</th></tr></thead><tbody>${candidateRows||'<tr><td colspan="4"><div class="empty">No ranked candidates yet. Review the scan output manually.</div></td></tr>'}</tbody></table></div>
+  <div class="reviewGrid"><div class="reviewCard"><span>Blockers</span>${blockers.length?`<ul class="lawList">${blockers.map(item=>`<li>${escapeHtml(item)}</li>`).join('')}</ul>`:'<span>No blockers listed.</span>'}</div><div class="reviewCard"><span>Next steps</span>${nextSteps.length?`<ul class="lawList">${nextSteps.map(item=>`<li>${escapeHtml(item)}</li>`).join('')}</ul>`:'<span>Review candidates before generating letters.</span>'}</div></div>`:`<div class="scannerState" style="padding:13px"><strong>What happens next</strong><span>Run the generator to compile a plain-English audit, rank legitimate dispute candidates, list missing evidence, and prepare a reviewed next-step plan. Final PDFs stay behind a human review gate.</span></div>`}
+  <div class="reviewSectionHead"><h4>Missing requirements</h4></div><div class="docList">${missing.map(([icon,title,copy])=>`<div class="docItem"><span class="material-symbols-outlined">${icon}</span><div><strong>${escapeHtml(title)}</strong><span>${escapeHtml(copy)}</span></div></div>`).join('')||'<div class="docItem"><span class="material-symbols-outlined">check_circle</span><div><strong>Core documents noted</strong><span>Confirm files are legible before final packet creation.</span></div></div>'}${humanReviewDocItem()}</div>`;
 }
 function renderGeneratorPanel(review,scan){
   const missing=generatorMissingDocs(scan);
   const saved=!!scan.savedAt||scan.generatorState==='saved';
-  const status=saved?'Saved':missing.length?'Missing docs':scan.generatorState==='not-wired'?'Generator not wired yet':'Ready to build audit';
+  const status=saved?'Saved':scan.generatorState==='audit-ready'?'Audit ready':missing.length?'Missing docs':'Ready to build audit';
   return `<aside class="generatorPanel"><div class="generatorHead"><div class="generatorIcon"><span class="material-symbols-outlined">smart_toy</span></div><div><h4>Generator Agent</h4><div class="generatorStatus"><span class="generatorDot"></span>${escapeHtml(status)}</div></div></div>
     <div class="generatorCallout">I have analyzed the report and organized items that may be inaccurate or unverifiable. Review the tabs, then run the generator when intake is complete.</div>
     <div><div class="reviewSectionHead" style="margin-bottom:8px"><h4>Missing docs</h4></div><div class="docList">${missing.slice(0,3).map(([icon,title,copy])=>`<div class="docItem"><span class="material-symbols-outlined">${icon}</span><div><strong>${escapeHtml(title)}</strong><span>${escapeHtml(copy)}</span></div></div>`).join('')||'<div class="docItem"><span class="material-symbols-outlined">check_circle</span><div><strong>Core intake ready</strong><span>Final human review is still required.</span></div></div>'}${humanReviewDocItem()}</div></div>
     <div class="nextActionBox"><div class="aiBrain"><span class="material-symbols-outlined">auto_fix_high</span></div><div><strong>Run Generator</strong><span>Build audit + next steps from the issues found.</span></div></div>
-    <div class="generatorActions"><button class="primary genSave" onclick="saveCurrentScan()"><span class="material-symbols-outlined" style="font-size:18px">save</span> Save Scan</button><button class="ghost genRun" onclick="runGeneratorPlaceholder()"><span class="material-symbols-outlined" style="font-size:18px">auto_fix_high</span> Run Generator</button><button class="ghost genClear" onclick="clearCurrentScan()"><span class="material-symbols-outlined" style="font-size:18px">delete</span> Clear Scan</button></div>
+    <div class="generatorActions"><button class="primary genSave" onclick="saveCurrentScan()"><span class="material-symbols-outlined" style="font-size:18px">save</span> Save Scan</button><button class="ghost genRun" onclick="runGeneratorAgent()"><span class="material-symbols-outlined" style="font-size:18px">auto_fix_high</span> Run Generator</button><button class="ghost genClear" onclick="clearCurrentScan()"><span class="material-symbols-outlined" style="font-size:18px">delete</span> Clear Scan</button></div>
     ${saved?'<div class="savedNote"><span class="material-symbols-outlined">verified_user</span><div><strong>This scan is saved to Audit History.</strong><span>You can re-run the generator anytime.</span></div></div>':''}
   </aside>`;
 }
