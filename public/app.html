@@ -393,19 +393,30 @@ textarea{min-height:96px;resize:vertical}
 .readinessList{display:grid;gap:9px}
 
 /* ── Dispute Playbook ── */
-.playbookHero{position:relative;overflow:hidden;border-color:rgba(78,222,163,.22);margin-bottom:16px}
-.playbookHero:before{content:'';position:absolute;inset:-1px;border-radius:inherit;padding:1px;background:linear-gradient(110deg,rgba(78,222,163,.24),rgba(59,130,246,.18),transparent 72%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
-.playbookHero>*{position:relative;z-index:1}
-.playbookMetrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}
-.playbookMetric{padding:16px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.035)}
-.playbookMetric .metricNum{font-size:25px;line-height:1.05}
-.playbookLayout{display:grid;grid-template-columns:280px minmax(0,1fr) 320px;gap:16px;align-items:start;min-width:0}
-.playbookLayout .card,.playbookLayout > *{min-width:0}
+.playbookReview{display:grid;gap:14px}
+.playbookReviewTop{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}
+.playbookReviewTop h2{font-size:31px;line-height:1.08}
+.playbookReviewTop p{color:var(--muted);font-size:13px;margin-top:6px;max-width:720px}
+.playbookActions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.playbookMetrics{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.playbookMetric{border:1px solid rgba(124,168,255,.18);border-radius:8px;background:linear-gradient(145deg,rgba(24,45,75,.58),rgba(10,24,44,.72));padding:12px;min-width:0;display:grid;gap:5px;min-height:84px}
+.playbookMetric .metricNum{font-size:23px;line-height:1.05;color:#FDBA16;font-weight:800;overflow-wrap:anywhere}
+.playbookMetric .metricLab{letter-spacing:0;text-transform:none;font-family:var(--font);font-size:11.5px;color:#C7D4EA}
+.playbookLayout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:10px;align-items:start;min-width:0}
+.playbookMain,.playbookNextPanel{border:1px solid rgba(124,168,255,.18);border-radius:8px;background:linear-gradient(145deg,rgba(8,22,42,.82),rgba(4,14,28,.88));min-width:0;overflow:hidden}
+.playbookTabs{display:flex;gap:4px;overflow:auto;padding:0 13px;border-bottom:1px solid rgba(124,168,255,.18);background:rgba(19,38,65,.50);scrollbar-width:none}.playbookTabs::-webkit-scrollbar{display:none}
+.playbookTab{border:0;background:transparent;color:#B8C7DE;padding:12px 8px;border-radius:0;cursor:pointer;font-weight:700;font-size:13px;white-space:nowrap;min-width:104px}.playbookTab.active{color:#4D9DFF;box-shadow:inset 0 -2px 0 #3B82F6}
+.playbookPane{padding:14px;display:grid;gap:14px;min-width:0}
+.playbookNextPanel{position:sticky;top:88px;padding:16px;display:grid;gap:14px}
+.playbookPanelHead{display:grid;grid-template-columns:auto minmax(0,1fr);gap:11px;align-items:center}.playbookPanelHead h4{font-size:18px;line-height:1.1}
+.playbookPanelIcon{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;border:1px solid rgba(124,168,255,.25);background:rgba(124,168,255,.10);color:#E6EDF7}
+.playbookAccountGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
 .playbookQueue{display:grid;gap:10px}
 .playbookAccount{width:100%;text-align:left;border:1px solid var(--line);background:rgba(255,255,255,.035);color:var(--ink);border-radius:12px;padding:13px;cursor:pointer;display:grid;gap:7px;transition:.15s}
 .playbookAccount:hover{border-color:rgba(78,222,163,.35);background:rgba(16,185,129,.08)}
 .playbookAccount.active{border-color:var(--em);background:var(--em-soft);box-shadow:0 0 0 1px rgba(78,222,163,.12)}
 .playbookAccount b{font-size:13.5px}.playbookAccount small{color:var(--muted);font-size:11.5px}
+.playbookFilter{display:flex;gap:6px;flex-wrap:wrap}.playbookFilter button{border:1px solid var(--line2);background:rgba(255,255,255,.04);color:var(--muted);border-radius:999px;padding:6px 10px;cursor:pointer;font-size:11.5px;font-weight:800}.playbookFilter button.active{color:#4EDEA3;border-color:rgba(16,185,129,.36);background:var(--em-soft)}
 .playbookScoreCard{display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap}
 .playbookScoreCard>div:first-child{flex:1;min-width:0}
 .playbookScore{--p:70;width:128px;height:128px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#4EDEA3 calc(var(--p)*1%),#3B82F6 calc(var(--p)*1% + 12%),#1A2637 0);filter:drop-shadow(0 0 12px rgba(16,185,129,.18));flex:none}
@@ -449,9 +460,9 @@ textarea{min-height:96px;resize:vertical}
 .deadlinePoint{padding:10px;border-top:2px solid var(--line2);font-size:11px;color:var(--muted)}.deadlinePoint b{display:block;color:var(--ink);font-size:12px;margin-bottom:3px}
 .deadlinePoint.done{border-color:var(--em)}.deadlinePoint.due{border-color:var(--red);background:var(--red-soft)}
 .confidenceBar{height:7px;border-radius:999px;background:#172438;overflow:hidden;margin-top:7px}.confidenceBar span{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--em))}
-@media(max-width:1450px){.playbookLayout{grid-template-columns:280px minmax(0,1fr)}.casePanel{position:static;grid-column:1/-1;grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:1180px){.playbookLayout,.responseLayout,.round1Grid{grid-template-columns:1fr}.casePanel{position:static;grid-template-columns:1fr}.playbookMetrics{grid-template-columns:repeat(2,minmax(0,1fr))}.caseFiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:760px){.playbookMetrics,.analysisGrid,.docChecklist,.caseFiles,.billingDisclosure{grid-template-columns:1fr}.playbookScoreCard{align-items:flex-start}.playbookScore{width:112px;height:112px}.playbookScore>div{width:90px;height:90px}.premiumLock{grid-template-columns:1fr;padding:22px}.deadlineRail{grid-template-columns:1fr}.deadlinePoint{border-top:0;border-left:2px solid var(--line2)}}
+@media(max-width:1450px){.casePanel{position:static;grid-column:1/-1;grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:1180px){.playbookLayout,.responseLayout,.round1Grid{grid-template-columns:1fr}.playbookNextPanel{position:static}.casePanel{position:static;grid-template-columns:1fr}.playbookMetrics{grid-template-columns:repeat(3,minmax(0,1fr))}.caseFiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.playbookMetrics,.analysisGrid,.docChecklist,.caseFiles,.billingDisclosure{grid-template-columns:1fr}.playbookReviewTop h2{font-size:24px}.playbookActions,.generatorActions{width:100%}.playbookActions button{flex:1;justify-content:center}.playbookPane,.playbookNextPanel{padding:12px}.playbookScoreCard{align-items:flex-start}.playbookScore{width:112px;height:112px}.playbookScore>div{width:90px;height:90px}.premiumLock{grid-template-columns:1fr;padding:22px}.deadlineRail{grid-template-columns:1fr}.deadlinePoint{border-top:0;border-left:2px solid var(--line2)}}
 
 /* ── Bottom mobile nav ── */
 .bottomNav{display:none;position:fixed;left:0;right:0;bottom:0;z-index:90;background:#0a0e16;border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom));grid-template-columns:repeat(6,1fr)}
@@ -706,125 +717,43 @@ body{background:radial-gradient(900px 520px at 55% -12%,rgba(16,185,129,.075),tr
 
       <!-- ════════ DISPUTE PLAYBOOK ════════ -->
       <div class="page" id="playbook">
-        <div class="card playbookHero">
-          <div class="heroHead" style="margin-bottom:0">
+        <div class="playbookReview">
+          <div class="playbookReviewTop">
             <div>
               <h2>Dispute Playbook</h2>
-              <p>AI-guided tradeline analysis that recommends the right dispute path, scores the evidence, and keeps every escalation step organized from first letter through resolution.</p>
+              <p>Choose an account, review the next step, gather documents, then generate or track the dispute with a clear client-friendly workflow.</p>
+              <p id="pbDataNotice" style="color:var(--muted);font-size:12.5px;margin-top:9px"></p>
             </div>
-            <div style="display:flex;gap:9px;flex-wrap:wrap">
+            <div class="playbookActions">
               <button class="primary" onclick="showPage('scanner')"><span class="material-symbols-outlined" style="font-size:18px;vertical-align:-4px">document_scanner</span> Analyze report</button>
               <button class="ghost" onclick="renderPlaybook()"><span class="material-symbols-outlined" style="font-size:18px;vertical-align:-4px">refresh</span> Refresh</button>
             </div>
           </div>
-          <p id="pbDataNotice" style="color:var(--muted);font-size:12.5px;margin-top:12px"></p>
-        </div>
 
-        <div class="playbookMetrics">
-          <div class="playbookMetric"><div class="metricLab">Total Accounts Analyzed</div><div class="metricNum" id="pbTotalAccounts">0</div></div>
-          <div class="playbookMetric"><div class="metricLab">Active Disputes</div><div class="metricNum" id="pbActiveDisputes">0</div></div>
-          <div class="playbookMetric"><div class="metricLab">Recommended Actions</div><div class="metricNum" id="pbRecommendedActions">0</div></div>
-          <div class="playbookMetric"><div class="metricLab">Potential Reporting Issues</div><div class="metricNum" id="pbPotentialIssues">0</div></div>
-          <div class="playbookMetric"><div class="metricLab">Accounts Requiring Escalation</div><div class="metricNum" id="pbEscalationAccounts">0</div></div>
-          <div class="playbookMetric"><div class="metricLab">CFPB Eligible Cases</div><div class="metricNum" id="pbCfpbEligible">0</div></div>
-          <div class="playbookMetric"><div class="metricLab">Dispute Success Rate</div><div class="metricNum" id="pbSuccessRate">0%</div></div>
-          <div class="playbookMetric"><div class="metricLab">Recently Resolved Items</div><div class="metricNum" id="pbResolvedItems">0</div></div>
-        </div>
-
-        <div class="card">
-          <div class="stitchCardHead" style="margin-bottom:12px"><h3>Case management & tracking</h3><span class="chip info" id="caseDashboardSync">Loading…</span></div>
-          <div class="billingDisclosure" id="caseDashboardMetrics" style="grid-template-columns:repeat(4,minmax(0,1fr))"></div>
-          <div class="list" id="caseDashboardList" style="margin-top:13px"></div>
-          <p id="caseDashboardNote" style="color:var(--muted);font-size:12.5px;margin-top:10px">Your real dispute case status, deadlines, and success rate will appear here.</p>
-        </div>
-
-        <div class="playbookLayout">
-          <div class="card">
-            <div class="stitchCardHead" style="margin-bottom:12px"><h3>Account Queue</h3><span class="chip info" id="pbQueueCount">0</span></div>
-            <div class="playbookQueue" id="pbAccountList"><div class="empty">Run a monitoring scan to analyze tradelines.</div></div>
+          <div class="playbookMetrics">
+            <div class="playbookMetric"><div class="metricLab">Accounts Reviewed</div><div class="metricNum" id="pbTotalAccounts">0</div></div>
+            <div class="playbookMetric"><div class="metricLab">Active Disputes</div><div class="metricNum" id="pbActiveDisputes">0</div></div>
+            <div class="playbookMetric"><div class="metricLab">Next Actions</div><div class="metricNum" id="pbRecommendedActions">0</div></div>
+            <div class="playbookMetric"><div class="metricLab">Escalation Watch</div><div class="metricNum" id="pbEscalationAccounts">0</div></div>
+            <div class="playbookMetric"><div class="metricLab">CFPB Eligible</div><div class="metricNum" id="pbCfpbEligible">0</div></div>
+            <div class="playbookMetric"><div class="metricLab">Resolved Items</div><div class="metricNum" id="pbResolvedItems">0</div></div>
+            <span id="pbPotentialIssues" class="hidden">0</span><span id="pbSuccessRate" class="hidden">0%</span><span id="pbQueueCount" class="hidden">0</span>
           </div>
 
-          <div style="display:grid;gap:16px">
-            <div class="card">
-              <div class="playbookScoreCard">
-                <div>
-                  <div class="kickerMono" style="font-size:10px;text-transform:uppercase">Recommended strategy</div>
-                  <h3 id="pbSelectedTitle" style="font-size:22px;margin-top:6px">Select an account</h3>
-                  <p id="pbSelectedSub" style="color:var(--muted);font-size:13px;margin-top:5px">Tradeline analysis appears here.</p>
-                  <div id="pbSelectedBadges" style="display:flex;gap:7px;flex-wrap:wrap;margin-top:12px"></div>
-                </div>
-                <div class="playbookScore" id="pbScoreRing" style="--p:0"><div><b id="pbScore">0</b><small id="pbProbability">Probability</small></div></div>
-              </div>
-              <div class="scannerState" style="margin-top:14px">
-                <strong id="pbRecommendedMethod">No strategy selected</strong>
-                <span id="pbRecommendationWhy">Choose an account to see why this method was selected.</span>
-                <span id="pbRiskWeakness" style="color:var(--amber)">Risk and weakness summary appears after analysis.</span>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="stitchCardHead"><h3>Tradeline Analysis Engine</h3><span class="kickerMono" style="font-size:9px">Account risk and dispute analysis</span></div>
-              <div class="analysisGrid" id="pbAnalysisFields"></div>
-              <div class="sectionTitle" style="margin:18px 0 10px"><h3>Playbook Score Factors</h3><span id="pbExpectedTimeline"></span></div>
-              <div class="factorGrid" id="pbFactors"></div>
-            </div>
-
-            <div class="card">
-              <div class="stitchCardHead"><h3>Recommended Action Plan</h3><span class="chip gold">6 steps</span></div>
-              <div class="playbookSteps" id="pbActionPlan"></div>
-              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
-                <button class="primary" onclick="preparePlaybookLetter()">Generate recommended letter</button>
-                <button class="ghost" onclick="trackSelectedPlaybookAccount()">Track this account</button>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="stitchCardHead"><h3>Document Checklist</h3><span class="kickerMono" style="font-size:9px">Auto-recommended evidence</span></div>
-              <div class="docChecklist" id="pbDocChecklist"></div>
-            </div>
-
-            <div class="card">
-              <div class="stitchCardHead"><h3>Dispute Timeline</h3><span class="kickerMono" style="font-size:9px">Progress workflow</span></div>
-              <div class="dtl pbTimeline" id="pbTimeline"></div>
-            </div>
-
-            <div class="card">
-              <div class="stitchCardHead"><h3>Case Management</h3><span class="kickerMono" style="font-size:9px">History and activity</span></div>
-              <div class="caseFiles" id="pbCaseFiles"></div>
-              <div class="noteBox">
-                <label>Case note<textarea id="pbNote" placeholder="Add analyst notes, bureau response details, or document reminders."></textarea></label>
-                <button class="ghost" onclick="savePlaybookNote()">Save note</button>
-                <div class="list" id="pbCaseNotes"></div>
-              </div>
-            </div>
+          <div class="playbookLayout">
+            <section class="playbookMain">
+              <nav class="playbookTabs" id="pbTabs"></nav>
+              <div class="playbookPane" id="pbPane"><div class="empty">Loading Playbook…</div></div>
+            </section>
+            <aside class="playbookNextPanel" id="pbNextPanel"></aside>
           </div>
+        </div>
 
-          <aside class="casePanel">
-            <div class="card caseAnalyst">
-              <div class="stitchCardHead"><h3>Case Analyst</h3><span class="chip info">AI</span></div>
-              <div class="list">
-                <div class="item"><div><strong>Summary of account issues</strong><small id="pbCaseSummary">Select an account.</small></div></div>
-                <div class="item"><div><strong>Recommended dispute strategy</strong><small id="pbCaseStrategy">—</small></div></div>
-                <div class="item"><div><strong>Why selected</strong><small id="pbCaseWhy">—</small></div></div>
-                <div class="item"><div><strong>Risks and weaknesses</strong><small id="pbCaseRisk">—</small></div></div>
-                <div class="item"><div><strong>Evidence needed</strong><small id="pbCaseEvidence">—</small></div></div>
-                <div class="item"><div><strong>Probability score</strong><small id="pbCaseProbability">—</small></div></div>
-                <div class="item"><div><strong>Suggested next action</strong><small id="pbCaseNext">—</small></div></div>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="stitchCardHead"><h3>Smart Follow-Up Engine</h3></div>
-              <div class="list" id="pbFollowupList"></div>
-              <button class="primary" style="width:100%;margin-top:12px" onclick="preparePlaybookLetter('followup')">Generate next letter</button>
-            </div>
-
-            <div class="card">
-              <div class="stitchCardHead"><h3>CFPB Escalation Playbook</h3></div>
-              <div id="pbEscalationBox" class="scannerState" style="padding:13px"></div>
-              <button class="ghost" style="width:100%;margin-top:12px" onclick="generatePlaybookCfpbPackage()">Generate CFPB package</button>
-            </div>
-          </aside>
+        <div class="hidden">
+          <span id="caseDashboardSync"></span>
+          <div id="caseDashboardMetrics"></div>
+          <div id="caseDashboardList"></div>
+          <p id="caseDashboardNote"></p>
         </div>
 
         <div class="disclaimer">CREDITOS is self-help software, not a law firm, credit repair organization, lender, or financial advisor. Review every detail before mailing or filing a complaint. Do not dispute accurate information as inaccurate.</div>
@@ -5322,6 +5251,8 @@ const PLAYBOOK_DOC_LIBRARY={
 };
 const PLAYBOOK_TIMELINE_STAGES=['Draft Created','Letter Sent','Delivered','Investigation Started','Response Received','Follow-Up Due','Escalation Eligible','Case Closed'];
 let _playbookSelectedId=null;
+let _playbookTab='overview';
+let _playbookFilter='all';
 let _playbookAccounts=[];
 let _playbookAnalyses=new Map();
 
@@ -5635,7 +5566,7 @@ function playbookFollowups(account,analysis){
   return actions.slice(0,5);
 }
 async function renderPlaybook(){
-  if(!$('pbAccountList'))return;
+  if(!$('pbPane'))return;
   const disputes=await DisputeStore.list();
   _playbookAccounts=buildPlaybookAccounts(disputes);
   _playbookAnalyses=new Map(_playbookAccounts.map(account=>[account.id,analyzePlaybookAccount(account)]));
@@ -5665,19 +5596,33 @@ function renderPlaybookMetrics(disputes=[]){
     ? `Using ${real.length} account${real.length===1?'':'s'} from your latest scan and dispute timeline.`
     : 'Demo analysis is shown below so you can preview the workflow. Run a monitoring scan to replace it with real tradelines.';
 }
+const PLAYBOOK_TABS={overview:'Overview',accounts:'Accounts',strategy:'Strategy',documents:'Documents',timeline:'Timeline',escalation:'Escalation'};
+function setPlaybookTab(tab){_playbookTab=tab;renderSelectedPlaybookAccount();}
+function setPlaybookFilter(filter){_playbookFilter=filter;renderSelectedPlaybookAccount();}
+function filteredPlaybookAccounts(){
+  return _playbookAccounts.filter(account=>{
+    const analysis=_playbookAnalyses.get(account.id)||{};
+    if(_playbookFilter==='needs')return !analysis.closed;
+    if(_playbookFilter==='escalation')return analysis.cfpbEligible||analysis.overdue||analysis.failedResponse;
+    if(_playbookFilter==='tracked')return account.trackedId||account.status!=='untracked';
+    return true;
+  });
+}
+function playbookAccountCard(account){
+  const analysis=_playbookAnalyses.get(account.id)||{};
+  const active=account.id===_playbookSelectedId?'active':'';
+  const tone=analysis.score>=80?'up':analysis.score>=60?'warn':'gray';
+  return `<button class="playbookAccount ${active}" onclick="selectPlaybookAccount('${escapeHtml(account.id)}')">
+    <span style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><b>${escapeHtml(account.creditor)}</b><span class="chip ${tone}" style="padding:3px 7px">${analysis.score||0}</span></span>
+    <small>${escapeHtml(account.bureau)} · ${escapeHtml(account.accountType)} · ${escapeHtml(analysis.recommendation||'Analyze')}</small>
+    <span style="display:flex;gap:6px;flex-wrap:wrap"><span class="tag ${account.priority==='high'?'red':account.priority==='medium'?'amber':'gray'}">${escapeHtml(account.priority||'review')}</span>${account.isDemo?'<span class="tag blue">Demo</span>':''}${account.status&&account.status!=='untracked'?`<span class="tag blue">${escapeHtml(DISPUTE_LABELS[account.status]||account.status)}</span>`:''}</span>
+  </button>`;
+}
 function renderPlaybookAccountList(){
   const el=$('pbAccountList');
-  if(!_playbookAccounts.length){el.innerHTML='<div class="empty">Run a monitoring scan to analyze tradelines.</div>';return;}
-  el.innerHTML=_playbookAccounts.map(account=>{
-    const analysis=_playbookAnalyses.get(account.id);
-    const active=account.id===_playbookSelectedId?'active':'';
-    const tone=analysis?.score>=80?'up':analysis?.score>=60?'warn':'gray';
-    return `<button class="playbookAccount ${active}" onclick="selectPlaybookAccount('${account.id}')">
-      <span style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><b>${escapeHtml(account.creditor)}</b><span class="chip ${tone}" style="padding:3px 7px">${analysis?.score||0}</span></span>
-      <small>${escapeHtml(account.bureau)} · ${escapeHtml(account.accountType)} · ${escapeHtml(analysis?.recommendation||'Analyze')}</small>
-      <span style="display:flex;gap:6px;flex-wrap:wrap"><span class="tag ${account.priority==='high'?'red':account.priority==='medium'?'amber':'gray'}">${escapeHtml(account.priority||'review')}</span>${account.isDemo?'<span class="tag blue">Demo</span>':''}${account.status&&account.status!=='untracked'?`<span class="tag blue">${escapeHtml(DISPUTE_LABELS[account.status]||account.status)}</span>`:''}</span>
-    </button>`;
-  }).join('');
+  if(!el)return;
+  const accounts=filteredPlaybookAccounts();
+  el.innerHTML=accounts.length?accounts.map(playbookAccountCard).join(''):'<div class="empty">No accounts match this filter.</div>';
 }
 function selectPlaybookAccount(id){
   _playbookSelectedId=id;
@@ -5688,33 +5633,73 @@ function selectedPlaybook(){
   const account=_playbookAccounts.find(a=>a.id===_playbookSelectedId)||_playbookAccounts[0]||null;
   return {account,analysis:account?_playbookAnalyses.get(account.id):null};
 }
+function renderPlaybookTabs(){
+  const tabs=$('pbTabs');
+  if(!tabs)return;
+  tabs.innerHTML=Object.entries(PLAYBOOK_TABS).map(([key,label])=>`<button class="playbookTab ${_playbookTab===key?'active':''}" onclick="setPlaybookTab('${key}')">${label}</button>`).join('');
+}
+function playbookAccountSummary(account,analysis){
+  return `<div class="reviewGrid">
+    ${reviewInfoCard('Selected account',account.creditor,`${account.bureau} · ${account.accountType}`,'account_balance','')}
+    ${reviewInfoCard('Recommended method',analysis.recommendation,analysis.letterLabel||'Editable letter workflow','psychology_alt','gold')}
+    ${reviewInfoCard('Confidence',`${analysis.score}/100`,analysis.probability,'speed',analysis.score>=80?'up':analysis.score>=60?'gold':'')}
+    ${reviewInfoCard('Status',DISPUTE_LABELS[account.status]||account.status||'Not tracked',analysis.timeline,'timeline','')}
+  </div>`;
+}
+function renderPlaybookOverview(account,analysis){
+  return `${playbookAccountSummary(account,analysis)}
+    <div class="scannerState" style="padding:13px"><strong>Why this is the next best move</strong><span>${escapeHtml(analysis.reason)}</span><strong style="margin-top:6px;color:var(--amber)">Risk / weakness</strong><span>${escapeHtml(analysis.weakness)}</span></div>
+    <div class="reviewSectionHead"><h4>What happens next</h4></div>
+    <div class="nextSteps">${analysis.actionPlan.slice(0,4).map(([title,detail],idx)=>`<div class="nextStep"><div class="metricIcon ${idx===1?'gold':idx===3?'up':''}"><span class="material-symbols-outlined">${['fact_check','description','send','track_changes'][idx]||'check'}</span></div><div><b>${escapeHtml(title)}</b><span>${escapeHtml(detail)}</span></div></div>`).join('')}</div>`;
+}
+function renderPlaybookAccountsTab(){
+  const accounts=filteredPlaybookAccounts();
+  return `<div class="reviewSectionHead"><h4>Ranked account queue</h4><div class="playbookFilter">${[['all','All'],['needs','Needs action'],['escalation','Escalation'],['tracked','Tracked']].map(([key,label])=>`<button class="${_playbookFilter===key?'active':''}" onclick="setPlaybookFilter('${key}')">${label}</button>`).join('')}</div></div>
+    <div class="playbookAccountGrid">${accounts.length?accounts.map(playbookAccountCard).join(''):'<div class="empty">No accounts match this filter.</div>'}</div>`;
+}
+function renderPlaybookStrategy(account,analysis){
+  const fields=[
+    ['Furnisher',account.furnisher],['Balance',account.balance],['Credit limit',account.creditLimit],['Payment history',account.paymentHistory],['Date opened',account.dateOpened],['DOFD',account.dofd],['Previous disputes',account.previousDisputeAttempts],['Estimated impact',account.estimatedImpact]
+  ];
+  return `${playbookAccountSummary(account,analysis)}
+    <div class="reviewSectionHead"><h4>Strategy details</h4><span>${escapeHtml(analysis.timeline)}</span></div>
+    <div class="analysisGrid">${fields.map(([label,value])=>`<div class="analysisField"><span>${escapeHtml(label)}</span><b>${escapeHtml(pbDisplay(value))}</b></div>`).join('')}</div>
+    <div class="reviewSectionHead"><h4>Score factors</h4></div><div class="factorGrid">${Object.entries(analysis.factors).map(([label,value])=>`<div class="factorRow"><span>${escapeHtml(label)}</span><b>${value}</b><div class="track"><span style="width:${value}%"></span></div></div>`).join('')}</div>`;
+}
+function renderPlaybookDocuments(account,analysis){
+  return `<div class="reviewSectionHead"><h4>Evidence checklist</h4><span class="chip info">Review before mailing</span></div>
+    <div class="docChecklist">${analysis.neededDocs.map(group=>`<div class="docGroup"><b>${escapeHtml(group.title)}</b><ul>${group.items.map(item=>`<li>${escapeHtml(item)}</li>`).join('')}</ul></div>`).join('')}</div>
+    <div class="scannerState" style="padding:13px"><strong>Document note</strong><span>Add identity documents, proof of address, account statements, prior letters, bureau responses, and certified-mail receipts before sending or escalating.</span></div>`;
+}
+function renderPlaybookTimelinePane(account,analysis){
+  const notes=(store('playbookNotes')||[]).filter(n=>n.accountKey===pbKeyFor(account));
+  let current=0,status=account.status||'untracked';
+  if(status==='draft')current=0;if(status==='mailed')current=1;if(status==='investigating')current=3;if(status==='verified')current=4;if(analysis.overdue||status==='escalated')current=6;if(['resolved','deleted'].includes(status))current=7;
+  const timeline=PLAYBOOK_TIMELINE_STAGES.map((label,i)=>`<div class="stepNode ${i<current?'done':i===current?'now':''}"><i>${i<current?'✓':i+1}</i><br>${escapeHtml(label)}</div>`).join('');
+  return `<div class="reviewSectionHead"><h4>Dispute timeline</h4><span>${escapeHtml(DISPUTE_LABELS[status]||status)}</span></div><div class="dtl pbTimeline">${timeline}</div>
+    <div class="reviewSectionHead"><h4>Follow-up recommendations</h4></div><div class="list">${analysis.followups.map(action=>`<div class="item"><div><strong>${escapeHtml(action.title)}</strong><small>${escapeHtml(action.detail)}</small></div></div>`).join('')}</div>
+    <div class="noteBox"><label>Case note<textarea id="pbNote" placeholder="Add analyst notes, bureau response details, or document reminders."></textarea></label><button class="ghost" onclick="savePlaybookNote()">Save note</button><div class="list" id="pbCaseNotes">${notes.length?notes.map(n=>`<div class="item"><div><strong>${new Date(n.ts).toLocaleDateString()}</strong><small>${escapeHtml(n.text)}</small></div></div>`).join(''):'<div class="empty" style="padding:14px">No case notes yet.</div>'}</div></div>`;
+}
+function renderPlaybookEscalationPane(account,analysis){
+  const docs=pbDocsFromAccount(account).join(', ')||'Add prior disputes, bureau responses, and certified mail receipts before filing.';
+  return `<div class="scannerState ${analysis.cfpbEligible?'success':''}" id="pbEscalationBox" style="padding:13px"><strong>${analysis.cfpbEligible?'Escalation recommended':'Escalation not recommended yet'}</strong><span>${analysis.cfpbEligible?escapeHtml(analysis.reason):'Complete the current dispute step first, then escalate if the bureau verifies without a meaningful explanation or misses the response window.'}</span><strong style="margin-top:8px">Evidence package</strong><span>${escapeHtml(docs)}</span></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="primary" onclick="generatePlaybookCfpbPackage()">Generate CFPB package</button><button class="ghost" onclick="window.open('/dispute-advisor.html#panel-cfpb','_blank')">Open CFPB center</button></div>`;
+}
+function renderPlaybookPanel(account,analysis){
+  const missing=analysis.neededDocs.flatMap(g=>g.items).slice(0,4);
+  $('pbNextPanel').innerHTML=`<div class="playbookPanelHead"><div class="playbookPanelIcon"><span class="material-symbols-outlined">assistant_direction</span></div><div><h4>Next Best Action</h4><div class="generatorStatus"><span class="generatorDot"></span>${escapeHtml(analysis.recommendation)}</div></div></div>
+    <div class="nextActionBox"><div class="aiBrain"><span class="material-symbols-outlined">${analysis.cfpbEligible?'gavel':'edit_document'}</span></div><div><strong>${escapeHtml(analysis.letterLabel||analysis.recommendation)}</strong><span>${escapeHtml(analysis.followups[0]?.detail||analysis.reason)}</span></div></div>
+    <div class="reviewGrid"><div class="reviewCard"><span>Account</span><b>${escapeHtml(account.creditor)}</b><span>${escapeHtml(account.bureau)} · ${escapeHtml(account.accountType)}</span></div><div class="reviewCard"><span>Confidence</span><b>${analysis.score}/100</b><span>${escapeHtml(analysis.probability)}</span></div></div>
+    <div><div class="reviewSectionHead" style="margin-bottom:8px"><h4>Missing docs</h4></div><div class="docList">${missing.map(item=>`<div class="docItem pending"><span class="material-symbols-outlined">article</span><div><strong>${escapeHtml(item)}</strong><span>Gather before mailing or escalating.</span></div></div>`).join('')||'<div class="docItem complete"><span class="material-symbols-outlined">check_circle</span><div><strong>Core evidence noted</strong><span>Confirm documents are legible before sending.</span></div></div>'}</div></div>
+    <div class="generatorActions"><button class="primary genRun" onclick="${analysis.cfpbEligible?'generatePlaybookCfpbPackage()':'preparePlaybookLetter()'}"><span class="material-symbols-outlined" style="font-size:18px">${analysis.cfpbEligible?'gavel':'edit_document'}</span> ${analysis.cfpbEligible?'Prepare Escalation':'Generate Letter'}</button><button class="ghost genSave" onclick="trackSelectedPlaybookAccount()"><span class="material-symbols-outlined" style="font-size:18px">track_changes</span> Track Account</button><button class="ghost" onclick="setPlaybookTab('timeline')"><span class="material-symbols-outlined" style="font-size:18px">timeline</span> Review Timeline</button></div>`;
+}
 function renderSelectedPlaybookAccount(){
   const {account,analysis}=selectedPlaybook();
   if(!account||!analysis)return;
-  $('pbSelectedTitle').textContent=account.creditor;
-  $('pbSelectedSub').textContent=`${account.bureau} · ${account.accountType} · ${account.issue}`;
-  $('pbSelectedBadges').innerHTML=[
-    `<span class="chip ${analysis.score>=80?'up':analysis.score>=60?'warn':'gray'}">${analysis.probability}</span>`,
-    `<span class="chip info">${escapeHtml(account.law||'FCRA')}</span>`,
-    `<span class="chip ${analysis.cfpbEligible?'down':'gray'}">${analysis.cfpbEligible?'CFPB eligible':'Escalation watch'}</span>`
-  ].join('');
-  $('pbScore').textContent=analysis.score;
-  $('pbProbability').textContent=analysis.probability.replace(' Probability','');
-  $('pbScoreRing').style.setProperty('--p',analysis.score);
-  $('pbRecommendedMethod').textContent=analysis.recommendation;
-  $('pbRecommendationWhy').textContent=analysis.reason;
-  $('pbRiskWeakness').textContent=`Risks / weaknesses: ${analysis.weakness}`;
-  $('pbExpectedTimeline').textContent=analysis.timeline;
-  renderPlaybookFields(account);
-  renderPlaybookFactors(analysis);
-  renderPlaybookActionPlan(analysis);
-  renderPlaybookDocs(analysis);
-  renderPlaybookTimeline(account,analysis);
-  renderPlaybookCaseAnalyst(account,analysis);
-  renderPlaybookFollowups(analysis);
-  renderPlaybookEscalation(account,analysis);
-  renderPlaybookCaseFiles(account,analysis);
-  renderPlaybookNotes(account);
+  renderPlaybookTabs();
+  const panes={overview:renderPlaybookOverview(account,analysis),accounts:renderPlaybookAccountsTab(),strategy:renderPlaybookStrategy(account,analysis),documents:renderPlaybookDocuments(account,analysis),timeline:renderPlaybookTimelinePane(account,analysis),escalation:renderPlaybookEscalationPane(account,analysis)};
+  $('pbPane').innerHTML=panes[_playbookTab]||panes.overview;
+  renderPlaybookPanel(account,analysis);
 }
 function renderPlaybookFields(account){
   const fields=[
@@ -5859,8 +5844,8 @@ function generatePlaybookCfpbPackage(){
     analysis.failedResponse?'Bureau verified item without adequate investigation or explanation':'Response received: not recorded',
     analysis.overdue?'Response window has passed — bureau has not resolved the matter':'Follow-up due: monitor expected response window'
   ];
-  // Update inline escalation box summary
-  $('pbEscalationBox').innerHTML=`<strong>CFPB Complaint Draft</strong><span>I am filing this complaint regarding ${escapeHtml(account.creditor)} because disputed credit reporting for ${escapeHtml(account.accountType)} remains unresolved after prior dispute activity.</span><strong>Timeline</strong><span>${timelineLines.map(escapeHtml).join('<br>')}</span><strong>Evidence Package</strong><span>${escapeHtml(docs.join(', ')||'Add prior disputes, bureau responses, and certified mail receipts.')}</span>`;
+  const escalationBox=$('pbEscalationBox');
+  if(escalationBox)escalationBox.innerHTML=`<strong>CFPB Complaint Draft</strong><span>I am filing this complaint regarding ${escapeHtml(account.creditor)} because disputed credit reporting for ${escapeHtml(account.accountType)} remains unresolved after prior dispute activity.</span><strong>Timeline</strong><span>${timelineLines.map(escapeHtml).join('<br>')}</span><strong>Evidence Package</strong><span>${escapeHtml(docs.join(', ')||'Add prior disputes, bureau responses, and certified mail receipts.')}</span>`;
   // Pre-fill and navigate to CFPB center
   prefillCfpbFromPlaybook(account, analysis, timelineLines, docs);
   showPage('cfpb');
