@@ -15,6 +15,8 @@
 //  falls back to the deterministic analyst on any error.
 // ─────────────────────────────────────────────
 import { Router } from 'express';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 import {
   CATEGORIES, RECIPIENTS, BUREAU_ADDRESSES, TEMPLATE_COUNT,
   listTemplates, templatesByCategory, getTemplate, renderLetter,
@@ -22,8 +24,84 @@ import {
 import { recommendStrategy, buildCfpbComplaint, STRATEGIES } from '../lib/disputeStrategy.js';
 import { buildPlaybook, enrichRecommendation, caseAnalystPrompt } from '../lib/disputePlaybook.js';
 import { aiConfigured, callAi, toAiText } from '../lib/ai.js';
+import {
+  buildLetterPacket,
+  buildRound1Workflow,
+  caseDirectory,
+  saveRound1Artifacts
+} from '../lib/round1-dispute-workflow.js';
 
 const router = Router();
+const MAX_ROUND1_UPLOAD_BYTES = 10 * 1024 * 1024;
+const MAX_ROUND1_TEXT_CHARS = 100000;
+
+function decodeBase64File(fileData = '') {
+  const raw = String(fileData || '');
+  const encoded = raw.includes(',') ? raw.split(',').pop() : raw;
+  return encoded ? Buffer.from(encoded, 'base64') : null;
+}
+
+async function extractPdfTextFromBuffer(buffer) {
+  let parser;
+  try {
+    const { PDFParse } = await import('pdf-parse');
+    parser = new PDFParse({ data: buffer });
+    const result = await parser.getText();
+    return String(result?.text || '').replace(/\s+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+  } catch (error) {
+    console.warn('[round-1/pdf-text]', error.message);
+    return '';
+  } finally {
+    await parser?.destroy?.().catch(() => {});
+  }
+}
+
+async function resolveRound1Input(body = {}) {
+  let reportText = String(body.reportText || body.report_text || body.text || '').trim();
+  const fileData = String(body.fileData || body.file_data || '').trim();
+  const filename = String(body.filename || body.fileName || 'credit-report.pdf').trim();
+  const fileType = String(body.fileType || body.mimeType || '').trim();
+  const buffer = fileData ? decodeBase64File(fileData) : null;
+  if (buffer?.length > MAX_ROUND1_UPLOAD_BYTES) {
+    const error = new Error('Choose a report smaller than 10 MB.');
+    error.status = 413;
+    throw error;
+  }
+  const isPdf = buffer && (fileType === 'application/pdf' || filename.toLowerCase().endsWith('.pdf'));
+  if (!reportText && isPdf) reportText = await extractPdfTextFromBuffer(buffer);
+  if (!reportText && buffer && !isPdf) reportText = buffer.toString('utf8').trim();
+  if (reportText.length > MAX_ROUND1_TEXT_CHARS) {
+    const error = new Error('Credit report text must be under 100,000 characters.');
+    error.status = 413;
+    throw error;
+  }
+  if (reportText.length < 20) {
+    const error = new Error('No readable credit report text was found. Use a searchable PDF, OCR the report, or paste report text.');
+    error.status = 422;
+    throw error;
+  }
+  return { reportText, buffer: isPdf ? buffer : null, filename, fileType };
+}
+
+function downloadUrl(req, caseId, filename) {
+  return `${req.protocol}://${req.get('host')}/api/disputes/round-1/${encodeURIComponent(caseId)}/download/${encodeURIComponent(filename)}`;
+}
+
+function artifactLinks(req, caseId, files = {}) {
+  const links = {
+    extractedText: downloadUrl(req, caseId, 'extracted-report.txt'),
+    audit: downloadUrl(req, caseId, 'master-credit-audit.md'),
+    packet: downloadUrl(req, caseId, 'round-1-letter-packet.json'),
+    flags: downloadUrl(req, caseId, 'human-review-flags.md'),
+    pdfs: []
+  };
+  if (files.originalReport) links.originalReport = downloadUrl(req, caseId, 'original-report.pdf');
+  links.pdfs = (files.pdfs || []).map(file => ({
+    filename: file.filename,
+    url: downloadUrl(req, caseId, file.filename)
+  }));
+  return links;
+}
 
 // Compose the optional live-LLM Case Analyst narrative. Races a hard timeout so
 // a slow AI call can never hang the request; any failure → deterministic.
@@ -170,6 +248,153 @@ router.post('/cfpb', (req, res) => {
       content: packageText
     }
   });
+});
+
+// POST /api/disputes/round-1/intake — report parser + audit + candidate engine.
+router.post('/round-1/intake', async (req, res) => {
+  try {
+    const { reportText, buffer } = await resolveRound1Input(req.body || {});
+    const consumer = req.body?.consumer && typeof req.body.consumer === 'object' ? req.body.consumer : {};
+    const caseId = req.body?.caseId || null;
+    const workflow = buildRound1Workflow({
+      reportText,
+      consumer,
+      caseId,
+      currentDate: req.body?.currentDate || new Date(),
+      supportingDocuments: Array.isArray(req.body?.supportingDocuments) ? req.body.supportingDocuments : [],
+      caseLaw: req.body?.caseLaw && typeof req.body.caseLaw === 'object' ? req.body.caseLaw : {}
+    });
+    const saved = await saveRound1Artifacts({
+      caseId: workflow.caseId,
+      originalBuffer: buffer,
+      reportText,
+      auditMarkdown: workflow.auditMarkdown,
+      letterPacket: workflow.letterPacket,
+      humanReviewFlags: workflow.humanReviewFlags,
+      generatePdfs: false
+    });
+    res.json({
+      success: true,
+      caseId: workflow.caseId,
+      analysis: workflow.analysis,
+      auditMarkdown: workflow.auditMarkdown,
+      candidates: workflow.candidates,
+      letterPacket: workflow.letterPacket,
+      humanReviewFlags: workflow.humanReviewFlags,
+      canGeneratePdfs: workflow.canGeneratePdfs,
+      hardStops: workflow.hardStops,
+      links: artifactLinks(req, workflow.caseId, saved.files)
+    });
+  } catch (error) {
+    console.error('[round-1/intake]', error.message);
+    res.status(error.status || 500).json({ success: false, error: error.message || 'Round 1 intake failed.' });
+  }
+});
+
+// POST /api/disputes/round-1/:caseId/generate-pdfs — packet JSON + PDF engine.
+router.post('/round-1/:caseId/generate-pdfs', async (req, res) => {
+  try {
+    const caseId = String(req.params.caseId || '').trim();
+    const body = req.body || {};
+    const reportText = String(body.reportText || body.report_text || '').trim();
+    const consumer = body.consumer && typeof body.consumer === 'object' ? body.consumer : {};
+    const candidates = Array.isArray(body.candidates) ? body.candidates : [];
+    if (reportText.length < 20) {
+      return res.status(400).json({ success: false, error: 'Report text is required to regenerate the final packet.' });
+    }
+    const workflow = buildRound1Workflow({
+      reportText,
+      consumer,
+      caseId,
+      currentDate: body.currentDate || new Date(),
+      supportingDocuments: Array.isArray(body.supportingDocuments) ? body.supportingDocuments : [],
+      caseLaw: body.caseLaw && typeof body.caseLaw === 'object' ? body.caseLaw : {}
+    });
+    const candidateOverrides = new Map(candidates.map(item => [String(item.id), item]));
+    const approvedCandidates = workflow.candidates
+      .map(item => ({ ...item, ...(candidateOverrides.get(String(item.id)) || {}) }))
+      .filter(item => item.approved !== false && item.status !== 'Do Not Dispute');
+    const finalWorkflow = buildRound1Workflow({
+      reportText,
+      consumer,
+      caseId,
+      currentDate: body.currentDate || new Date(),
+      supportingDocuments: Array.isArray(body.supportingDocuments) ? body.supportingDocuments : [],
+      caseLaw: body.caseLaw && typeof body.caseLaw === 'object' ? body.caseLaw : {}
+    });
+    finalWorkflow.letterPacket = buildLetterPacket({
+      caseId,
+      consumer,
+      candidates: approvedCandidates,
+      currentDate: body.currentDate || new Date(),
+      supportingDocuments: Array.isArray(body.supportingDocuments) ? body.supportingDocuments : [],
+      caseLaw: body.caseLaw && typeof body.caseLaw === 'object' ? body.caseLaw : {}
+    });
+    finalWorkflow.humanReviewFlags = {
+      ...finalWorkflow.humanReviewFlags,
+      flags: [
+        ...(finalWorkflow.humanReviewFlags.flags || []),
+        'Final PDFs were generated only after candidate review input. Review again before mailing.'
+      ]
+    };
+    const hasAddress = finalWorkflow.letterPacket.consumer.name && finalWorkflow.letterPacket.consumer.address_lines?.length >= 2;
+    if (!hasAddress) {
+      const saved = await saveRound1Artifacts({
+        caseId,
+        reportText,
+        auditMarkdown: finalWorkflow.auditMarkdown,
+        letterPacket: finalWorkflow.letterPacket,
+        humanReviewFlags: finalWorkflow.humanReviewFlags,
+        generatePdfs: false
+      });
+      return res.status(409).json({
+        success: false,
+        error: 'Consumer full name and mailing address are required before final PDFs can be generated.',
+        hardStops: ['Consumer full name and mailing address are required before final PDFs can be generated.'],
+        links: artifactLinks(req, caseId, saved.files)
+      });
+    }
+    const blockedDoc = approvedCandidates.find(item => /identity theft|fraud|unauthorized/i.test(`${item.issue} ${item.audit_error_found}`) && !(item.documentationProvided || item.hasDocumentation));
+    if (blockedDoc) {
+      return res.status(409).json({
+        success: false,
+        error: 'Documentation is required before using identity theft, fraud, or unauthorized activity language.',
+        hardStops: [`Documentation is required for ${blockedDoc.name}.`]
+      });
+    }
+    const saved = await saveRound1Artifacts({
+      caseId,
+      reportText,
+      auditMarkdown: finalWorkflow.auditMarkdown,
+      letterPacket: finalWorkflow.letterPacket,
+      humanReviewFlags: finalWorkflow.humanReviewFlags,
+      generatePdfs: true
+    });
+    res.json({
+      success: true,
+      caseId,
+      letterPacket: finalWorkflow.letterPacket,
+      humanReviewFlags: finalWorkflow.humanReviewFlags,
+      links: artifactLinks(req, caseId, saved.files)
+    });
+  } catch (error) {
+    console.error('[round-1/generate-pdfs]', error.message);
+    res.status(error.status || 500).json({ success: false, error: error.message || 'Round 1 PDF generation failed.' });
+  }
+});
+
+router.get('/round-1/:caseId/download/:filename', async (req, res) => {
+  try {
+    const caseId = String(req.params.caseId || '').replace(/[^a-zA-Z0-9._-]+/g, '-');
+    const filename = path.basename(String(req.params.filename || ''));
+    const filePath = path.join(caseDirectory(caseId), filename);
+    const relative = path.relative(caseDirectory(caseId), filePath);
+    if (!filename || relative.startsWith('..') || path.isAbsolute(relative)) return res.status(400).json({ error: 'Invalid file path.' });
+    await fs.access(filePath);
+    res.download(filePath, filename);
+  } catch (error) {
+    res.status(404).json({ error: 'Round 1 artifact not found.' });
+  }
 });
 
 export default router;

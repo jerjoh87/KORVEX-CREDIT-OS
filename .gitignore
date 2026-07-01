@@ -13,6 +13,7 @@ supabase 2/
 supabase/.temp/
 node_modules/
 node_modules 2/
+client-cases/
 *.log
 .vercel
 .env*
