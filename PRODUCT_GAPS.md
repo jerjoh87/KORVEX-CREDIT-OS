@@ -26,7 +26,7 @@ Legend: ✅ shipped in this pass · 🔶 scaffolded (UI + data model ready, need
 | Funding eligibility matching | Medium | ✅ educational profile-fit guidance; live lender offers/applications require an integration |
 | Credit monitoring (bureau data feeds) | High | ⬜ requires Array/CRS/Plaid-type API partnership — biggest unlock, see FINTECH_FEATURE_AUDIT.md |
 | Password reset / magic link UX | High | ✅ reset request, invalid/expired handling, magic link, and in-app password completion |
-| PDF letter download / mail fulfillment (Lob) | Medium | 🔶 real PDF download shipped; Lob API fulfillment ⬜ |
+| PDF letter download / mail fulfillment | Medium | ✅ Round 1 audit + bureau PDF packet shipped; Click2Mail fulfillment wired, real mailed-order proof ⬜ |
 
 ## Workflow gaps fixed
 

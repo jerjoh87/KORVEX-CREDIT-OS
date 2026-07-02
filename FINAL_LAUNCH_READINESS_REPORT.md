@@ -1,6 +1,6 @@
 # CREDITOS Final Launch Readiness Report
 
-Date: 2026-06-21
+Date: 2026-07-01
 
 Recommendation: Ready for limited beta
 
@@ -16,6 +16,14 @@ Latest live verification after deploy:
 - `GET /api/launch/verification/dashboard` returned `401` without auth, which confirms the admin dashboard route is protected.
 - `POST /api/launch/verification/events` returned `401` without auth, which confirms proof logging is protected.
 - Browser automation for a live visual smoke check was attempted, but the local Chrome runtime crashed before page load, so that visual verification remains blocked in this environment.
+
+Latest local verification after Round 1 backend pass:
+
+- Startup hang fixed by lazy-loading the certified-mail PDF engine.
+- `PORT=3004 node server.js` started successfully.
+- `POST /api/disputes/round-1/intake` returned `200` with five dispute candidates.
+- `POST /api/disputes/round-1/:caseId/generate-pdfs` returned `200` and generated three bureau PDFs.
+- `npm run launch:check` passed locally.
 
 ## Pass / fail / blocked summary
 
@@ -36,8 +44,9 @@ Legend:
 | Stripe checkout creation | PASS in code | Checkout session creation is wired to the production app URL and logs the relevant event types. |
 | Stripe webhook signature verification | PASS in code | Webhook uses the raw request body and validates Stripe signatures before dispatching handlers. |
 | Stripe checkout + webhook roundtrip | BLOCKED live | Needs one real live payment/test-customer run to confirm the end-to-end account update. |
-| Stripe billing portal | PASS in code / BLOCKED live | The secure portal route exists and returns to `APP_URL/app.html`, but a live portal smoke test is still needed. |
+| Stripe billing portal | PASS in code / BLOCKED live | The Settings button calls the secure portal route and returns to `APP_URL/app.html`; a live portal smoke test is still needed with a real Stripe customer. |
 | Click2Mail certified-mail flow | PASS in code / BLOCKED live | Certified-mail config is live and the order path is wired, but a real mailed order has not been executed in this pass. |
+| Round 1 dispute PDF flow | PASS local | Intake, audit artifact creation, candidate review payload, and bureau PDF generation were verified against the live local API. |
 | Certified-mail status persistence | PASS in code | Mail jobs persist the batch/job state and link back to the dispute record when the flow completes. |
 | Launch proof logging dashboard | PASS in code | Admin-only proof events are stored in Supabase and summarized in the launch verification dashboard. |
 | Mobile visual QA at 360 / 390 / 430 / tablet / desktop | PASS | Live breakpoint checks showed no horizontal overflow and no console errors. |
@@ -125,7 +134,7 @@ Names only, no values:
 - Real inbox verification is still required for production auth proof.
 - A true live Stripe payment run is still required for end-to-end billing proof.
 - A true Click2Mail shipment is still required for mail proof.
-- Billing portal access is not yet implemented in the app.
+- Billing portal access exists in Settings, but still needs live Stripe-customer proof.
 - The app is launch-safe, but a “100% launch-ready” stamp still depends on real-world manual proof.
 
 ## Final recommendation
